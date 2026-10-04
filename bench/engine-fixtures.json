@@ -1,0 +1,103 @@
+{
+  "_comment": "REAL Apple SpeechTranscriber output, captured 2026-09-08 from fixtures/audio/*.aiff. This is what the pipeline actually receives. The hand-written cases in fixtures.json are unpunctuated and uncapitalised; the engine's output is neither, which changes what work is left for Tier 0 and Tier 1 to do.",
+  "cases": [
+    {
+      "engine": "The latency budget is 300 milliseconds."
+    },
+    {
+      "engine": "We enhance each segment while you are still speaking."
+    },
+    {
+      "engine": "Only the trailing segment is in flight when you release the key."
+    },
+    {
+      "engine": "So the thing is, we need to ship the passer by Friday and then run the benchmarks and write up the results before anyone asks about them."
+    },
+    {
+      "engine": "Ship it."
+    },
+    {
+      "engine": "I ran Terra Grunt against the azure landing zone, then Terraform applied the V net and the HCL was valid."
+    },
+    {
+      "engine": "We deployed to AWS as well, and cube control showed the pods running."
+    },
+    {
+      "engine": "The postgress database uses PG vector for embodings."
+    },
+    {
+      "engine": "Superbase runs on the Proxmox LXC over tail scale, and Ogam exposes it through MCP."
+    },
+    {
+      "engine": "They are going to deploy their changes over there."
+    },
+    {
+      "engine": "We need to write the right value to the root route."
+    },
+    {
+      "engine": "Clear the cash before you count the cash."
+    },
+    {
+      "engine": "The Q took its cue from the sink that failed to sink."
+    },
+    {
+      "engine": "The principal engineer explained the principle that will affect the effect on latency."
+    },
+    {
+      "engine": "Two nodes are too few to serve the site we cite."
+    }
+  ],
+  "_human_read": "Captured from real speakers reading fixtures/dictation-script.md. The AUDIO IS NEVER COMMITTED -- it is personal data and lives only in gitignored fixtures/audio/. These transcripts are the fixture. Two independent takes are kept because the second replicates the first, which a single take could not establish.",
+  "human": {
+    "apple": [
+      "Um, so the thing is, huh? We need to.",
+      "We need to ship the parser by Friday.",
+      "I ran terra grunt against the azure landing zone, and then terraform applied the VNet.",
+      "Uh, The HCL was valid.",
+      "Mm, we deployed to AWS as well, and cube control.",
+      "Cube CTL should the pod's running, you know?",
+      "The postgrass database uses PG vector for the embeddings, Superbase runs on Proxmox LXC over tail scale.",
+      "Um, and OM exposes it through MCP.",
+      "Clear the cash before you count the cash.",
+      "The queue took its cue from the sink that failed to sink.",
+      "So, The latest say budget is 300 milliseconds, huh?",
+      "And only the training segment is in flight when you release the key."
+    ],
+    "parakeet": [
+      "Um so the thing is, huh? We need to we need to ship the parser by Friday. I ran TerraGrunt against the Azure landing zone and then Terraform applied the VNet. The HCL was valid. We deployed to AWS as well, and kube control kubectl showed the pods running, you know? The Postgres database uses PG vector for the embeddings. Superbase runs on the Proxmox LXE over Tailscale. And OM exposes it through MCP. Clear the cache before you count the cache. The queue took its queue from the sync that failed to sync. So the latency budget is 300 milliseconds, huh? And only the trailing segment is in flight when you release the key."
+    ]
+  },
+  "human_take2": {
+    "_note": "Second take, different session and microphone, 66s, mean -26.9 dB. Replicates take 1 on every substantive finding.",
+    "apple": [
+      "Um, So the thing is, huh?",
+      "We need to, we need to ship the parser by Friday.",
+      "I ran terror grunt against the azure landing zone.",
+      "And then terraform applied the V-Net.",
+      "The HCL was valid.",
+      "Hmm.",
+      "We deployed to AWS as well.",
+      "And cube control, cube CTL.",
+      "Showed the pods running, you know?",
+      "The postgrass database uses PG vector for the embeddings.",
+      "Superbase runs on the Proxmox LXC over Tailscale.",
+      "And Om exposes it through MCP.",
+      "Clear the cash before you count the cash.",
+      "The queue took its cue from the sink that failed to sink.",
+      "So, The latency budget is 300 milliseconds, huh?",
+      "And only the trailing segment is in flight when you release the key."
+    ],
+    "parakeet": [
+      "Um so the thing is, huh? We need to we need to ship the parser by Friday. I ran Terra Grunt against the Azure landing zone and then Terraform applied the VNet. Um the HCL was valid. We deployed AWS as well, and kubectrol, kubectl showed the pods running, you know. The Postgres database uses PG vector for the embeddings. Super base runs on the Proxmox LXE over tail scale. And Ohm exposes it through MCP. Clear the cache before you count the cache. The queue took its queue from the sync that failed to sync. So the latency budget is 300 milliseconds, huh? And only the trailing segment is in flight when you release the key."
+    ],
+    "_open_source_app_note": "An open-source dictation app (Apache-2.0) with Parakeet V3 active -- NOT the commercial cloud app. This is Parakeet plus the app's post-processing, so it isolates what its pipeline does: its filler cleaner removed 'Um' correctly, and something inserted two articles and flipped both homophone pairs, which only an LLM pass can do.",
+    "open_source_app": [
+      "so the thing is, huh we need to we need to ship the parser by Friday. I ran the Terra Grunt against the Azure landing zone and then the Terraform applied the VNet, the HCL was valid. we deployed to AWS as well and kube control showed the pods running, you know. The Postgres database uses PG vector for the embeddings. Superbase runs on the Proxmox LXE over Tailscale and OM exposes it through MCP. Clear the cash before you count the cash. The queue took its queue from the sink that failed to sink. So the latency budget is 300 milliseconds, huh? And only the trailing segment is in flight when you release the key."
+    ],
+    "cloud_app": [
+      "The thing is, we need to ship the parser by Friday. I ran TerraGrunt against the Azure landing zone, and then TerraForm applied the VNet. The HCL was valid. We deployed to Amazon Web Services as well, and kube control showed the pods running.",
+      "The Postgres database uses PG Vector for the embeddings. Supabase runs on the Proxmox LC over Tailscale, and Omm exposes it through MCP. Clear the cache before you count the cache. The queue took its queue from the sync that failed to sync. The latency budget is 300 ms, huh? Only the trailing segment is in flight when you've released the key."
+    ],
+    "_cloud_app_note": "A commercial cloud dictation app. IMPORTANT CAVEAT: its custom dictionary had already been configured with terms including AWS, so this is NOT a like-for-like engine comparison -- it is the product AS CONFIGURED BY A USER, which is arguably the fairer test of the product but not of the model."
+  }
+}

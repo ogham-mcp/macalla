@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-meeting-batch"
+description = "Enables the meeting_batch command without any pre-configured scope."
+commands.allow = ["meeting_batch"]
+
+[[permission]]
+identifier = "deny-meeting-batch"
+description = "Denies the meeting_batch command without any pre-configured scope."
+commands.deny = ["meeting_batch"]

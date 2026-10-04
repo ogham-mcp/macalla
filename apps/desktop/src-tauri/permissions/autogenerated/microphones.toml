@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-microphones"
+description = "Enables the microphones command without any pre-configured scope."
+commands.allow = ["microphones"]
+
+[[permission]]
+identifier = "deny-microphones"
+description = "Denies the microphones command without any pre-configured scope."
+commands.deny = ["microphones"]

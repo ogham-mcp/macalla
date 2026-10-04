@@ -1,0 +1,424 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  # Run by hand, this starts the Windows job, lint and cargo audit; the
+  # other jobs skip a manual run. Windows also runs on every push and pull
+  # request, on our own Windows machine. Tick "windows_installer" to also
+  # build the unsigned .msi/.exe installer and upload it as a run artifact.
+  workflow_dispatch:
+    inputs:
+      windows_installer:
+        description: "Also build and upload the Windows installer (.msi/.exe)"
+        type: boolean
+        default: false
+
+# A push on top of a push cancels the run it made stale. Every run here
+# costs either hosted minutes or the laptop's afternoon.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+# Least privilege by default. Individual jobs widen this only where they must.
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  # The macOS runner is a laptop someone is using. Left alone, cargo, cmake and
+  # the test harness each start one job or thread per core, and a run took the
+  # whole machine. Four of each leaves room for the person. On the Linux runner,
+  # which has four cores, this changes nothing.
+  CARGO_BUILD_JOBS: 4
+  CMAKE_BUILD_PARALLEL_LEVEL: 4
+  RUST_TEST_THREADS: 4
+  # RUSTFLAGS is deliberately NOT set here. The environment variable REPLACES
+  # `target.<triple>.rustflags` from .cargo/config.toml rather than adding to
+  # it, which would drop the Swift runtime search path the Apple engine needs
+  # and break the binary at startup on macOS. The clippy step below denies
+  # warnings on its own, across all targets, which is what this was for.
+
+jobs:
+  # Nothing in crates/ may be macOS-only. This runs the same checks on all
+  # three OSes so a platform assumption fails here rather than in Phase 2.
+  #
+  # macOS runs on our own runner (scripts/ci-runner-macos.sh), not a hosted
+  # one: hosted macOS minutes bill at ten times the rate, and three macOS
+  # jobs per push spent the month's free allowance in a day. Windows runs
+  # on our own machine too (test-windows below), for the same reason at
+  # twice the rate.
+  test:
+    name: test (${{ matrix.name }})
+    runs-on: ${{ matrix.os }}
+    if: github.event_name != 'workflow_dispatch'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: macos
+            os: [self-hosted, macOS, macalla]
+          - name: linux
+            os: [self-hosted, Linux, macalla]
+    steps:
+      # v7.0.1, not the v4 that was here. v4 runs on Node 20, which is what
+      # GitHub was warning about, but the majors above it are security work
+      # rather than churn: v6 moved credentials to a separate file and v7
+      # blocks checking out a fork PR under pull_request_target / workflow_run
+      # -- the pwn-request class. This workflow uses neither trigger today, and
+      # that stops being true the moment the public repo takes contributions.
+      - uses: actions/checkout@v7.0.1
+        with:
+          # This job never pushes, so the token does not need to stay on disk.
+          persist-credentials: false
+      # cmake is for transcribe.cpp: the non-Apple engines are ggml
+      # compiled from source, on every platform. The self-hosted runners have
+      # it installed once, like the rest of this list.
+      # cpal needs ALSA headers on Linux. It lives in macalla-platform, not
+      # macalla-core -- the `headless-core` job below is what keeps
+      # it there, so do not "fix" a core build failure by widening this.
+      #
+      # The rest are Tauri's: the desktop shell in apps/desktop/src-tauri is
+      # a workspace member, and on Linux its webview and tray are GTK. Rust
+      # builds without the frontend's dist, so no Node step is needed here;
+      # the TypeScript is checked by the `desktop-ui` job.
+      # Our own Linux runner has these installed once; a hosted runner
+      # starts empty every time.
+      - name: install ALSA and the Tauri build dependencies (Linux)
+        if: runner.os == 'Linux' && runner.environment == 'github-hosted'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libasound2-dev libwebkit2gtk-4.1-dev \
+            libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev \
+            cmake
+      # transcribe.cpp is built by cmake. The macOS runner's
+      # service user does not have Homebrew on its PATH; the Linux runner
+      # needs cmake installed once, like the ALSA headers. Fail here with the
+      # cause rather than three screens into a build script.
+      - name: cmake on the path (self-hosted)
+        if: runner.environment == 'self-hosted'
+        run: |
+          if [ "$RUNNER_OS" = "macOS" ]; then
+            echo "/opt/homebrew/bin" >> "$GITHUB_PATH"
+            export PATH="/opt/homebrew/bin:$PATH"
+          fi
+          command -v cmake || { echo "::error::cmake is not installed on this runner; install it once (brew install cmake / apt-get install cmake)"; exit 1; }
+          cmake --version | head -1
+      # Pinned by commit, not by @stable. `stable` is a BRANCH: whatever is
+      # pushed to it runs here, with our token, on the next push. The SHA is
+      # the master branch's, where `toolchain` is a required input, so the
+      # version is stated at each call site instead of hiding in a branch
+      # name -- which is what lets the msrv job below ask for a different one
+      # from the same pinned code. Dependabot updates the SHA weekly.
+      - uses: dtolnay/rust-toolchain@02cb101ec7c40f2c49e1d9714d64511d8e1b74de # master
+        with:
+          toolchain: stable
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2.9.2
+      - name: cargo fmt
+        run: cargo fmt --all -- --check
+      - name: cargo clippy
+        run: cargo clippy --workspace --all-targets -- -D warnings
+      - name: cargo test
+        run: cargo test --workspace
+      # Tests must never need a microphone. If one starts to, it will hang
+      # here rather than on someone's laptop.
+      # Also proves the binary actually starts, which a link-time-only check
+      # does not: a missing runtime search path links clean and dies here.
+      - name: cargo run -- doctor
+        run: cargo run -p macalla-cli --bin macalla -- doctor
+
+  test-windows:
+    name: test (windows)
+    runs-on: [self-hosted, Windows, macalla]
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@02cb101ec7c40f2c49e1d9714d64511d8e1b74de # master
+        with:
+          toolchain: stable
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2.9.2
+      - name: cargo clippy
+        run: cargo clippy --workspace --all-targets -- -D warnings
+      - name: cargo test
+        run: cargo test --workspace
+      - name: cargo run -- doctor
+        run: cargo run -p macalla-cli --bin macalla -- doctor
+
+  # Builds the desktop app into an unsigned Windows installer and uploads it,
+  # only when a manual run ticks "windows_installer". Not on push or PR: it is
+  # a ~20-minute release build on the one Windows machine, wanted only when
+  # someone needs a build to hand out. Unsigned for now, so a tester clears
+  # SmartScreen once (More info -> Run anyway); a signing step goes here later.
+  package-windows:
+    name: package (windows installer)
+    runs-on: [self-hosted, Windows, macalla]
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.windows_installer == 'true'
+    # This machine (a first-gen Ryzen 5 1600) intermittently crashed rustc with
+    # STATUS_ACCESS_VIOLATION during the release build -- moving between crates
+    # run to run, gone at low parallelism -- the known first-gen Zen segfault
+    # under heavy parallel compilation, not a capacity problem (it has 32 GB).
+    # LTO stays off (the single-unit LTO pass is the heaviest and where the
+    # final link crashed); jobs are kept at the workspace's 4. The dev-profile
+    # test-windows job is unchanged.
+    env:
+      CARGO_PROFILE_RELEASE_LTO: "false"
+      CARGO_PROFILE_RELEASE_CODEGEN_UNITS: "16"
+    defaults:
+      run:
+        working-directory: apps/desktop
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@02cb101ec7c40f2c49e1d9714d64511d8e1b74de # master
+        with:
+          toolchain: stable
+      - uses: Swatinem/rust-cache@v2.9.2
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/desktop/package-lock.json
+      - run: npm ci
+      # tauri build runs the frontend's `npm run build` first (beforeBuildCommand),
+      # then the release build and the bundler. NSIS only, not the config's "all":
+      # the WiX MSI path fails on this machine (light.exe won't run), and the NSIS
+      # -setup.exe is the friendlier installer to hand out anyway. Add msi back
+      # here once WiX works on the box.
+      - name: tauri build
+        run: npx tauri build --bundles nsis
+      - uses: actions/upload-artifact@v7
+        with:
+          name: macalla-windows-installer
+          # The Cargo workspace target is at the repo root, not under the app.
+          path: target/release/bundle/nsis/*-setup.exe
+          if-no-files-found: error
+
+  # Everything the prek hooks check locally, checked again here, so a commit
+  # made with --no-verify still meets the same bar.
+  lint:
+    name: lint
+    runs-on: [self-hosted, Linux, macalla]
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      # For markdownlint. A hosted image has node; our runner does not.
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 22
+
+      # Also runs shellcheck over every `run:` block, which is where most
+      # workflow shell actually lives.
+      #
+      # The released Go binary, not the docker image that was here. Same
+      # project and same version -- but this is the identical binary the prek
+      # hook runs locally (`brew install actionlint`), so a workflow that
+      # passes on a laptop passes here, and the check no longer depends on the
+      # docker daemon being up. Pinned by version AND checksum: this job runs
+      # on every push, so an unpinned download would be a supply-chain hole in
+      # the same class the checkout pinning above exists to close.
+      - name: actionlint
+        env:
+          ACTIONLINT_VERSION: 1.7.12
+          ACTIONLINT_SHA256: 8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8
+        run: |
+          set -euo pipefail
+          url="https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
+          curl --fail --silent --show-error --location "$url" --output actionlint.tar.gz
+          echo "${ACTIONLINT_SHA256}  actionlint.tar.gz" | sha256sum --check --strict
+          tar --extract --gzip --file actionlint.tar.gz actionlint
+          ./actionlint -color
+
+      - name: shellcheck
+        run: |
+          if [ "$RUNNER_ENVIRONMENT" = "github-hosted" ]; then
+            sudo apt-get update && sudo apt-get install -y shellcheck
+          fi
+          git ls-files '*.sh' | xargs --no-run-if-empty shellcheck
+
+      - name: markdownlint
+        run: git ls-files '*.md' | xargs --no-run-if-empty npx --yes markdownlint-cli@0.49.1
+
+  # The desktop app's TypeScript: strict, no `any`, and it must build. This is
+  # the frontend half of what `cargo clippy` is for the Rust half.
+  desktop-ui:
+    name: desktop ui
+    runs-on: [self-hosted, macOS, macalla]
+    if: github.event_name != 'workflow_dispatch'
+    defaults:
+      run:
+        working-directory: apps/desktop
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/desktop/package-lock.json
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm run build
+      - run: npm run check:no-preview
+
+  # macalla-core is the domain crate and must build where no audio
+  # stack exists. This is the enforcement, not the comment on the module: it
+  # cross-compiles the core alone to Linux from a runner with no ALSA headers,
+  # so re-adding cpal (or any other device or vendor library) to the core fails
+  # here instead of being discovered by the next person to cross-compile.
+  #
+  # macOS is deliberate. On a Linux runner the ALSA headers are installed above
+  # and the check would pass whether or not the dependency was there.
+  #
+  # This job also carries the desktop and CLI crates' own reduced-feature
+  # proof (see the steps below); the job keeps its original name because
+  # branch protection may reference it by that name, but it is no longer only
+  # the core check.
+  headless-core:
+    name: core builds with no audio stack
+    runs-on: [self-hosted, macOS, macalla]
+    if: github.event_name != 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@02cb101ec7c40f2c49e1d9714d64511d8e1b74de # master
+        with:
+          toolchain: stable
+          targets: x86_64-unknown-linux-gnu
+      - uses: Swatinem/rust-cache@v2.9.2
+      - name: cargo check -p macalla-core (linux target, no sysroot)
+        run: cargo check -p macalla-core --target x86_64-unknown-linux-gnu
+      # transcribe.cpp is built by cmake, and macalla-engines pulls
+      # it in through macalla-session's default engine-transcribe feature, so
+      # the desktop and CLI builds below need it too. Same step as the `test`
+      # job's, because the self-hosted macOS runner's service user does not
+      # have Homebrew on its PATH by default.
+      - name: cmake on the path (self-hosted)
+        if: runner.environment == 'self-hosted'
+        run: |
+          if [ "$RUNNER_OS" = "macOS" ]; then
+            echo "/opt/homebrew/bin" >> "$GITHUB_PATH"
+            export PATH="/opt/homebrew/bin:$PATH"
+          fi
+          command -v cmake || { echo "::error::cmake is not installed on this runner; install it once (brew install cmake / apt-get install cmake)"; exit 1; }
+          cmake --version | head -1
+      # The rule that the app is complete without cloud engines, proven for the desktop crate: the app
+      # must build and work with no cloud engine compiled in, and each app's
+      # own [features] default turns cloud-transcription on, so this has to
+      # build macalla-desktop alone rather than as part of `--workspace` --
+      # a workspace build unifies the feature back on because macalla-cli's
+      # default features include it too. This job already carries a native
+      # macOS Rust toolchain for the check above; the one extra thing the
+      # Tauri crate needs beyond that is cmake, just added above, for
+      # transcribe.cpp. A Linux runner would also need libwebkit2gtk and the
+      # other packages the `test` job installs for a workspace build, which
+      # is more to ask of a job whose point is a single reduced-feature
+      # crate. `desktop-ui` was the other candidate, but it carries no Rust
+      # toolchain today and exists for the TypeScript side. The Swift rpath
+      # and the libc++ CXXFLAGS workaround (both needed by macalla-engines)
+      # are `.cargo/config.toml` settings, not workflow steps, so they apply
+      # here the same as in every other job once checkout has run.
+      - name: cargo build -p macalla-desktop --no-default-features
+        run: cargo build -p macalla-desktop --no-default-features
+      - name: cargo test -p macalla-desktop --lib --no-default-features
+        run: cargo test -p macalla-desktop --lib --no-default-features
+      # The other half: the desktop crate alone WITH its default features, as
+      # `tauri dev` and `tauri build` build it. Apple Intelligence was once
+      # missing from those defaults, and every workspace build hid it because
+      # the CLI turned the provider on for the workspace's copy. The ignored
+      # test needs the macOS 26 SDK, which this self-hosted runner has.
+      - name: cargo test -p macalla-desktop --lib apple_intelligence (default features, desktop alone)
+        run: cargo test -p macalla-desktop --lib apple_intelligence -- --include-ignored
+      # macalla-cli's own comment on its `cloud-transcription` feature claims
+      # this check exists; before this job it did not -- `cargo test
+      # --workspace` in the `test` job runs with the CLI's default features
+      # on, which is the only coverage the CLI's --no-default-features build
+      # had. Native macOS build, same reasoning as the desktop steps above.
+      - name: cargo test -p macalla-cli --bin macalla --no-default-features
+        run: cargo test -p macalla-cli --bin macalla --no-default-features
+
+  # The declared floor, actually enforced. Cargo.toml sets rust-version and
+  # nothing checked it: CI ran @stable, so code and dependencies needing
+  # anything newer compiled green and the declaration was decorative.
+  #
+  # Found by the first Dependabot PR, which proposed rubato 5.0.0 needing
+  # rustc 1.87 against a declared 1.85. `cargo add` had refused that upgrade
+  # locally for exactly that reason; Dependabot does not read rust-version,
+  # and CI would have merged it.
+  #
+  # It earned this on its first run: the declared 1.87 was already false, and
+  # the lockfile needed 1.88 through time, plist, serde_with and the icu
+  # crates. The declaration was decorative in exactly the way this job exists
+  # to prevent, so 1.88 is now the truth rather than an aspiration.
+  #
+  # Then the job itself went decorative: rust-toolchain.toml pins `stable`,
+  # and a toolchain file outranks the default the action sets, so every run
+  # checked on stable while its name said 1.88 (the log says "overridden by
+  # rust-toolchain.toml"). Found 2026-10-01, when Tauri 2.12, which declares
+  # 1.90, passed it. RUSTUP_TOOLCHAIN outranks the file, so the step sets it.
+  # The floor moved to 1.90 at the same time, for Tauri 2.12.
+  #
+  # The version is written here as well as in Cargo.toml on purpose. Raising
+  # the floor should be a deliberate edit in two places, and if someone raises
+  # Cargo.toml alone this job fails loudly, which is the safe direction.
+  #
+  # --all-targets because dev-dependencies are bumped by the same Dependabot
+  # runs and carry their own minimums; without it a test-only dependency could
+  # raise the real floor unnoticed. check, not build: this asks "does it still
+  # compile on the floor", and the stable jobs above are what run the tests.
+  msrv:
+    name: msrv (1.90)
+    runs-on: [self-hosted, Linux, macalla]
+    if: github.event_name != 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      # Same system libraries as the test job: this checks the whole
+      # workspace, which includes the Tauri shell and the ggml engines.
+      - name: cmake on the path
+        run: |
+          command -v cmake || { echo "::error::cmake is not installed on this runner; install it once (apt-get install cmake)"; exit 1; }
+          cmake --version | head -1
+      - uses: dtolnay/rust-toolchain@02cb101ec7c40f2c49e1d9714d64511d8e1b74de # master
+        with:
+          toolchain: "1.90"
+      - uses: Swatinem/rust-cache@v2.9.2
+      - name: cargo check --workspace on the declared minimum
+        env:
+          RUSTUP_TOOLCHAIN: "1.90"
+        run: |
+          rustc --version | grep -q '^rustc 1\.90\.' || { echo "::error::expected rustc 1.90, got $(rustc --version)"; exit 1; }
+          cargo check --workspace --all-targets
+
+  # RustSec advisories against the lockfile. Separate job so a security finding
+  # is distinguishable at a glance from a test failure.
+  audit:
+    name: cargo audit
+    runs-on: [self-hosted, Linux, macalla]
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@02cb101ec7c40f2c49e1d9714d64511d8e1b74de # master
+        with:
+          toolchain: stable
+      - uses: Swatinem/rust-cache@v2.9.2
+      # Plain cargo-audit rather than rustsec/audit-check. The action's v2.0.0
+      # tag still runs on Node 20 -- it reintroduced the exact deprecation this
+      # workflow was cleaning up -- and it wants a token and `issues: write` to
+      # file advisories. This needs neither, and it is the same command the
+      # prek hook runs locally. rust-cache keeps the binary between runs.
+      # rust-cache restores ~/.cargo/bin, so this is a no-op on a warm cache.
+      # Cold, it compiles cargo-audit from source and costs several minutes.
+      - name: install cargo-audit
+        run: command -v cargo-audit || cargo install cargo-audit --locked
+      - name: cargo audit
+        run: cargo audit

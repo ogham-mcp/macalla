@@ -1,0 +1,83 @@
+[package]
+name = "macalla-desktop"
+description = "The Tauri shell: tray, settings window, installers. No dictation logic: the core is callable without the UI."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[features]
+default = ["cloud-transcription", "apple-intelligence", "translate-apple"]
+# Release and dev builds turn cloud transcription on by default, through
+# macalla-session's own feature of the same name. The app must also build
+# and work with it off (the app is complete without cloud engines): the models page shows
+# NotCompiledIn in such a build. CI proves this by building this crate
+# alone with `--no-default-features` (never inside a workspace build, since
+# the CLI's own default features would unify the workspace's copy of this
+# crate back on under `--workspace`).
+cloud-transcription = ["macalla-session/cloud-transcription"]
+# Apple Intelligence, the first cleanup provider on a Mac that has it
+#, through macalla-session's feature of the same name. On by
+# default: without it, a build of this crate alone -- which is what `tauri
+# dev` and `tauri build` do -- says "This build of Macalla doesn't include
+# Apple Intelligence", and a workspace build hides that, because the CLI's
+# features turn the provider on for the workspace's copy. A test in
+# commands.rs reads the default list above and fails when it leaves this out.
+apple-intelligence = ["macalla-session/apple-intelligence"]
+# Apple's on-device translation for the Files page, through macalla-session's
+# feature of the same name, as apple-intelligence is. On by default, for the
+# same reason: a build of this crate alone is what `tauri dev` and `tauri
+# build` make. Without it the page says translating isn't available here. A
+# test in commands.rs reads the default list above and fails when it leaves
+# this out.
+translate-apple = ["macalla-session/translate-apple"]
+
+[lib]
+# The `_lib` suffix keeps the library crate name distinct from the binary
+# name, which matters on Windows (see rust-lang/cargo#8519).
+name = "macalla_desktop_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.7", features = [] }
+
+[dependencies]
+tauri = { version = "2.12", features = ["tray-icon"] }
+# The Files page's "Choose a file…" button: the system's own open panel.
+tauri-plugin-dialog = "2.8.1"
+serde.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+macalla-core.workspace = true
+macalla-engines.workspace = true
+macalla-platform.workspace = true
+macalla-session.workspace = true
+# The translator the Files page uses is built at this app's composition root
+# (`lib.rs`); the session's use case takes any `Translator`.
+macalla-translators.workspace = true
+# Open at login (`src/login.rs`). Pinned: 2.7 moves macOS from a LaunchAgent
+# to SMAppService, a behaviour change to test on its own.
+tauri-plugin-autostart = "=2.5.1"
+
+# Which engines are compiled in per platform is macalla-session's decision,
+# and this app inherits it. The hotkey is turned on here, as in apps/cli: it
+# needs a desktop, and is macOS-only until a non-macOS backend lands.
+[target.'cfg(target_os = "macos")'.dependencies]
+macalla-platform = { workspace = true, features = ["hotkey"] }
+# The overlay's non-activating panel (`src/overlay_panel.rs`). The same
+# versions tao already pulls in, with only the features that module uses, so
+# they add no package to Cargo.lock.
+objc2 = "0.6.4"
+objc2-app-kit = { version = "0.3.2", default-features = false, features = [
+    "std",
+    "NSColor",
+    "NSGraphics",
+    "NSPanel",
+    "NSResponder",
+    "NSScreen",
+    "NSView",
+    "NSWindow",
+] }

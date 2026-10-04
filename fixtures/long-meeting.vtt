@@ -1,0 +1,114 @@
+WEBVTT
+
+NOTE Invented for a timing probe: no real people, no recorded speech.
+
+00:00:01.000 --> 00:00:14.000
+<v Aoife Byrne>Thanks for joining. We have three things today: the parser release, the new install guide, and who looks after the support queue while Cian is away.
+
+00:00:14.000 --> 00:00:31.000
+<v Brian Walsh>Before we start on the release, the test run finished last night. Every parser test passes now, including the three that kept failing on long files, so I think the parser itself is ready.
+
+00:00:31.000 --> 00:00:45.000
+<v Aoife Byrne>Good. What about the Windows build? Last week it still crashed when a path had a space in it.
+
+00:00:45.000 --> 00:01:04.000
+<v Brian Walsh>It still does. I found the cause, it is the way we quote the path before we hand it to the decoder, but the fix touches the installer too, and I do not want to rush that.
+
+00:01:04.000 --> 00:01:20.000
+<v Aoife Byrne>Then the Windows build is not part of this release. We will ship macOS and Linux on the twentieth of October and look at Windows again in November.
+
+00:01:20.000 --> 00:01:33.000
+<v Brian Walsh>That works for me. I will write the release notes by Friday and send them to the whole team so everyone can check the wording.
+
+00:01:33.000 --> 00:01:52.000
+<v Aoife Byrne>Please say plainly in the notes that Windows is coming later. Last time people read the notes as a promise and we answered the same question for two weeks.
+
+00:01:52.000 --> 00:02:05.000
+<v Brian Walsh>I will put it in the first paragraph, not at the bottom. Do we keep the old parser around for a while, in case someone finds a file the new one reads differently?
+
+00:02:05.000 --> 00:02:21.000
+<v Aoife Byrne>Yes, we keep the old parser for one month behind a setting, and then we remove it. A month is long enough for the people who update slowly to tell us.
+
+00:02:21.000 --> 00:02:38.000
+<v Brian Walsh>Then I need to add the setting before the release. It is a small change, maybe half a day, but it needs a test that switches between the two parsers on the same file.
+
+00:02:38.000 --> 00:02:50.000
+<v Aoife Byrne>Add the setting and the test this week, before the release candidate. Now the install guide. I read the draft on Tuesday.
+
+00:02:50.000 --> 00:03:08.000
+<v Brian Walsh>The draft still shows the old flags. The new version renamed two of them and removed the one for the cache folder, because the cache moved into the settings file.
+
+00:03:08.000 --> 00:03:24.000
+<v Aoife Byrne>I will check the install guide against the new flags before the release. If a flag was removed, the guide should say what to do instead, not just leave it out.
+
+00:03:24.000 --> 00:03:41.000
+<v Brian Walsh>There is also the screenshot of the settings window. It shows the tab we took out in September, so anyone following the guide will look for something that is not there.
+
+00:03:41.000 --> 00:03:55.000
+<v Aoife Byrne>We will take new screenshots on the release candidate, not on today's build. Otherwise we will take them twice.
+
+00:03:55.000 --> 00:04:12.000
+<v Brian Walsh>Agreed. When is the release candidate? If the setting and the test land this week, I could cut it on Monday morning and leave the whole week for checking.
+
+00:04:12.000 --> 00:04:25.000
+<v Aoife Byrne>Cut the release candidate on Monday morning. I would rather have a full week of checking than a rushed Friday.
+
+00:04:25.000 --> 00:04:44.000
+<v Brian Walsh>Then the last thing is the support queue. Cian is away for two weeks from Wednesday, and he usually answers most of the questions that come in about installing.
+
+00:04:44.000 --> 00:05:01.000
+<v Aoife Byrne>I can take the queue in the mornings, but not in the afternoons, because the afternoons are when I am writing the guide and the screenshots will take time.
+
+00:05:01.000 --> 00:05:17.000
+<v Brian Walsh>I can take the afternoons for the first week. In the second week I am on the release itself, so I would rather not promise anything for those afternoons yet.
+
+00:05:17.000 --> 00:05:33.000
+<v Aoife Byrne>Let us do that for the first week and decide the second week next Thursday, once we know how busy the release candidate keeps us.
+
+00:05:33.000 --> 00:05:48.000
+<v Brian Walsh>One more thing about the queue. Most of the install questions are about the cache folder, and that answer is going to change with this release.
+
+00:05:48.000 --> 00:06:04.000
+<v Aoife Byrne>Then we should write one short answer about where the cache went and link it from the guide. That saves us writing the same reply twenty times.
+
+00:06:04.000 --> 00:06:17.000
+<v Brian Walsh>I will draft that answer tomorrow, and you can fold it into the guide when you check the flags.
+
+00:06:17.000 --> 00:06:33.000
+<v Aoife Byrne>Good. So to be sure we agree: macOS and Linux on the twentieth of October, Windows in November, the old parser kept for one month, and the release candidate on Monday morning.
+
+00:06:33.000 --> 00:06:47.000
+<v Brian Walsh>Yes, and I will send the release notes by Friday, add the setting and its test this week, and draft the answer about the cache folder tomorrow.
+
+00:06:47.000 --> 00:07:02.000
+<v Aoife Byrne>And I will check the guide against the new flags, take the new screenshots on the release candidate, and take the queue in the mornings while Cian is away.
+
+00:07:02.000 --> 00:07:18.000
+<v Brian Walsh>Before we finish, the download page. It still links to the beta, and the beta will stop updating the day we release, so people who find that link will be stuck on an old version.
+
+00:07:18.000 --> 00:07:31.000
+<v Aoife Byrne>The download page should point at the release on the twentieth, and the beta link should go away the same day, not a week later.
+
+00:07:31.000 --> 00:07:47.000
+<v Brian Walsh>I do not have access to the website, though. Last time Niamh changed it for us, and she needed two days' notice because she batches her changes on Tuesdays.
+
+00:07:47.000 --> 00:07:59.000
+<v Aoife Byrne>Then I will ask Niamh today to change the download page on the twentieth. Two days' notice is easy if I ask now.
+
+00:07:59.000 --> 00:08:16.000
+<v Brian Walsh>Thanks. And the checksums. We published them by hand last time and one of them was wrong for a whole afternoon, which is the kind of thing people notice.
+
+00:08:16.000 --> 00:08:30.000
+<v Aoife Byrne>We are not publishing checksums by hand again. The release script should write them, and the script should fail if a file is missing.
+
+00:08:30.000 --> 00:08:44.000
+<v Brian Walsh>I can add that to the script, but not this week, not with the setting and the test. Could it wait for the release candidate on Monday?
+
+00:08:44.000 --> 00:08:55.000
+<v Aoife Byrne>Yes, add the checksums to the script on Monday, before you cut the release candidate, so the candidate proves it works.
+
+00:08:55.000 --> 00:09:05.000
+<v Brian Walsh>Then I think we are done. Same time next Thursday to decide the second week of the queue?
+
+00:09:05.000 --> 00:09:12.000
+<v Aoife Byrne>Same time next Thursday. Thanks, Brian.

@@ -1,0 +1,25 @@
+{
+  "_comment": "STUB. Tier 0 rules for 'de' are not populated. The engine supports this language (Apple SpeechTranscriber covers de/es/it), so dictation works -- but deterministic cleanup does not, and text passes through Tier 0 unchanged. Community contributions welcome: copy en.json and translate. See docs/benchmarks.md for why these are per-language and not translatable by lookup.",
+  "language": "de",
+  "fillers": {
+    "sentence_initial": [],
+    "language_gated": [
+      "äh",
+      "ähm"
+    ],
+    "phrases_initial": []
+  },
+  "punctuation": {},
+  "structure": {},
+  "cadence": {
+    "ordinal_words": [],
+    "number_words": [],
+    "minimum_markers": 3
+  },
+  "numbers": {
+    "enabled": false,
+    "minimum_value": 21
+  },
+  "stutterable": [],
+  "_fillers_note": ""
+}

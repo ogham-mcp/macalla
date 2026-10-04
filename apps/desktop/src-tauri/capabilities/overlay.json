@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "overlay",
+  "description": "The dictation overlay: the core defaults, for the events it listens to, and only the commands behind its cancel and finish buttons",
+  "windows": ["overlay"],
+  "permissions": ["core:default", "allow-dictation-cancel", "allow-dictation-finish"]
+}

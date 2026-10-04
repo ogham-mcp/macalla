@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-provider-keys"
+description = "Enables the provider_keys command without any pre-configured scope."
+commands.allow = ["provider_keys"]
+
+[[permission]]
+identifier = "deny-provider-keys"
+description = "Denies the provider_keys command without any pre-configured scope."
+commands.deny = ["provider_keys"]

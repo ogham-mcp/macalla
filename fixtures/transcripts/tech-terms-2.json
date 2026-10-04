@@ -1,0 +1,20 @@
+{
+  "audio": "fixtures/audio/tech-terms-2.aiff",
+  "engine": "apple-speech",
+  "measured": "2026-09-08",
+  "segments": [
+    {
+      "spoken": "The post gres database uses P G vector for embeddings.",
+      "actual": "The postgress database uses PG vector for embodings.",
+      "expected": "The Postgres database uses pgvector for embeddings.",
+      "needs_dictionary": ["postgress->Postgres", "PG vector->pgvector", "embodings->embeddings"]
+    },
+    {
+      "spoken": "Supa base runs on the prox mox L X C over tail scale, and ogham exposes it through M C P.",
+      "actual": "Superbase runs on the Proxmox LXC over tail scale, and Ogam exposes it through MCP.",
+      "expected": "Supabase runs on the Proxmox LXC over Tailscale, and Ogham exposes it through MCP.",
+      "correct_unaided": ["Proxmox", "LXC", "MCP"],
+      "needs_dictionary": ["Superbase->Supabase", "tail scale->Tailscale", "Ogam->Ogham"]
+    }
+  ]
+}

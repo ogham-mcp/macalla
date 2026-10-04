@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-meeting-copy"
+description = "Enables the meeting_copy command without any pre-configured scope."
+commands.allow = ["meeting_copy"]
+
+[[permission]]
+identifier = "deny-meeting-copy"
+description = "Denies the meeting_copy command without any pre-configured scope."
+commands.deny = ["meeting_copy"]

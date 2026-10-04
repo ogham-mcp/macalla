@@ -1,0 +1,30 @@
+{
+  "current": {
+    "p50": 301.18429206777364,
+    "dropped": 0.05352272727272727,
+    "invented": 0.0381517094017094,
+    "punct": 16,
+    "damaged": 5
+  },
+  "narrow": {
+    "p50": 287.6345419790596,
+    "dropped": 0.0,
+    "invented": 0.0,
+    "punct": 3,
+    "damaged": 0
+  },
+  "invisible": {
+    "p50": 301.4927089679986,
+    "dropped": 0.01125,
+    "invented": 0.01125,
+    "punct": 9,
+    "damaged": 2
+  },
+  "narrow_examples": {
+    "p50": 309.1519579757005,
+    "dropped": 0.0,
+    "invented": 0.0,
+    "punct": 3,
+    "damaged": 0
+  }
+}

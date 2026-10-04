@@ -1,0 +1,25 @@
+{
+  "_comment": "Homophones test the STT engine's language model, NOT the dictionary. A dictionary entry cannot fix these: both spellings are valid English words, so a blanket replacement would break the other sense. See docs/benchmarks.md.",
+  "audio": ["fixtures/audio/homophones.aiff", "fixtures/audio/homophones-2.aiff"],
+  "engine": "apple-speech",
+  "measured": "2026-09-08",
+  "passed": [
+    { "spoken": "deploy their changes over there", "note": "their/there both correct" },
+    { "spoken": "write the right value to the root route", "note": "all four correct -- write/right and root/route" },
+    { "spoken": "The principal engineer explained the principle", "note": "both correct" },
+    { "spoken": "That will affect the effect on latency", "note": "both correct" },
+    { "spoken": "Two nodes are too few to serve the site we cite", "note": "two/too and site/cite all correct" }
+  ],
+  "failed": [
+    { "spoken": "Clear the cache before you count the cash",
+      "actual": "Clear the cash before you count the cash",
+      "note": "cache -> cash. The technical sense lost to the common word." },
+    { "spoken": "The queue took its cue from the sink that failed to sync",
+      "actual": "The Q took its cue from the sink that failed to sink",
+      "note": "queue -> Q and sync -> sink. Two failures in one sentence, both technical senses." }
+  ],
+  "unexpected_normalisation": [
+    { "spoken": "They're going to deploy", "actual": "They are going to deploy",
+      "note": "The engine expanded the contraction unprompted, changing the speaker's words." }
+  ]
+}

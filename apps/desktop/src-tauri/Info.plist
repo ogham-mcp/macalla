@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- SPDX-License-Identifier: MIT -->
+<!-- Merged into the bundle's Info.plist by tauri build. Without these
+     strings macOS shows no permission prompt at all: the app never appears
+     in the Microphone list and capture silently returns silence, which is
+     how the first run ended with "No speech detected". -->
+<plist version="1.0">
+<dict>
+  <key>NSMicrophoneUsageDescription</key>
+  <string>To hear you when you hold the shortcut.</string>
+  <key>NSSpeechRecognitionUsageDescription</key>
+  <string>To turn what you say into text, on this Mac.</string>
+  <key>NSAudioCaptureUsageDescription</key>
+  <string>To hear the other side of a call you record as a meeting.</string>
+  <key>LSUIElement</key>
+  <false/>
+</dict>
+</plist>

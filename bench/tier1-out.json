@@ -1,0 +1,82 @@
+[
+  {
+    "raw": "um so the thing is uh we need to we need to ship the the parser by friday",
+    "tier1": "The thing is, we need to ship the parser by Friday."
+  },
+  {
+    "raw": "i was saying that um the latency budget is is three hundred milliseconds",
+    "tier1": "I was saying that the latency budget is three hundred milliseconds."
+  },
+  {
+    "raw": "so basically uh what i what i mean is the vad gates the stream not the other way round",
+    "tier1": "So basically, uh, what I mean is the VAD gates the stream, not the other way round."
+  },
+  {
+    "raw": "okay so like we should probably run terragrunt against the azure landing zone first",
+    "tier1": "Okay, we should probably run Terragrunt against the Azure landing zone first."
+  },
+  {
+    "raw": "um the postgres database uses pgvector for the embeddings you know",
+    "tier1": "The PostgreSQL database uses pgvector for the embeddings."
+  },
+  {
+    "raw": "i think uh we need to check the the kubectl output before we deploy",
+    "tier1": "I think we need to check the kubectl output before deploying."
+  },
+  {
+    "raw": "so the thing is that tailscale runs on the proxmox lxc container",
+    "tier1": "So the thing is that tailscale runs on the proxmox LXC container."
+  },
+  {
+    "raw": "basically um the seam pass rejoins segments at assembly time",
+    "tier1": "basically the seam pass rejoins segments at assembly time"
+  },
+  {
+    "raw": "right so we need to we need to measure the p ninety five not just the median",
+    "tier1": "Right, we need to measure the p value ninety-five not just the median."
+  },
+  {
+    "raw": "uh the clipboard has to be restored after we we paste the text",
+    "tier1": "The clipboard needs to be restored after we paste the text."
+  },
+  {
+    "raw": "okay um terraform applied the vnet and then the hcl was valid",
+    "tier1": "terraform applied the vnet and then the hcl was valid"
+  },
+  {
+    "raw": "like i said the the audio callback should only copy samples",
+    "tier1": "like i said, the audio callback should only copy samples"
+  },
+  {
+    "raw": "so um the whisper model is is much slower than parakeet on this machine",
+    "tier1": "The whisper model is much slower than Parakeet on this machine."
+  },
+  {
+    "raw": "you know the accessibility permission cannot be granted programmatically",
+    "tier1": "You know, the accessibility permission cannot be granted programmatically."
+  },
+  {
+    "raw": "uh basically the ring buffer sits between capture and and the vad",
+    "tier1": "The ring buffer sits between capture and the vad."
+  },
+  {
+    "raw": "so i mean the the notarisation step runs in ci not locally",
+    "tier1": "so i mean the the notarisation step runs in ci not locally"
+  },
+  {
+    "raw": "um we should probably cache the phonetic keys at at load time",
+    "tier1": "We should probably cache the phonetic keys at load time."
+  },
+  {
+    "raw": "okay so the the tray menu has exactly five items and nothing else",
+    "tier1": "The tray menu has exactly five items and nothing else."
+  },
+  {
+    "raw": "uh the supabase instance is behind the tailnet not the public internet",
+    "tier1": "The Supabase instance is behind the tailnet, not the public internet."
+  },
+  {
+    "raw": "like um the enhancement never blocks the paste that is the whole point",
+    "tier1": "like the enhancement never blocks the paste that is the whole point"
+  }
+]

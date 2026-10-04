@@ -1,0 +1,22 @@
+{
+  "_comment": "STUB. Tier 0 rules for 'yue' are not populated, so text passes through unchanged. The engine supports this language, so dictation works; deterministic cleanup does not. Filler sounds are not translatable by lookup and need a native speaker.",
+  "language": "yue",
+  "fillers": {
+    "language_gated": [],
+    "sentence_initial": [],
+    "phrases_initial": []
+  },
+  "stutterable": [],
+  "punctuation": {},
+  "structure": {},
+  "cadence": {
+    "ordinal_words": [],
+    "number_words": [],
+    "minimum_markers": 3
+  },
+  "numbers": {
+    "enabled": false,
+    "minimum_value": 21
+  },
+  "_fillers_note": ""
+}

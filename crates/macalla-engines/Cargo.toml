@@ -1,0 +1,42 @@
+[package]
+name = "macalla-engines"
+description = "STT engine implementations for Macalla, behind feature flags."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[features]
+default = []
+# Apple SpeechTranscriber. The macOS default engine.
+engine-apple = []
+# Every engine on transcribe.cpp: Parakeet TDT v3, the default off
+# macOS and the macOS fallback, and Nemotron 3.5 streaming. One flag for the
+# runtime, not one per model: a model adds a download, never a dependency.
+# Pulls in a C++ build: cmake and a toolchain are needed.
+engine-transcribe = ["dep:transcribe-cpp"]
+# OpenAI-shaped multipart /audio/transcriptions: OpenAI, Mistral, Cohere,
+# OpenRouter. No model to download; the key comes from the caller.
+engine-cloud = []
+
+[dependencies]
+macalla-core.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+transcribe-cpp = { workspace = true, optional = true }
+ureq.workspace = true
+sha2.workspace = true
+dirs.workspace = true
+# Not behind a feature: every platform's dictation listens with it, and it is
+# pure Rust with no dependencies of its own.
+earshot.workspace = true
+
+[dev-dependencies]
+# To gzip-encode a fake server reply in the cap test below: pulled in
+# transitively already by ureq's own default `gzip` feature, so this adds no
+# new code to the dependency tree, only a direct name for it in test code.
+flate2 = "1"

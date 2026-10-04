@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-models-list"
+description = "Enables the models_list command without any pre-configured scope."
+commands.allow = ["models_list"]
+
+[[permission]]
+identifier = "deny-models-list"
+description = "Denies the models_list command without any pre-configured scope."
+commands.deny = ["models_list"]

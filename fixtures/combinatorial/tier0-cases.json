@@ -1,0 +1,450 @@
+[
+  {
+    "Language": "pt",
+    "FillerClass": "always",
+    "Position": "mid",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "de",
+    "FillerClass": "none",
+    "Position": "opening",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "es",
+    "FillerClass": "always",
+    "Position": "mid",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "ko",
+    "FillerClass": "always",
+    "Position": "after_terminator",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "ko",
+    "FillerClass": "always",
+    "Position": "mid",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "ja",
+    "FillerClass": "always",
+    "Position": "opening",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "en",
+    "FillerClass": "phrase",
+    "Position": "opening",
+    "Stutter": "single",
+    "Structure": "paragraph",
+    "Punctuation": "period"
+  },
+  {
+    "Language": "zh",
+    "FillerClass": "always",
+    "Position": "mid",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "fr",
+    "FillerClass": "gated",
+    "Position": "mid",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "yue",
+    "FillerClass": "always",
+    "Position": "after_terminator",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "unknown",
+    "FillerClass": "always",
+    "Position": "after_terminator",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "unknown",
+    "FillerClass": "none",
+    "Position": "opening",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "de",
+    "FillerClass": "gated",
+    "Position": "mid",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "en",
+    "FillerClass": "phrase",
+    "Position": "after_terminator",
+    "Stutter": "multi",
+    "Structure": "bullet",
+    "Punctuation": "comma"
+  },
+  {
+    "Language": "en",
+    "FillerClass": "none",
+    "Position": "opening",
+    "Stutter": "single",
+    "Structure": "heading",
+    "Punctuation": "comma"
+  },
+  {
+    "Language": "ja",
+    "FillerClass": "always",
+    "Position": "after_terminator",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "en",
+    "FillerClass": "none",
+    "Position": "opening",
+    "Stutter": "multi",
+    "Structure": "ordered",
+    "Punctuation": "period"
+  },
+  {
+    "Language": "en",
+    "FillerClass": "always",
+    "Position": "mid",
+    "Stutter": "none",
+    "Structure": "ordered",
+    "Punctuation": "comma"
+  },
+  {
+    "Language": "en",
+    "FillerClass": "gated",
+    "Position": "after_terminator",
+    "Stutter": "multi",
+    "Structure": "heading",
+    "Punctuation": "period"
+  },
+  {
+    "Language": "yue",
+    "FillerClass": "none",
+    "Position": "opening",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "es",
+    "FillerClass": "always",
+    "Position": "after_terminator",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "en",
+    "FillerClass": "phrase",
+    "Position": "after_terminator",
+    "Stutter": "single",
+    "Structure": "ordered",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "en",
+    "FillerClass": "none",
+    "Position": "opening",
+    "Stutter": "none",
+    "Structure": "bullet",
+    "Punctuation": "period"
+  },
+  {
+    "Language": "ja",
+    "FillerClass": "always",
+    "Position": "mid",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "en",
+    "FillerClass": "initial",
+    "Position": "mid",
+    "Stutter": "single",
+    "Structure": "bullet",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "pt",
+    "FillerClass": "always",
+    "Position": "after_terminator",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "en",
+    "FillerClass": "gated",
+    "Position": "opening",
+    "Stutter": "single",
+    "Structure": "bullet",
+    "Punctuation": "comma"
+  },
+  {
+    "Language": "es",
+    "FillerClass": "none",
+    "Position": "opening",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "en",
+    "FillerClass": "phrase",
+    "Position": "mid",
+    "Stutter": "multi",
+    "Structure": "none",
+    "Punctuation": "period"
+  },
+  {
+    "Language": "ko",
+    "FillerClass": "none",
+    "Position": "opening",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "fr",
+    "FillerClass": "always",
+    "Position": "opening",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "en",
+    "FillerClass": "initial",
+    "Position": "after_terminator",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "comma"
+  },
+  {
+    "Language": "en",
+    "FillerClass": "gated",
+    "Position": "after_terminator",
+    "Stutter": "multi",
+    "Structure": "ordered",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "yue",
+    "FillerClass": "always",
+    "Position": "mid",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "en",
+    "FillerClass": "initial",
+    "Position": "opening",
+    "Stutter": "none",
+    "Structure": "heading",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "it",
+    "FillerClass": "always",
+    "Position": "opening",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "it",
+    "FillerClass": "always",
+    "Position": "mid",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "en",
+    "FillerClass": "always",
+    "Position": "after_terminator",
+    "Stutter": "multi",
+    "Structure": "paragraph",
+    "Punctuation": "period"
+  },
+  {
+    "Language": "en",
+    "FillerClass": "gated",
+    "Position": "mid",
+    "Stutter": "none",
+    "Structure": "paragraph",
+    "Punctuation": "comma"
+  },
+  {
+    "Language": "fr",
+    "FillerClass": "always",
+    "Position": "after_terminator",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "en",
+    "FillerClass": "always",
+    "Position": "mid",
+    "Stutter": "single",
+    "Structure": "heading",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "unknown",
+    "FillerClass": "always",
+    "Position": "mid",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "fr",
+    "FillerClass": "none",
+    "Position": "opening",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "pt",
+    "FillerClass": "none",
+    "Position": "opening",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "en",
+    "FillerClass": "phrase",
+    "Position": "after_terminator",
+    "Stutter": "none",
+    "Structure": "heading",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "en",
+    "FillerClass": "always",
+    "Position": "after_terminator",
+    "Stutter": "none",
+    "Structure": "bullet",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "zh",
+    "FillerClass": "none",
+    "Position": "opening",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "en",
+    "FillerClass": "initial",
+    "Position": "after_terminator",
+    "Stutter": "multi",
+    "Structure": "ordered",
+    "Punctuation": "period"
+  },
+  {
+    "Language": "de",
+    "FillerClass": "always",
+    "Position": "after_terminator",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "zh",
+    "FillerClass": "always",
+    "Position": "after_terminator",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "ja",
+    "FillerClass": "none",
+    "Position": "opening",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "en",
+    "FillerClass": "none",
+    "Position": "opening",
+    "Stutter": "none",
+    "Structure": "paragraph",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "en",
+    "FillerClass": "initial",
+    "Position": "after_terminator",
+    "Stutter": "single",
+    "Structure": "paragraph",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "it",
+    "FillerClass": "always",
+    "Position": "after_terminator",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  },
+  {
+    "Language": "en",
+    "FillerClass": "initial",
+    "Position": "after_terminator",
+    "Stutter": "single",
+    "Structure": "none",
+    "Punctuation": "period"
+  },
+  {
+    "Language": "it",
+    "FillerClass": "none",
+    "Position": "opening",
+    "Stutter": "none",
+    "Structure": "none",
+    "Punctuation": "none"
+  }
+]

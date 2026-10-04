@@ -1,0 +1,32 @@
+{
+  "_comment": "French Tier 0. Filler set from sebsto/wispr's FillerWordCleaner (Apache-2.0), cross-checked against Handy's fr gated list. Punctuation and structure commands are NOT populated -- they need a French speaker, not a translation of the English keys.",
+  "language": "fr",
+  "fillers": {
+    "language_gated": [
+      "euh",
+      "heu",
+      "hein",
+      "bah",
+      "ben",
+      "beh",
+      "pff",
+      "pfff",
+      "mouais"
+    ],
+    "sentence_initial": [],
+    "phrases_initial": []
+  },
+  "stutterable": [],
+  "punctuation": {},
+  "structure": {},
+  "cadence": {
+    "ordinal_words": [],
+    "number_words": [],
+    "minimum_markers": 3
+  },
+  "numbers": {
+    "enabled": false,
+    "minimum_value": 21
+  },
+  "_fillers_note": ""
+}

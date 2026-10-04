@@ -1,0 +1,22 @@
+{
+  "_comment": "Spoken form in, written form expected out. Actual is what Apple SpeechTranscriber produced on 2026-09-08 -- measured, not guessed. Every mismatch is a dictionary case.",
+  "audio": "fixtures/audio/tech-terms.aiff",
+  "engine": "apple-speech",
+  "measured": "2026-09-08",
+  "segments": [
+    {
+      "spoken": "I ran terra grunt against the azure landing zone, then terra form applied the V net and the H C L was valid.",
+      "actual": "I ran Terra Grunt against the azure landing zone, then Terraform applied the V net and the HCL was valid.",
+      "expected": "I ran Terragrunt against the Azure landing zone, then Terraform applied the VNet and the HCL was valid.",
+      "correct_unaided": ["Terraform", "HCL"],
+      "needs_dictionary": ["Terra Grunt->Terragrunt", "azure->Azure", "V net->VNet"]
+    },
+    {
+      "spoken": "We deployed to A W S as well, and kube control showed the pods running.",
+      "actual": "We deployed to AWS as well, and cube control showed the pods running.",
+      "expected": "We deployed to AWS as well, and kubectl showed the pods running.",
+      "correct_unaided": ["AWS"],
+      "needs_dictionary": ["cube control->kubectl"]
+    }
+  ]
+}

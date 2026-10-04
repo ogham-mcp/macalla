@@ -1,0 +1,35 @@
+[package]
+name = "macalla-translators"
+description = "Translation backends for Macalla behind the core's Translator port: Apple's on-device translation on macOS."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+# Licence and size: MIT, like the rest of the workspace. It adds no external
+# crate: the Apple backend links the operating system's own Translation
+# framework, which ships with macOS and adds nothing to the bundle, and its
+# Swift half is a few hundred lines compiled into a static library. Later
+# backends (a cloud provider, an Enhancement provider, a local model) arrive
+# as features of their own, each off until an app turns it on.
+
+[features]
+default = []
+# Apple's on-device translation through the Translation framework's
+# TranslationSession, built with the Swift toolchain. Turned on through
+# macalla-session's feature of the same name, by both apps' defaults. Off
+# macOS, or with an SDK older than macOS 26, the build still succeeds and the
+# backend reports itself unavailable (build.rs).
+translate-apple = []
+
+[dependencies]
+macalla-core.workspace = true
+tracing.workspace = true
+
+# The live run on this Mac: its own main, because the Translation framework
+# needs the main thread's run loop served (tests/on_this_mac.rs).
+[[test]]
+name = "on_this_mac"
+harness = false

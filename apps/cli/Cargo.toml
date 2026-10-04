@@ -1,0 +1,74 @@
+[package]
+name = "macalla-cli"
+# Four binaries live here; `cargo run -p macalla-cli` must mean this one.
+default-run = "macalla"
+description = "The macalla command-line binary. Same core as the desktop app, no UI."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[features]
+default = ["cloud-transcription", "apple-intelligence", "translate-apple"]
+# Cloud transcription over the OpenAI-shaped request, through
+# macalla-session's own `cloud-transcription` feature (renamed from `cloud`,
+# because that name did not say what it covered), which is where
+# the provider-to-engine mapping and the key lookup now live. On by default
+# in this test harness; --no-default-features builds without it, which is
+# how the rule that Macalla works with no cloud engine compiled in stays
+# checked. Nothing is sent anywhere unless `transcribe --cloud` is given.
+cloud-transcription = ["macalla-session/cloud-transcription"]
+# The first enhancement provider on a Mac that has it, through
+# macalla-session's feature of the same name, the one way both apps turn it
+# on. Off macOS, or with an SDK older than macOS 26, the provider is left out
+# and reports itself unsupported.
+apple-intelligence = ["macalla-session/apple-intelligence"]
+# Apple's on-device translation for `macalla translate`, through
+# macalla-session's feature of the same name, as apple-intelligence is. Off
+# macOS, with an SDK older than macOS 26, or with --no-default-features, the
+# command says translating isn't available.
+translate-apple = ["macalla-session/translate-apple"]
+
+[[bin]]
+name = "macalla"
+path = "src/main.rs"
+
+[[bin]]
+name = "ab"
+path = "src/bin/ab.rs"
+
+[dependencies]
+macalla-core.workspace = true
+macalla-engines.workspace = true
+macalla-enhancers.workspace = true
+macalla-platform.workspace = true
+macalla-session.workspace = true
+# `macalla translate` builds its translator here, at this binary's
+# composition root.
+macalla-translators.workspace = true
+anyhow.workspace = true
+clap.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+serde_json.workspace = true
+
+[[bin]]
+name = "tier0dump"
+path = "src/bin/tier0dump.rs"
+
+[[bin]]
+name = "tier0text"
+path = "src/bin/tier0text.rs"
+
+# Which engines are compiled in per platform is macalla-session's decision,
+# and this binary inherits it. Push-to-talk needs a desktop, so the hotkey is
+# turned on here: on Linux the CLI stays headless.
+[target.'cfg(target_os = "macos")'.dependencies]
+macalla-platform = { workspace = true, features = ["hotkey"] }
+
+# Ctrl-C and SIGTERM stop a live meeting and keep it (src/stop_signals.rs).
+# Already in the lockfile through other crates; no signal crate is used.
+[target.'cfg(unix)'.dependencies]
+libc = "0.2.189"

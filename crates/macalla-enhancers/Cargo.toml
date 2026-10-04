@@ -1,0 +1,24 @@
+[package]
+name = "macalla-enhancers"
+description = "Tier 1 enhancement providers for Macalla: an OpenAI-compatible endpoint, local or cloud. No model runs in process."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[features]
+default = []
+# Apple Intelligence through FoundationModels, built with the Swift
+# toolchain. Turned on through macalla-session's feature of the same name, by
+# both apps' defaults. Off macOS, or with an SDK older than macOS 26, the build
+# still succeeds and the provider reports itself unsupported (build.rs).
+apple-intelligence = []
+
+[dependencies]
+macalla-core.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+ureq.workspace = true

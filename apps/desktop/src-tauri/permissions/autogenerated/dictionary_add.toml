@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-dictionary-add"
+description = "Enables the dictionary_add command without any pre-configured scope."
+commands.allow = ["dictionary_add"]
+
+[[permission]]
+identifier = "deny-dictionary-add"
+description = "Denies the dictionary_add command without any pre-configured scope."
+commands.deny = ["dictionary_add"]

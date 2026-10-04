@@ -1,0 +1,29 @@
+{
+  "control-harvard": {
+    "reference": "The birch canoe slid on the smooth planks. Glue the sheet to the dark blue background. It's easy to tell the depth of a well. These days a chicken leg is a rare dish. Rice is often served in round bowls. The juice of lemons makes fine punch. The box was thrown beside the parked truck. The hogs were fed chopped corn and garbage. Four hours of steady work faced us. A large size in stockings is hard to sell.",
+    "hyps": {
+      "apple": "The birch canoe slid on the smooth planks, blew the sheet to the dark blue background. It's easy to tell the depth of a well. These days a chicken leg is a rare dish. Rice is often served in round bowls. The juice of lemons makes fine punch. The box was thrown beside the park truck. The hogs were fed, chopped corn and garbage. Four hours of steady work faced us, a large size in stockings is hard to sell.",
+      "parakeet-mlx": "The birch canoe slid on the smooth planks, glue the sheet to the dark blue background. It's easy to tell the depth of a well. These days a chicken leg is a rare dish. Rice is often served in round bowls. The juice of lemons makes fine punch. The box was thrown beside the parked truck. The hogs were fed chopped corn and garbage. Four hours of steady work faced us. A large size in stockings is hard to sell.",
+      "canary-sherpa": "The birch canoe slid on the smooth planks, blew the sheet to the dark blue background. It's easy to tell the depth of a well. These days a chicken leg is a rare dish. Rice is often served in round bowls. The juice of lemons makes fine punch. The box was thrown beside the parked truck. The hogs were fed chopped corn and garbage. Four hours of steady work faced us. A large size in stockings is hard to sell.",
+      "parakeet-tcpp": "The birch canoe slid on the smooth planks, glue the sheet to the dark blue background. It's easy to tell the depth of a well. These days a chicken leg is a rare dish. Rice is often served in round bowls. The juice of lemons makes fine punch. The box was thrown beside the parked truck. The hogs were fed chopped corn and garbage. Four hours of steady work faced us. A large size in stockings is hard to sell."
+    }
+  },
+  "tech-terms": {
+    "reference": "I ran Terragrunt against the Azure landing zone. Then Terraform applied the VNet and the HCL was valid. We deployed to AWS as well, and kubectl showed the pods running.",
+    "hyps": {
+      "apple": "I ran Terra Grunt against the azure landing zone, then Terraform applied the V net and the HCL was valid. We deployed to AWS as well, and cube control showed the pods running.",
+      "parakeet-mlx": "I ran Terra Grunt against the Azure landing zone, then Terraform applied the VNet and the HCL was valid, we deployed to AWS as well, and Cube control showed the pods running.",
+      "canary-sherpa": "I ran terror grunt against the Azure landing zone. Then terror form applied the VNet and the HCL was valid. We deployed to AWS as well, and cube control showed the pods running.",
+      "parakeet-tcpp": "I ran Terra Grunt against the Azure landing zone, then Terraform applied the VNet and the HCL was valid, we deployed to AWS as well, and Cube control showed the pods running."
+    }
+  },
+  "clinical": {
+    "reference": "The patient was started on amoxicillin, five hundred milligrams three times daily. We switched from atorvastatin to rosuvastatin because of myalgia, and added amlodipine for the hypertension. She reports dyspnoea on exertion and intermittent palpitations, you know, with no syncope. The echocardiogram showed a preserved ejection fraction, so we ruled out cardiomyopathy. Continue levothyroxine seventy five micrograms, omeprazole twenty milligrams, and salbutamol as required.",
+    "hyps": {
+      "apple": "The patient was started on amoxicillin, 500 milligrams three times daily. We switched from Atavastat into Rossuvastatin because of myalgia, and added amlodopine for the high potension. She records disneal on exertion and intermittent palpitations, you know, with no syncope. The echocardiogram showed a preserved ejection fraction, so we ruled out cardiomyopathy. Continually both thyroxine 75 micrograms, a mecrozole 20 milligrams, and salbutimal as required.",
+      "parakeet-mlx": "the patient was started on amoxicillin, 500 mg three times daily. We switched from atovastatin to rosovastatin because of myalgia, and added amlodipine for the hypertension. she reports dyspnea on exertion and intermittent palpitations, you know, with no syncope, the echocardiogram showed a preserved ejection fraction, so we ruled out cardiomyopathy, continue levothyroxin 75 micrograms, omeprozole 20 mg, and salbutamol as required.",
+      "canary-sherpa": "The patient was started on amoxicelin. five hundred milligrams three times daily. We switched from atovastotin to rhosovastotin because of myalgia. And added amlodepine for the hypertension. She reports dyspnea on exertion and intermittent palpitations. You know, with no syncope, the echocardiogram showed a preserved ejection fraction. So we ruled out cardiomyopathy. Continue levothyroxin seventy five micrograms. Amecrozol twenty milligrams. And salbutamil as required.",
+      "parakeet-tcpp": "Um, the patient was started on amoxicillin, uh, 500 mg three times daily. We switched from atavastatin to rosovastatin because of myalgia, uh, and added amlodipine for the hypertension. Um, she reports dyspnea on exertion and intermittent palpitations, you know, with no syncope, the echocardiogram showed a preserved ejection fraction, so we ruled out cardiomyopathy. Continue levothyroxin 75 micrograms, omeprazole 20 mg, and salbutamol as required."
+    }
+  }
+}

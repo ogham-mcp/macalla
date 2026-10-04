@@ -1,0 +1,61 @@
+[package]
+name = "macalla-session"
+description = "One dictation from the trigger to the text: the use case the CLI and the desktop app share."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[features]
+default = []
+# Cloud transcription only, forwarded to
+# macalla-engines/engine-cloud. Off by default so a build with no cloud
+# engines compiled in (the app is complete without any) stays that way unless something asks
+# for this. `choice::cloud_engine` without it returns
+# `Error::CloudNotCompiledIn` rather than failing to build. The cleanup
+# adapters (`endpoint`, `anthropic`, and OpenRouter's text-model listing) are
+# always compiled in, regardless of this feature, because the endpoint
+# adapter also serves a person's own local server. Renamed from `cloud`
+# because that name did not say what it covered.
+cloud-transcription = ["macalla-engines/engine-cloud"]
+# Apple Intelligence as a cleanup and summary provider, forwarded to
+# macalla-enhancers/apple-intelligence. The one way an app turns it on. Off by
+# default here so the session builds without it (the app is complete without it); both apps
+# turn it on in their own defaults. Safe on every target: off macOS, or with
+# an SDK older than macOS 26, the provider is left out and reports itself
+# unsupported.
+apple-intelligence = ["macalla-enhancers/apple-intelligence"]
+# Apple's on-device translation, forwarded to macalla-translators/translate-apple:
+# the one way an app turns it on, as for apple-intelligence. Off by default
+# here so the session builds without it (the app is complete without it); both apps turn it
+# on in their own defaults. Safe on every target: off macOS, or with an SDK
+# older than macOS 26, the backend is left out and reports itself
+# unavailable.
+translate-apple = ["macalla-translators/translate-apple"]
+
+[dependencies]
+macalla-core.workspace = true
+# Parakeet on every platform: the default off macOS, the fallback
+# on it. Pulls in a C++ build; cmake and a toolchain are needed.
+macalla-engines = { workspace = true, features = ["engine-transcribe"] }
+# Tier 1 providers: building one from a plain choice and a key is
+# `choice::enhancer`'s job, not the apps'.
+macalla-enhancers.workspace = true
+macalla-platform.workspace = true
+# Only for the feature above: the use case (`translate`) takes any
+# `Translator`, and each app builds the one it uses.
+macalla-translators.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+rusqlite.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+# Which engines a platform ships with is decided here, once, and every app
+# inherits it (the app is complete with the default local engine for the
+# platform). On macOS that is Apple SpeechTranscriber;
+# off macOS it is Parakeet, from the dependency above.
+[target.'cfg(target_os = "macos")'.dependencies]
+macalla-engines = { workspace = true, features = ["engine-apple"] }

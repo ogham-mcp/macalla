@@ -1,0 +1,22 @@
+WEBVTT
+
+00:00:01.000 --> 00:00:06.000
+<v Aoife Byrne>Thanks for joining. Today we need to agree the release date for the parser and who writes the notes.
+
+00:00:06.500 --> 00:00:12.000
+<v Brian Walsh>The parser passes every test now. I think we can ship it on the twentieth of October.
+
+00:00:12.500 --> 00:00:18.000
+<v Aoife Byrne>Good. Then we release the parser on the twentieth of October, and we keep the old one for a month.
+
+00:00:18.500 --> 00:00:24.000
+<v Brian Walsh>I will write the release notes by Friday and send them to the whole team.
+
+00:00:24.500 --> 00:00:31.000
+<v Aoife Byrne>I will check the install guide against the new flags before the release.
+
+00:00:31.500 --> 00:00:37.000
+<v Brian Walsh>One risk is the Windows build, which still fails on the long file names.
+
+00:00:37.500 --> 00:00:43.000
+<v Aoife Byrne>Then the Windows build is not part of this release. We will look at it in November.

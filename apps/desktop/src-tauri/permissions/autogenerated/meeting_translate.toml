@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-meeting-translate"
+description = "Enables the meeting_translate command without any pre-configured scope."
+commands.allow = ["meeting_translate"]
+
+[[permission]]
+identifier = "deny-meeting-translate"
+description = "Denies the meeting_translate command without any pre-configured scope."
+commands.deny = ["meeting_translate"]

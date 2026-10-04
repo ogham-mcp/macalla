@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-meeting-running-summary"
+description = "Enables the meeting_running_summary command without any pre-configured scope."
+commands.allow = ["meeting_running_summary"]
+
+[[permission]]
+identifier = "deny-meeting-running-summary"
+description = "Denies the meeting_running_summary command without any pre-configured scope."
+commands.deny = ["meeting_running_summary"]

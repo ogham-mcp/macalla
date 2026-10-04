@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-meeting-edit-turn"
+description = "Enables the meeting_edit_turn command without any pre-configured scope."
+commands.allow = ["meeting_edit_turn"]
+
+[[permission]]
+identifier = "deny-meeting-edit-turn"
+description = "Denies the meeting_edit_turn command without any pre-configured scope."
+commands.deny = ["meeting_edit_turn"]

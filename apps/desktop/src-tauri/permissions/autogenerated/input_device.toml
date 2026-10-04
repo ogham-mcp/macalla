@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-input-device"
+description = "Enables the input_device command without any pre-configured scope."
+commands.allow = ["input_device"]
+
+[[permission]]
+identifier = "deny-input-device"
+description = "Denies the input_device command without any pre-configured scope."
+commands.deny = ["input_device"]

@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-meeting-choose-file"
+description = "Enables the meeting_choose_file command without any pre-configured scope."
+commands.allow = ["meeting_choose_file"]
+
+[[permission]]
+identifier = "deny-meeting-choose-file"
+description = "Denies the meeting_choose_file command without any pre-configured scope."
+commands.deny = ["meeting_choose_file"]

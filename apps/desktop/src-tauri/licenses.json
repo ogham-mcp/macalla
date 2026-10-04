@@ -1,0 +1,3357 @@
+{
+  "families": [
+    {
+      "spdx": "Apache-2.0",
+      "name": "Apache License 2.0",
+      "text": "Apache License\n                           Version 2.0, January 2004\n                        http://www.apache.org/licenses/\n\n   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION\n\n   1. Definitions.\n\n      \"License\" shall mean the terms and conditions for use, reproduction,\n      and distribution as defined by Sections 1 through 9 of this document.\n\n      \"Licensor\" shall mean the copyright owner or entity authorized by\n      the copyright owner that is granting the License.\n\n      \"Legal Entity\" shall mean the union of the acting entity and all\n      other entities that control, are controlled by, or are under common\n      control with that entity. For the purposes of this definition,\n      \"control\" means (i) the power, direct or indirect, to cause the\n      direction or management of such entity, whether by contract or\n      otherwise, or (ii) ownership of fifty percent (50%) or more of the\n      outstanding shares, or (iii) beneficial ownership of such entity.\n\n      \"You\" (or \"Your\") shall mean an individual or Legal Entity\n      exercising permissions granted by this License.\n\n      \"Source\" form shall mean the preferred form for making modifications,\n      including but not limited to software source code, documentation\n      source, and configuration files.\n\n      \"Object\" form shall mean any form resulting from mechanical\n      transformation or translation of a Source form, including but\n      not limited to compiled object code, generated documentation,\n      and conversions to other media types.\n\n      \"Work\" shall mean the work of authorship, whether in Source or\n      Object form, made available under the License, as indicated by a\n      copyright notice that is included in or attached to the work\n      (an example is provided in the Appendix below).\n\n      \"Derivative Works\" shall mean any work, whether in Source or Object\n      form, that is based on (or derived from) the Work and for which the\n      editorial revisions, annotations, elaborations, or other modifications\n      represent, as a whole, an original work of authorship. For the purposes\n      of this License, Derivative Works shall not include works that remain\n      separable from, or merely link (or bind by name) to the interfaces of,\n      the Work and Derivative Works thereof.\n\n      \"Contribution\" shall mean any work of authorship, including\n      the original version of the Work and any modifications or additions\n      to that Work or Derivative Works thereof, that is intentionally\n      submitted to Licensor for inclusion in the Work by the copyright owner\n      or by an individual or Legal Entity authorized to submit on behalf of\n      the copyright owner. For the purposes of this definition, \"submitted\"\n      means any form of electronic, verbal, or written communication sent\n      to the Licensor or its representatives, including but not limited to\n      communication on electronic mailing lists, source code control systems,\n      and issue tracking systems that are managed by, or on behalf of, the\n      Licensor for the purpose of discussing and improving the Work, but\n      excluding communication that is conspicuously marked or otherwise\n      designated in writing by the copyright owner as \"Not a Contribution.\"\n\n      \"Contributor\" shall mean Licensor and any individual or Legal Entity\n      on behalf of whom a Contribution has been received by Licensor and\n      subsequently incorporated within the Work.\n\n   2. Grant of Copyright License. Subject to the terms and conditions of\n      this License, each Contributor hereby grants to You a perpetual,\n      worldwide, non-exclusive, no-charge, royalty-free, irrevocable\n      copyright license to reproduce, prepare Derivative Works of,\n      publicly display, publicly perform, sublicense, and distribute the\n      Work and such Derivative Works in Source or Object form.\n\n   3. Grant of Patent License. Subject to the terms and conditions of\n      this License, each Contributor hereby grants to You a perpetual,\n      worldwide, non-exclusive, no-charge, royalty-free, irrevocable\n      (except as stated in this section) patent license to make, have made,\n      use, offer to sell, sell, import, and otherwise transfer the Work,\n      where such license applies only to those patent claims licensable\n      by such Contributor that are necessarily infringed by their\n      Contribution(s) alone or by combination of their Contribution(s)\n      with the Work to which such Contribution(s) was submitted. If You\n      institute patent litigation against any entity (including a\n      cross-claim or counterclaim in a lawsuit) alleging that the Work\n      or a Contribution incorporated within the Work constitutes direct\n      or contributory patent infringement, then any patent licenses\n      granted to You under this License for that Work shall terminate\n      as of the date such litigation is filed.\n\n   4. Redistribution. You may reproduce and distribute copies of the\n      Work or Derivative Works thereof in any medium, with or without\n      modifications, and in Source or Object form, provided that You\n      meet the following conditions:\n\n      (a) You must give any other recipients of the Work or\n          Derivative Works a copy of this License; and\n\n      (b) You must cause any modified files to carry prominent notices\n          stating that You changed the files; and\n\n      (c) You must retain, in the Source form of any Derivative Works\n          that You distribute, all copyright, patent, trademark, and\n          attribution notices from the Source form of the Work,\n          excluding those notices that do not pertain to any part of\n          the Derivative Works; and\n\n      (d) If the Work includes a \"NOTICE\" text file as part of its\n          distribution, then any Derivative Works that You distribute must\n          include a readable copy of the attribution notices contained\n          within such NOTICE file, excluding those notices that do not\n          pertain to any part of the Derivative Works, in at least one\n          of the following places: within a NOTICE text file distributed\n          as part of the Derivative Works; within the Source form or\n          documentation, if provided along with the Derivative Works; or,\n          within a display generated by the Derivative Works, if and\n          wherever such third-party notices normally appear. The contents\n          of the NOTICE file are for informational purposes only and\n          do not modify the License. You may add Your own attribution\n          notices within Derivative Works that You distribute, alongside\n          or as an addendum to the NOTICE text from the Work, provided\n          that such additional attribution notices cannot be construed\n          as modifying the License.\n\n      You may add Your own copyright statement to Your modifications and\n      may provide additional or different license terms and conditions\n      for use, reproduction, or distribution of Your modifications, or\n      for any such Derivative Works as a whole, provided Your use,\n      reproduction, and distribution of the Work otherwise complies with\n      the conditions stated in this License.\n\n   5. Submission of Contributions. Unless You explicitly state otherwise,\n      any Contribution intentionally submitted for inclusion in the Work\n      by You to the Licensor shall be under the terms and conditions of\n      this License, without any additional terms or conditions.\n      Notwithstanding the above, nothing herein shall supersede or modify\n      the terms of any separate license agreement you may have executed\n      with Licensor regarding such Contributions.\n\n   6. Trademarks. This License does not grant permission to use the trade\n      names, trademarks, service marks, or product names of the Licensor,\n      except as required for reasonable and customary use in describing the\n      origin of the Work and reproducing the content of the NOTICE file.\n\n   7. Disclaimer of Warranty. Unless required by applicable law or\n      agreed to in writing, Licensor provides the Work (and each\n      Contributor provides its Contributions) on an \"AS IS\" BASIS,\n      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or\n      implied, including, without limitation, any warranties or conditions\n      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A\n      PARTICULAR PURPOSE. You are solely responsible for determining the\n      appropriateness of using or redistributing the Work and assume any\n      risks associated with Your exercise of permissions under this License.\n\n   8. Limitation of Liability. In no event and under no legal theory,\n      whether in tort (including negligence), contract, or otherwise,\n      unless required by applicable law (such as deliberate and grossly\n      negligent acts) or agreed to in writing, shall any Contributor be\n      liable to You for damages, including any direct, indirect, special,\n      incidental, or consequential damages of any character arising as a\n      result of this License or out of the use or inability to use the\n      Work (including but not limited to damages for loss of goodwill,\n      work stoppage, computer failure or malfunction, or any and all\n      other commercial damages or losses), even if such Contributor\n      has been advised of the possibility of such damages.\n\n   9. Accepting Warranty or Additional Liability. While redistributing\n      the Work or Derivative Works thereof, You may choose to offer,\n      and charge a fee for, acceptance of support, warranty, indemnity,\n      or other liability obligations and/or rights consistent with this\n      License. However, in accepting such obligations, You may act only\n      on Your own behalf and on Your sole responsibility, not on behalf\n      of any other Contributor, and only if You agree to indemnify,\n      defend, and hold each Contributor harmless for any liability\n      incurred by, or claims asserted against, such Contributor by reason\n      of your accepting any such warranty or additional liability.\n\n   END OF TERMS AND CONDITIONS\n\n   APPENDIX: How to apply the Apache License to your work.\n\n      To apply the Apache License to your work, attach the following\n      boilerplate notice, with the fields enclosed by brackets \"{}\"\n      replaced with your own identifying information. (Don't include\n      the brackets!)  The text should be enclosed in the appropriate\n      comment syntax for the file format. We also recommend that a\n      file or class name and description of purpose be included on the\n      same \"printed page\" as the copyright notice for easier\n      identification within third-party archives.\n\n   Copyright {yyyy} {name of copyright owner}\n\n   Licensed under the Apache License, Version 2.0 (the \"License\");\n   you may not use this file except in compliance with the License.\n   You may obtain a copy of the License at\n\n       http://www.apache.org/licenses/LICENSE-2.0\n\n   Unless required by applicable law or agreed to in writing, software\n   distributed under the License is distributed on an \"AS IS\" BASIS,\n   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n   See the License for the specific language governing permissions and\n   limitations under the License.",
+      "crates": [
+        {
+          "name": "audio-codec-algorithms",
+          "version": "0.8.1",
+          "repository": "https://github.com/karip/audio-codec-algorithms",
+          "copyright": [
+            "Copyright [yyyy] [name of copyright owner]"
+          ]
+        },
+        {
+          "name": "cpal",
+          "version": "0.18.2",
+          "repository": "https://github.com/RustAudio/cpal",
+          "copyright": [
+            "copyright notice that is included in or attached to the work"
+          ]
+        },
+        {
+          "name": "dpi",
+          "version": "0.1.2",
+          "repository": "https://github.com/rust-windowing/winit",
+          "copyright": [
+            "copyright notice that is included in or attached to the work"
+          ]
+        },
+        {
+          "name": "dunce",
+          "version": "1.0.5",
+          "repository": "https://gitlab.com/kornelski/dunce",
+          "copyright": [
+            "Copyright [yyyy] [name of copyright owner]"
+          ]
+        },
+        {
+          "name": "gethostname",
+          "version": "1.1.0",
+          "repository": "https://codeberg.org/swsnr/gethostname.rs.git",
+          "copyright": [
+            "copyright notice that is included in or attached to the work"
+          ]
+        },
+        {
+          "name": "ring",
+          "version": "0.17.14",
+          "repository": "https://github.com/briansmith/ring",
+          "copyright": [
+            "copyright notice that is included in or attached to the work"
+          ]
+        },
+        {
+          "name": "tao",
+          "version": "0.37.1",
+          "repository": "https://github.com/tauri-apps/tao",
+          "copyright": [
+            "copyright notice that is included in or attached to the work"
+          ]
+        },
+        {
+          "name": "target-lexicon",
+          "version": "0.12.16",
+          "repository": "https://github.com/bytecodealliance/target-lexicon",
+          "copyright": [
+            "copyright notice that is included in or attached to the work"
+          ]
+        }
+      ]
+    },
+    {
+      "spdx": "BSD-2-Clause",
+      "name": "BSD 2-Clause &quot;Simplified&quot; License",
+      "text": "All rights reserved.\n\nRedistribution and use in source and binary forms, with or without\nmodification, are permitted provided that the following conditions are met:\n\n    * Redistributions of source code must retain the above copyright\n      notice, this list of conditions and the following disclaimer.\n\n    * Redistributions in binary form must reproduce the above\n      copyright notice, this list of conditions and the following\n      disclaimer in the documentation and/or other materials provided\n      with the distribution.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n\"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\nLIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\nA PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT\nOWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,\nSPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT\nLIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\nDATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY\nTHEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\nOF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\n-----\n\ncmark-gfm\n\nderived from https://github.com/github/cmark\n\nCopyright (c) 2014, John MacFarlane\n\nAll rights reserved.\n\nRedistribution and use in source and binary forms, with or without\nmodification, are permitted provided that the following conditions are met:\n\n    * Redistributions of source code must retain the above copyright\n      notice, this list of conditions and the following disclaimer.\n\n    * Redistributions in binary form must reproduce the above\n      copyright notice, this list of conditions and the following\n      disclaimer in the documentation and/or other materials provided\n      with the distribution.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n\"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\nLIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\nA PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT\nOWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,\nSPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT\nLIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\nDATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY\nTHEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\nOF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\n-----\n\nhoudini.h, houdini_href_e.c, houdini_html_e.c, houdini_html_u.c\n\nderive from https://github.com/vmg/houdini (with some modifications)\n\nCopyright (C) 2012 Vicent Martí\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of\nthis software and associated documentation files (the \"Software\"), to deal in\nthe Software without restriction, including without limitation the rights to\nuse, copy, modify, merge, publish, distribute, sublicense, and/or sell copies\nof the Software, and to permit persons to whom the Software is furnished to do\nso, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n\n-----\n\nbuffer.h, buffer.c, chunk.h\n\nare derived from code (C) 2012 Github, Inc.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of\nthis software and associated documentation files (the \"Software\"), to deal in\nthe Software without restriction, including without limitation the rights to\nuse, copy, modify, merge, publish, distribute, sublicense, and/or sell copies\nof the Software, and to permit persons to whom the Software is furnished to do\nso, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n\n-----\n\nutf8.c and utf8.c\n\nare derived from utf8proc\n(<http://www.public-software-group.org/utf8proc>),\n(C) 2009 Public Software Group e. V., Berlin, Germany.\n\nPermission is hereby granted, free of charge, to any person obtaining a\ncopy of this software and associated documentation files (the \"Software\"),\nto deal in the Software without restriction, including without limitation\nthe rights to use, copy, modify, merge, publish, distribute, sublicense,\nand/or sell copies of the Software, and to permit persons to whom the\nSoftware is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\nFROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER\nDEALINGS IN THE SOFTWARE.\n\n-----\n\nThe normalization code in normalize.py was derived from the\nmarkdowntest project, Copyright 2013 Karl Dubost:\n\nThe MIT License (MIT)\n\nCopyright (c) 2013 Karl Dubost\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n-----\n\nThe CommonMark spec (test/spec.txt) is\n\nCopyright (C) 2014-15 John MacFarlane\n\nReleased under the Creative Commons CC-BY-SA 4.0 license:\n<http://creativecommons.org/licenses/by-sa/4.0/>.\n\n-----\n\nThe test software in test/ is\n\nCopyright (c) 2014, John MacFarlane\n\nAll rights reserved.\n\nRedistribution and use in source and binary forms, with or without\nmodification, are permitted provided that the following conditions are met:\n\n    * Redistributions of source code must retain the above copyright\n      notice, this list of conditions and the following disclaimer.\n\n    * Redistributions in binary form must reproduce the above\n      copyright notice, this list of conditions and the following\n      disclaimer in the documentation and/or other materials provided\n      with the distribution.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n\"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\nLIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\nA PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT\nOWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,\nSPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT\nLIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\nDATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY\nTHEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\nOF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.",
+      "crates": [
+        {
+          "name": "comrak",
+          "version": "0.55.0",
+          "repository": "https://github.com/kivikakk/comrak",
+          "copyright": [
+            "Copyright (c) 2017–2025, Comrak contributors"
+          ]
+        }
+      ]
+    },
+    {
+      "spdx": "BSD-3-Clause",
+      "name": "BSD 3-Clause &quot;New&quot; or &quot;Revised&quot; License",
+      "text": "All rights reserved.\n\nRedistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:\n\n1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.\n\n2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.\n\n3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.",
+      "crates": [
+        {
+          "name": "alloc-no-stdlib",
+          "version": "3.0.0",
+          "repository": "https://github.com/dropbox/rust-alloc-no-stdlib",
+          "copyright": [
+            "Copyright (c) 2016 Dropbox, Inc."
+          ]
+        },
+        {
+          "name": "alloc-stdlib",
+          "version": "0.3.0",
+          "repository": "https://github.com/dropbox/rust-alloc-no-stdlib",
+          "copyright": []
+        },
+        {
+          "name": "brotli",
+          "version": "9.0.0",
+          "repository": "https://github.com/dropbox/rust-brotli",
+          "copyright": [
+            "Copyright (c) 2016 Dropbox, Inc."
+          ]
+        },
+        {
+          "name": "subtle",
+          "version": "2.6.1",
+          "repository": "https://github.com/dalek-cryptography/subtle",
+          "copyright": [
+            "Copyright (c) 2016-2017 Isis Agora Lovecruft, Henry de Valence. All rights reserved.",
+            "Copyright (c) 2016-2024 Isis Agora Lovecruft. All rights reserved."
+          ]
+        }
+      ]
+    },
+    {
+      "spdx": "BSL-1.0",
+      "name": "Boost Software License 1.0",
+      "text": "Boost Software License - Version 1.0 - August 17th, 2003\n\nPermission is hereby granted, free of charge, to any person or organization\nobtaining a copy of the software and accompanying documentation covered by\nthis license (the \"Software\") to use, reproduce, display, distribute,\nexecute, and transmit the Software, and to prepare derivative works of the\nSoftware, and to permit third-parties to whom the Software is furnished to\ndo so, all subject to the following:\n\nThe copyright notices in the Software and this entire statement, including\nthe above license grant, this restriction and the following disclaimer,\nmust be included in all copies of the Software, in whole or in part, and\nall derivative works of the Software, unless such copies or derivative\nworks are solely in the form of machine-executable object code generated by\na source language processor.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT\nSHALL THE COPYRIGHT HOLDERS OR ANYONE DISTRIBUTING THE SOFTWARE BE LIABLE\nFOR ANY DAMAGES OR OTHER LIABILITY, WHETHER IN CONTRACT, TORT OR OTHERWISE,\nARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER\nDEALINGS IN THE SOFTWARE.",
+      "crates": [
+        {
+          "name": "clipboard-win",
+          "version": "5.4.1",
+          "repository": "https://github.com/DoumanAsh/clipboard-win",
+          "copyright": []
+        },
+        {
+          "name": "error-code",
+          "version": "3.4.0",
+          "repository": "https://github.com/DoumanAsh/error-code",
+          "copyright": []
+        }
+      ]
+    },
+    {
+      "spdx": "CDLA-Permissive-2.0",
+      "name": "Community Data License Agreement Permissive 2.0",
+      "text": "# Community Data License Agreement - Permissive - Version 2.0\n\nThis is the Community Data License Agreement - Permissive, Version\n2.0 (the \"agreement\"). Data Provider(s) and Data Recipient(s) agree\nas follows:\n\n## 1. Provision of the Data\n\n1.1. A Data Recipient may use, modify, and share the Data made\navailable by Data Provider(s) under this agreement if that Data\nRecipient follows the terms of this agreement.\n\n1.2. This agreement does not impose any restriction on a Data\nRecipient's use, modification, or sharing of any portions of the\nData that are in the public domain or that may be used, modified,\nor shared under any other legal exception or limitation.\n\n## 2. Conditions for Sharing Data\n\n2.1. A Data Recipient may share Data, with or without modifications, so\nlong as the Data Recipient makes available the text of this agreement\nwith the shared Data.\n\n## 3. No Restrictions on Results\n\n3.1. This agreement does not impose any restriction or obligations\nwith respect to the use, modification, or sharing of Results.\n\n## 4. No Warranty; Limitation of Liability\n\n4.1. All Data Recipients receive the Data subject to the following\nterms:\n\nTHE DATA IS PROVIDED ON AN \"AS IS\" BASIS, WITHOUT REPRESENTATIONS,\nWARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED\nINCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE,\nNON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.\n\nNO DATA PROVIDER SHALL HAVE ANY LIABILITY FOR ANY DIRECT, INDIRECT,\nINCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING\nWITHOUT LIMITATION LOST PROFITS), HOWEVER CAUSED AND ON ANY THEORY OF\nLIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\nNEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE DATA OR RESULTS,\nEVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.\n\n## 5. Definitions\n\n5.1. \"Data\" means the material received by a Data Recipient under\nthis agreement.\n\n5.2. \"Data Provider\" means any person who is the source of Data\nprovided under this agreement and in reliance on a Data Recipient's\nagreement to its terms.\n\n5.3. \"Data Recipient\" means any person who receives Data directly\nor indirectly from a Data Provider and agrees to the terms of this\nagreement.\n\n5.4. \"Results\" means any outcome obtained by computational analysis\nof Data, including for example machine learning models and models'\ninsights.",
+      "crates": [
+        {
+          "name": "webpki-roots",
+          "version": "1.0.9",
+          "repository": "https://github.com/rustls/webpki-roots",
+          "copyright": []
+        }
+      ]
+    },
+    {
+      "spdx": "ISC",
+      "name": "ISC License",
+      "text": "// Copyright 2015-2022 Brian Smith.\n//\n// Permission to use, copy, modify, and/or distribute this software for any\n// purpose with or without fee is hereby granted, provided that the above\n// copyright notice and this permission notice appear in all copies.\n//\n// THE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\n// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\n// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY\n// SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\n// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION\n// OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN\n// CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.\n\nuse crate::limb::Limb;\n\n#[derive(Clone, Copy)]\n#[repr(transparent)]\npub struct N0([Limb; 2]);\n\nimpl N0 {\n    #[cfg(feature = \"alloc\")]\n    pub(super) const LIMBS_USED: usize = 64 / crate::limb::LIMB_BITS;\n\n    #[inline]\n    pub const fn precalculated(n0: u64) -> Self {\n        #[cfg(target_pointer_width = \"64\")]\n        {\n            Self([n0, 0])\n        }\n\n        #[cfg(target_pointer_width = \"32\")]\n        {\n            Self([n0 as Limb, (n0 >> crate::limb::LIMB_BITS) as Limb])\n        }\n    }\n}",
+      "crates": [
+        {
+          "name": "libloading",
+          "version": "0.7.4",
+          "repository": "https://github.com/nagisa/rust_libloading/",
+          "copyright": [
+            "Copyright © 2015, Simonas Kazlauskas"
+          ]
+        },
+        {
+          "name": "ring",
+          "version": "0.17.14",
+          "repository": "https://github.com/briansmith/ring",
+          "copyright": [
+            "Copyright 2015-2025 Brian Smith."
+          ]
+        },
+        {
+          "name": "rustls-webpki",
+          "version": "0.103.15",
+          "repository": "https://github.com/rustls/webpki",
+          "copyright": [
+            "Copyright 2015 Brian Smith."
+          ]
+        },
+        {
+          "name": "untrusted",
+          "version": "0.9.0",
+          "repository": "https://github.com/briansmith/untrusted",
+          "copyright": []
+        }
+      ]
+    },
+    {
+      "spdx": "MIT",
+      "name": "MIT License",
+      "text": "Permission is hereby granted, free of charge, to any\nperson obtaining a copy of this software and associated\ndocumentation files (the \"Software\"), to deal in the\nSoftware without restriction, including without\nlimitation the rights to use, copy, modify, merge,\npublish, distribute, sublicense, and/or sell copies of\nthe Software, and to permit persons to whom the Software\nis furnished to do so, subject to the following\nconditions:\n\nThe above copyright notice and this permission notice\nshall be included in all copies or substantial portions\nof the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF\nANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED\nTO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A\nPARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT\nSHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY\nCLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR\nIN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER\nDEALINGS IN THE SOFTWARE.",
+      "crates": [
+        {
+          "name": "adler2",
+          "version": "2.0.1",
+          "repository": "https://github.com/oyvindln/adler2",
+          "copyright": []
+        },
+        {
+          "name": "aho-corasick",
+          "version": "1.1.5",
+          "repository": "https://github.com/BurntSushi/aho-corasick",
+          "copyright": [
+            "Copyright (c) 2015 Andrew Gallant"
+          ]
+        },
+        {
+          "name": "alsa",
+          "version": "0.11.0",
+          "repository": "https://github.com/diwic/alsa-rs",
+          "copyright": [
+            "Copyright (c) 2015-2021 David Henningsson, and other contributors."
+          ]
+        },
+        {
+          "name": "alsa-sys",
+          "version": "0.4.0",
+          "repository": "https://github.com/diwic/alsa-sys",
+          "copyright": [
+            "Copyright (c) 2018 diwic"
+          ]
+        },
+        {
+          "name": "anyhow",
+          "version": "1.0.104",
+          "repository": "https://github.com/dtolnay/anyhow",
+          "copyright": []
+        },
+        {
+          "name": "apple-native-keyring-store",
+          "version": "1.0.2",
+          "repository": "https://github.com/open-source-cooperative/apple-native-keyring-store.git",
+          "copyright": [
+            "Copyright (c) 2016 keyring Developers"
+          ]
+        },
+        {
+          "name": "arboard",
+          "version": "3.6.1",
+          "repository": "https://github.com/1Password/arboard",
+          "copyright": [
+            "Copyright (c) 2022 The Arboard contributors"
+          ]
+        },
+        {
+          "name": "atk",
+          "version": "0.18.2",
+          "repository": "https://github.com/gtk-rs/gtk3-rs",
+          "copyright": []
+        },
+        {
+          "name": "atk-sys",
+          "version": "0.18.2",
+          "repository": "https://github.com/gtk-rs/gtk3-rs",
+          "copyright": []
+        },
+        {
+          "name": "audioadapter",
+          "version": "5.0.0",
+          "repository": "https://github.com/HEnquist/audioadapter-rs",
+          "copyright": [
+            "Copyright (c) 2026 Henrik Enquist"
+          ]
+        },
+        {
+          "name": "audioadapter-buffers",
+          "version": "5.2.0",
+          "repository": "https://github.com/HEnquist/audioadapter-buffers-rs",
+          "copyright": [
+            "Copyright (c) 2026 Henrik Enquist"
+          ]
+        },
+        {
+          "name": "audioadapter-sample",
+          "version": "5.2.0",
+          "repository": "https://github.com/HEnquist/audioadapter-sample-rs",
+          "copyright": [
+            "Copyright (c) 2026 Henrik Enquist"
+          ]
+        },
+        {
+          "name": "auto-launch",
+          "version": "0.5.0",
+          "repository": "https://github.com/zzzgydi/auto-launch.git",
+          "copyright": [
+            "Copyright (c) 2022 zzzgydi"
+          ]
+        },
+        {
+          "name": "autocfg",
+          "version": "1.5.1",
+          "repository": "https://github.com/cuviper/autocfg",
+          "copyright": [
+            "Copyright (c) 2018 Josh Stone"
+          ]
+        },
+        {
+          "name": "base64",
+          "version": "0.21.7",
+          "repository": "https://github.com/marshallpierce/rust-base64",
+          "copyright": [
+            "Copyright (c) 2015 Alice Maz"
+          ]
+        },
+        {
+          "name": "base64",
+          "version": "0.22.1",
+          "repository": "https://github.com/marshallpierce/rust-base64",
+          "copyright": [
+            "Copyright (c) 2015 Alice Maz"
+          ]
+        },
+        {
+          "name": "base64",
+          "version": "0.23.1",
+          "repository": "https://github.com/marshallpierce/rust-base64",
+          "copyright": [
+            "Copyright (c) 2025 Alice Maz, Marshall Pierce"
+          ]
+        },
+        {
+          "name": "bit-set",
+          "version": "0.8.0",
+          "repository": "https://github.com/contain-rs/bit-set",
+          "copyright": [
+            "Copyright (c) 2023 The Rust Project Developers"
+          ]
+        },
+        {
+          "name": "bit-vec",
+          "version": "0.8.0",
+          "repository": "https://github.com/contain-rs/bit-vec",
+          "copyright": [
+            "Copyright (c) 2023 The Rust Project Developers"
+          ]
+        },
+        {
+          "name": "bitflags",
+          "version": "1.3.2",
+          "repository": "https://github.com/bitflags/bitflags",
+          "copyright": [
+            "Copyright (c) 2014 The Rust Project Developers"
+          ]
+        },
+        {
+          "name": "bitflags",
+          "version": "2.13.1",
+          "repository": "https://github.com/bitflags/bitflags",
+          "copyright": [
+            "Copyright (c) 2014 The Rust Project Developers"
+          ]
+        },
+        {
+          "name": "block-buffer",
+          "version": "0.10.4",
+          "repository": "https://github.com/RustCrypto/utils",
+          "copyright": [
+            "Copyright (c) 2018-2019 The RustCrypto Project Developers"
+          ]
+        },
+        {
+          "name": "block-buffer",
+          "version": "0.12.1",
+          "repository": "https://github.com/RustCrypto/utils",
+          "copyright": [
+            "Copyright (c) 2018-2025 The RustCrypto Project Developers"
+          ]
+        },
+        {
+          "name": "block2",
+          "version": "0.6.2",
+          "repository": "https://github.com/madsmtm/objc2",
+          "copyright": []
+        },
+        {
+          "name": "brotli",
+          "version": "9.0.0",
+          "repository": "https://github.com/dropbox/rust-brotli",
+          "copyright": [
+            "Copyright (c) 2009, 2010, 2013-2016 by the Brotli Authors."
+          ]
+        },
+        {
+          "name": "brotli-decompressor",
+          "version": "6.0.1",
+          "repository": "https://github.com/dropbox/rust-brotli-decompressor",
+          "copyright": []
+        },
+        {
+          "name": "byteorder",
+          "version": "1.5.0",
+          "repository": "https://github.com/BurntSushi/byteorder",
+          "copyright": [
+            "Copyright (c) 2015 Andrew Gallant"
+          ]
+        },
+        {
+          "name": "bytes",
+          "version": "1.12.1",
+          "repository": "https://github.com/tokio-rs/bytes",
+          "copyright": [
+            "Copyright (c) 2018 Carl Lerche"
+          ]
+        },
+        {
+          "name": "cairo-rs",
+          "version": "0.18.5",
+          "repository": "https://github.com/gtk-rs/gtk-rs-core",
+          "copyright": []
+        },
+        {
+          "name": "cairo-sys-rs",
+          "version": "0.18.2",
+          "repository": "https://github.com/gtk-rs/gtk-rs-core",
+          "copyright": []
+        },
+        {
+          "name": "camino",
+          "version": "1.2.5",
+          "repository": "https://github.com/camino-rs/camino",
+          "copyright": []
+        },
+        {
+          "name": "cargo-platform",
+          "version": "0.1.9",
+          "repository": "https://github.com/rust-lang/cargo",
+          "copyright": []
+        },
+        {
+          "name": "cargo_metadata",
+          "version": "0.19.2",
+          "repository": "https://github.com/oli-obk/cargo_metadata",
+          "copyright": []
+        },
+        {
+          "name": "cargo_toml",
+          "version": "1.0.1",
+          "repository": "https://gitlab.com/lib.rs/cargo_toml",
+          "copyright": []
+        },
+        {
+          "name": "caseless",
+          "version": "0.2.2",
+          "repository": "https://github.com/unicode-rs/rust-caseless",
+          "copyright": [
+            "Copyright (c) 2017 Simon Sapin"
+          ]
+        },
+        {
+          "name": "cc",
+          "version": "1.4.5",
+          "repository": "https://github.com/rust-lang/cc-rs",
+          "copyright": [
+            "Copyright (c) 2014 Alex Crichton"
+          ]
+        },
+        {
+          "name": "cfb",
+          "version": "0.14.0",
+          "repository": "https://github.com/mdsteele/rust-cfb",
+          "copyright": [
+            "Copyright (c) 2017 Matthew D. Steele"
+          ]
+        },
+        {
+          "name": "cfg-expr",
+          "version": "0.15.8",
+          "repository": "https://github.com/EmbarkStudios/cfg-expr",
+          "copyright": [
+            "Copyright (c) 2019 Embark Studios"
+          ]
+        },
+        {
+          "name": "cfg-if",
+          "version": "1.0.4",
+          "repository": "https://github.com/rust-lang/cfg-if",
+          "copyright": [
+            "Copyright (c) 2014 Alex Crichton"
+          ]
+        },
+        {
+          "name": "cmake",
+          "version": "0.1.58",
+          "repository": "https://github.com/rust-lang/cmake-rs",
+          "copyright": [
+            "Copyright (c) 2014 Alex Crichton"
+          ]
+        },
+        {
+          "name": "const-oid",
+          "version": "0.10.2",
+          "repository": "https://github.com/RustCrypto/formats",
+          "copyright": [
+            "Copyright (c) 2020-2026 The RustCrypto Project Developers"
+          ]
+        },
+        {
+          "name": "cookie",
+          "version": "0.18.2",
+          "repository": "https://github.com/SergioBenitez/cookie-rs",
+          "copyright": [
+            "Copyright (c) 2017 Sergio Benitez",
+            "Copyright (c) 2014 Alex Crichton"
+          ]
+        },
+        {
+          "name": "core-foundation",
+          "version": "0.10.1",
+          "repository": "https://github.com/servo/core-foundation-rs",
+          "copyright": [
+            "Copyright (c) 2012-2013 Mozilla Foundation"
+          ]
+        },
+        {
+          "name": "core-foundation-sys",
+          "version": "0.8.7",
+          "repository": "https://github.com/servo/core-foundation-rs",
+          "copyright": [
+            "Copyright (c) 2012-2013 Mozilla Foundation"
+          ]
+        },
+        {
+          "name": "core-graphics",
+          "version": "0.25.0",
+          "repository": "https://github.com/servo/core-foundation-rs",
+          "copyright": [
+            "Copyright (c) 2012-2013 Mozilla Foundation"
+          ]
+        },
+        {
+          "name": "core-graphics-types",
+          "version": "0.2.0",
+          "repository": "https://github.com/servo/core-foundation-rs",
+          "copyright": [
+            "Copyright (c) 2012-2013 Mozilla Foundation"
+          ]
+        },
+        {
+          "name": "coreaudio-rs",
+          "version": "0.14.2",
+          "repository": "https://github.com/RustAudio/coreaudio-rs.git",
+          "copyright": [
+            "Copyright (c) 2015"
+          ]
+        },
+        {
+          "name": "cpufeatures",
+          "version": "0.2.17",
+          "repository": "https://github.com/RustCrypto/utils",
+          "copyright": [
+            "Copyright (c) 2020-2025 The RustCrypto Project Developers"
+          ]
+        },
+        {
+          "name": "cpufeatures",
+          "version": "0.3.1",
+          "repository": "https://github.com/RustCrypto/utils",
+          "copyright": [
+            "Copyright (c) 2020-2026 The RustCrypto Project Developers"
+          ]
+        },
+        {
+          "name": "crc32fast",
+          "version": "1.5.1",
+          "repository": "https://github.com/srijs/rust-crc32fast",
+          "copyright": [
+            "Copyright (c) 2018 Sam Rijs, Alex Crichton and contributors"
+          ]
+        },
+        {
+          "name": "crossbeam-channel",
+          "version": "0.5.17",
+          "repository": "https://github.com/crossbeam-rs/crossbeam",
+          "copyright": [
+            "Copyright (c) 2019 The Crossbeam Project Developers"
+          ]
+        },
+        {
+          "name": "crossbeam-utils",
+          "version": "0.8.23",
+          "repository": "https://github.com/crossbeam-rs/crossbeam",
+          "copyright": [
+            "Copyright (c) 2019 The Crossbeam Project Developers"
+          ]
+        },
+        {
+          "name": "crypto-common",
+          "version": "0.1.7",
+          "repository": "https://github.com/RustCrypto/traits",
+          "copyright": [
+            "Copyright (c) 2021 RustCrypto Developers"
+          ]
+        },
+        {
+          "name": "crypto-common",
+          "version": "0.2.2",
+          "repository": "https://github.com/RustCrypto/traits",
+          "copyright": [
+            "Copyright (c) 2021-2026 RustCrypto Developers"
+          ]
+        },
+        {
+          "name": "ctor",
+          "version": "1.0.13",
+          "repository": "https://github.com/mmastrac/linktime",
+          "copyright": []
+        },
+        {
+          "name": "darling",
+          "version": "0.24.1",
+          "repository": "https://github.com/TedDriggs/darling",
+          "copyright": [
+            "Copyright (c) 2017 Ted Driggs"
+          ]
+        },
+        {
+          "name": "darling_core",
+          "version": "0.24.1",
+          "repository": "https://github.com/TedDriggs/darling",
+          "copyright": [
+            "Copyright (c) 2017 Ted Driggs"
+          ]
+        },
+        {
+          "name": "darling_macro",
+          "version": "0.24.1",
+          "repository": "https://github.com/TedDriggs/darling",
+          "copyright": [
+            "Copyright (c) 2017 Ted Driggs"
+          ]
+        },
+        {
+          "name": "dasp_sample",
+          "version": "0.11.0",
+          "repository": "https://github.com/rustaudio/sample.git",
+          "copyright": []
+        },
+        {
+          "name": "dbus",
+          "version": "0.9.12",
+          "repository": "https://github.com/diwic/dbus-rs",
+          "copyright": [
+            "Copyright (c) 2014-2018 David Henningsson <diwic@ubuntu.com> and other contributors"
+          ]
+        },
+        {
+          "name": "deranged",
+          "version": "0.5.8",
+          "repository": "https://github.com/jhpratt/deranged",
+          "copyright": [
+            "Copyright (c) 2024 Jacob Pratt et al."
+          ]
+        },
+        {
+          "name": "derive_more",
+          "version": "2.1.1",
+          "repository": "https://github.com/JelteF/derive_more",
+          "copyright": [
+            "Copyright (c) 2016 Jelte Fennema"
+          ]
+        },
+        {
+          "name": "derive_more-impl",
+          "version": "2.1.1",
+          "repository": "https://github.com/JelteF/derive_more",
+          "copyright": [
+            "Copyright (c) 2016 Jelte Fennema"
+          ]
+        },
+        {
+          "name": "digest",
+          "version": "0.10.7",
+          "repository": "https://github.com/RustCrypto/traits",
+          "copyright": [
+            "Copyright (c) 2017 Artyom Pavlov"
+          ]
+        },
+        {
+          "name": "digest",
+          "version": "0.11.3",
+          "repository": "https://github.com/RustCrypto/traits",
+          "copyright": [
+            "Copyright (c) 2017-2025 RustCrypto Developers",
+            "Copyright (c) 2017 Artyom Pavlov"
+          ]
+        },
+        {
+          "name": "dirs",
+          "version": "4.0.0",
+          "repository": "https://github.com/soc/dirs-rs",
+          "copyright": [
+            "Copyright (c) 2018-2019 dirs-rs contributors"
+          ]
+        },
+        {
+          "name": "dirs",
+          "version": "7.0.0",
+          "repository": "https://codeberg.org/dirs/dirs-rs",
+          "copyright": [
+            "Copyright (c) 2018-2019 dirs-rs contributors"
+          ]
+        },
+        {
+          "name": "dirs-sys",
+          "version": "0.3.7",
+          "repository": "https://github.com/dirs-dev/dirs-sys-rs",
+          "copyright": [
+            "Copyright (c) 2018-2019 dirs-rs contributors"
+          ]
+        },
+        {
+          "name": "dirs-sys",
+          "version": "0.5.0",
+          "repository": "https://github.com/dirs-dev/dirs-sys-rs",
+          "copyright": [
+            "Copyright (c) 2018-2019 dirs-rs contributors"
+          ]
+        },
+        {
+          "name": "dispatch2",
+          "version": "0.3.1",
+          "repository": "https://github.com/madsmtm/objc2",
+          "copyright": []
+        },
+        {
+          "name": "displaydoc",
+          "version": "0.2.7",
+          "repository": "https://github.com/yaahc/displaydoc",
+          "copyright": []
+        },
+        {
+          "name": "dlopen2",
+          "version": "0.8.2",
+          "repository": "https://github.com/OpenByteDev/dlopen2",
+          "copyright": []
+        },
+        {
+          "name": "dlopen2_derive",
+          "version": "0.4.3",
+          "repository": "https://github.com/OpenByteDev/dlopen2",
+          "copyright": []
+        },
+        {
+          "name": "dom_query",
+          "version": "0.28.0",
+          "repository": "https://github.com/niklak/dom_query",
+          "copyright": [
+            "Copyright (c) 2023 Mykola Humanov"
+          ]
+        },
+        {
+          "name": "dpi",
+          "version": "0.1.2",
+          "repository": "https://github.com/rust-windowing/winit",
+          "copyright": []
+        },
+        {
+          "name": "dtoa",
+          "version": "1.0.11",
+          "repository": "https://github.com/dtolnay/dtoa",
+          "copyright": []
+        },
+        {
+          "name": "dyn-clone",
+          "version": "1.0.20",
+          "repository": "https://github.com/dtolnay/dyn-clone",
+          "copyright": []
+        },
+        {
+          "name": "earshot",
+          "version": "1.2.2",
+          "repository": "https://github.com/pykeio/earshot",
+          "copyright": []
+        },
+        {
+          "name": "embed-resource",
+          "version": "3.0.11",
+          "repository": "https://github.com/nabijaczleweli/rust-embed-resource",
+          "copyright": [
+            "Copyright (c) 2017 nabijaczleweli"
+          ]
+        },
+        {
+          "name": "embed_plist",
+          "version": "1.2.2",
+          "repository": "https://github.com/nvzqz/embed-plist-rs",
+          "copyright": [
+            "Copyright (c) 2020 Nikolai Vazquez"
+          ]
+        },
+        {
+          "name": "enigo",
+          "version": "0.6.1",
+          "repository": "https://github.com/enigo-rs/enigo",
+          "copyright": [
+            "Copyright (c) 2017 pythoneer"
+          ]
+        },
+        {
+          "name": "entities",
+          "version": "1.0.1",
+          "repository": "https://github.com/p-jackson/entities",
+          "copyright": [
+            "Copyright (c) 2016 Philip Jackson"
+          ]
+        },
+        {
+          "name": "equivalent",
+          "version": "1.0.2",
+          "repository": "https://github.com/indexmap-rs/equivalent",
+          "copyright": [
+            "Copyright (c) 2016--2023"
+          ]
+        },
+        {
+          "name": "erased-serde",
+          "version": "0.4.10",
+          "repository": "https://github.com/dtolnay/erased-serde",
+          "copyright": []
+        },
+        {
+          "name": "errno",
+          "version": "0.3.14",
+          "repository": "https://github.com/lambda-fairy/rust-errno",
+          "copyright": [
+            "Copyright (c) 2014 Chris Wong"
+          ]
+        },
+        {
+          "name": "fallible-iterator",
+          "version": "0.3.0",
+          "repository": "https://github.com/sfackler/rust-fallible-iterator",
+          "copyright": [
+            "Copyright (c) 2015 The rust-openssl-verify Developers"
+          ]
+        },
+        {
+          "name": "fallible-streaming-iterator",
+          "version": "0.1.9",
+          "repository": "https://github.com/sfackler/fallible-streaming-iterator",
+          "copyright": [
+            "Copyright (c) 2016 The fallible-streaming-iterator Developers"
+          ]
+        },
+        {
+          "name": "fastrand",
+          "version": "2.5.0",
+          "repository": "https://github.com/smol-rs/fastrand",
+          "copyright": []
+        },
+        {
+          "name": "fdeflate",
+          "version": "0.3.7",
+          "repository": "https://github.com/image-rs/fdeflate",
+          "copyright": []
+        },
+        {
+          "name": "field-offset",
+          "version": "0.3.6",
+          "repository": "https://github.com/Diggsey/rust-field-offset",
+          "copyright": [
+            "Copyright (c) 2016-2021 Diggory Blake, and other contributors."
+          ]
+        },
+        {
+          "name": "find-msvc-tools",
+          "version": "0.1.12",
+          "repository": "https://github.com/rust-lang/cc-rs",
+          "copyright": [
+            "Copyright (c) 2014 Alex Crichton"
+          ]
+        },
+        {
+          "name": "finl_unicode",
+          "version": "1.5.0",
+          "repository": "https://github.com/dahosek/finl_unicode",
+          "copyright": []
+        },
+        {
+          "name": "flate2",
+          "version": "1.1.10",
+          "repository": "https://github.com/rust-lang/flate2-rs",
+          "copyright": [
+            "Copyright (c) 2014-2026 Alex Crichton"
+          ]
+        },
+        {
+          "name": "fnv",
+          "version": "1.0.7",
+          "repository": "https://github.com/servo/rust-fnv",
+          "copyright": [
+            "Copyright (c) 2017 Contributors"
+          ]
+        },
+        {
+          "name": "foreign-types",
+          "version": "0.5.0",
+          "repository": "https://github.com/sfackler/foreign-types",
+          "copyright": [
+            "Copyright (c) 2017 The foreign-types Developers"
+          ]
+        },
+        {
+          "name": "foreign-types-macros",
+          "version": "0.2.4",
+          "repository": "https://github.com/sfackler/foreign-types",
+          "copyright": [
+            "Copyright (c) 2017 The foreign-types Developers"
+          ]
+        },
+        {
+          "name": "foreign-types-shared",
+          "version": "0.3.1",
+          "repository": "https://github.com/sfackler/foreign-types",
+          "copyright": [
+            "Copyright (c) 2017 The foreign-types Developers"
+          ]
+        },
+        {
+          "name": "form_urlencoded",
+          "version": "1.2.2",
+          "repository": "https://github.com/servo/rust-url",
+          "copyright": [
+            "Copyright (c) 2013-2016 The rust-url developers"
+          ]
+        },
+        {
+          "name": "futures-channel",
+          "version": "0.3.34",
+          "repository": "https://github.com/rust-lang/futures-rs",
+          "copyright": [
+            "Copyright (c) 2016 Alex Crichton",
+            "Copyright (c) 2017 The Tokio Authors"
+          ]
+        },
+        {
+          "name": "futures-core",
+          "version": "0.3.34",
+          "repository": "https://github.com/rust-lang/futures-rs",
+          "copyright": [
+            "Copyright (c) 2016 Alex Crichton",
+            "Copyright (c) 2017 The Tokio Authors"
+          ]
+        },
+        {
+          "name": "futures-executor",
+          "version": "0.3.34",
+          "repository": "https://github.com/rust-lang/futures-rs",
+          "copyright": [
+            "Copyright (c) 2016 Alex Crichton",
+            "Copyright (c) 2017 The Tokio Authors"
+          ]
+        },
+        {
+          "name": "futures-io",
+          "version": "0.3.34",
+          "repository": "https://github.com/rust-lang/futures-rs",
+          "copyright": [
+            "Copyright (c) 2016 Alex Crichton",
+            "Copyright (c) 2017 The Tokio Authors"
+          ]
+        },
+        {
+          "name": "futures-macro",
+          "version": "0.3.34",
+          "repository": "https://github.com/rust-lang/futures-rs",
+          "copyright": [
+            "Copyright (c) 2016 Alex Crichton",
+            "Copyright (c) 2017 The Tokio Authors"
+          ]
+        },
+        {
+          "name": "futures-task",
+          "version": "0.3.34",
+          "repository": "https://github.com/rust-lang/futures-rs",
+          "copyright": [
+            "Copyright (c) 2016 Alex Crichton",
+            "Copyright (c) 2017 The Tokio Authors"
+          ]
+        },
+        {
+          "name": "futures-util",
+          "version": "0.3.34",
+          "repository": "https://github.com/rust-lang/futures-rs",
+          "copyright": [
+            "Copyright (c) 2016 Alex Crichton",
+            "Copyright (c) 2017 The Tokio Authors"
+          ]
+        },
+        {
+          "name": "gdk",
+          "version": "0.18.2",
+          "repository": "https://github.com/gtk-rs/gtk3-rs",
+          "copyright": []
+        },
+        {
+          "name": "gdk-pixbuf",
+          "version": "0.18.5",
+          "repository": "https://github.com/gtk-rs/gtk-rs-core",
+          "copyright": []
+        },
+        {
+          "name": "gdk-pixbuf-sys",
+          "version": "0.18.0",
+          "repository": "https://github.com/gtk-rs/gtk-rs-core",
+          "copyright": []
+        },
+        {
+          "name": "gdk-sys",
+          "version": "0.18.2",
+          "repository": "https://github.com/gtk-rs/gtk3-rs",
+          "copyright": []
+        },
+        {
+          "name": "gdkwayland-sys",
+          "version": "0.18.2",
+          "repository": "https://github.com/gtk-rs/gtk3-rs",
+          "copyright": []
+        },
+        {
+          "name": "gdkx11",
+          "version": "0.18.2",
+          "repository": "https://github.com/gtk-rs/gtk3-rs",
+          "copyright": []
+        },
+        {
+          "name": "gdkx11-sys",
+          "version": "0.18.2",
+          "repository": "https://github.com/gtk-rs/gtk3-rs",
+          "copyright": []
+        },
+        {
+          "name": "generic-array",
+          "version": "0.14.7",
+          "repository": "https://github.com/fizyk20/generic-array.git",
+          "copyright": [
+            "Copyright (c) 2015 Bartłomiej Kamiński"
+          ]
+        },
+        {
+          "name": "getrandom",
+          "version": "0.2.17",
+          "repository": "https://github.com/rust-random/getrandom",
+          "copyright": [
+            "Copyright (c) 2018-2024 The rust-random Project Developers",
+            "Copyright (c) 2014 The Rust Project Developers"
+          ]
+        },
+        {
+          "name": "getrandom",
+          "version": "0.3.4",
+          "repository": "https://github.com/rust-random/getrandom",
+          "copyright": [
+            "Copyright (c) 2018-2025 The rust-random Project Developers",
+            "Copyright (c) 2014 The Rust Project Developers"
+          ]
+        },
+        {
+          "name": "getrandom",
+          "version": "0.4.3",
+          "repository": "https://github.com/rust-random/getrandom",
+          "copyright": [
+            "Copyright (c) 2018-2026 The rust-random Project Developers",
+            "Copyright (c) 2014 The Rust Project Developers"
+          ]
+        },
+        {
+          "name": "gio",
+          "version": "0.18.4",
+          "repository": "https://github.com/gtk-rs/gtk-rs-core",
+          "copyright": []
+        },
+        {
+          "name": "gio-sys",
+          "version": "0.18.1",
+          "repository": "https://github.com/gtk-rs/gtk-rs-core",
+          "copyright": []
+        },
+        {
+          "name": "glib",
+          "version": "0.18.5",
+          "repository": "https://github.com/gtk-rs/gtk-rs-core",
+          "copyright": []
+        },
+        {
+          "name": "glib-macros",
+          "version": "0.18.5",
+          "repository": "https://github.com/gtk-rs/gtk-rs-core",
+          "copyright": []
+        },
+        {
+          "name": "glib-sys",
+          "version": "0.18.1",
+          "repository": "https://github.com/gtk-rs/gtk-rs-core",
+          "copyright": []
+        },
+        {
+          "name": "glob",
+          "version": "0.3.4",
+          "repository": "https://github.com/rust-lang/glob",
+          "copyright": [
+            "Copyright (c) 2014 The Rust Project Developers"
+          ]
+        },
+        {
+          "name": "gobject-sys",
+          "version": "0.18.0",
+          "repository": "https://github.com/gtk-rs/gtk-rs-core",
+          "copyright": []
+        },
+        {
+          "name": "gtk",
+          "version": "0.18.2",
+          "repository": "https://github.com/gtk-rs/gtk3-rs",
+          "copyright": []
+        },
+        {
+          "name": "gtk-sys",
+          "version": "0.18.2",
+          "repository": "https://github.com/gtk-rs/gtk3-rs",
+          "copyright": []
+        },
+        {
+          "name": "gtk3-macros",
+          "version": "0.18.2",
+          "repository": "https://github.com/gtk-rs/gtk3-rs",
+          "copyright": []
+        },
+        {
+          "name": "hashbrown",
+          "version": "0.12.3",
+          "repository": "https://github.com/rust-lang/hashbrown",
+          "copyright": [
+            "Copyright (c) 2016 Amanieu d'Antras"
+          ]
+        },
+        {
+          "name": "hashbrown",
+          "version": "0.17.1",
+          "repository": "https://github.com/rust-lang/hashbrown",
+          "copyright": [
+            "Copyright (c) 2016 Amanieu d'Antras"
+          ]
+        },
+        {
+          "name": "hashlink",
+          "version": "0.12.2",
+          "repository": "https://github.com/djc/hashlink",
+          "copyright": []
+        },
+        {
+          "name": "heck",
+          "version": "0.4.1",
+          "repository": "https://github.com/withoutboats/heck",
+          "copyright": [
+            "Copyright (c) 2015 The Rust Project Developers"
+          ]
+        },
+        {
+          "name": "heck",
+          "version": "0.5.0",
+          "repository": "https://github.com/withoutboats/heck",
+          "copyright": [
+            "Copyright (c) 2015 The Rust Project Developers"
+          ]
+        },
+        {
+          "name": "html5ever",
+          "version": "0.39.0",
+          "repository": "https://github.com/servo/html5ever",
+          "copyright": [
+            "Copyright (c) 2014 The html5ever Project Developers"
+          ]
+        },
+        {
+          "name": "http",
+          "version": "1.5.0",
+          "repository": "https://github.com/hyperium/http",
+          "copyright": [
+            "Copyright (c) 2017 http-rs authors"
+          ]
+        },
+        {
+          "name": "httparse",
+          "version": "1.10.1",
+          "repository": "https://github.com/seanmonstar/httparse",
+          "copyright": [
+            "Copyright (c) 2015-2025 Sean McArthur"
+          ]
+        },
+        {
+          "name": "hybrid-array",
+          "version": "0.4.15",
+          "repository": "https://github.com/RustCrypto/hybrid-array",
+          "copyright": [
+            "Copyright (c) 2022-2026 The RustCrypto Project Developers"
+          ]
+        },
+        {
+          "name": "ico",
+          "version": "0.5.0",
+          "repository": "https://github.com/mdsteele/rust-ico",
+          "copyright": [
+            "Copyright (c) 2018 Matthew D. Steele"
+          ]
+        },
+        {
+          "name": "ident_case",
+          "version": "1.0.1",
+          "repository": "https://github.com/TedDriggs/ident_case",
+          "copyright": []
+        },
+        {
+          "name": "idna",
+          "version": "1.1.0",
+          "repository": "https://github.com/servo/rust-url/",
+          "copyright": [
+            "Copyright (c) 2013-2025 The rust-url developers"
+          ]
+        },
+        {
+          "name": "idna_adapter",
+          "version": "1.2.2",
+          "repository": "https://github.com/hsivonen/idna_adapter",
+          "copyright": [
+            "Copyright (c) The rust-url developers"
+          ]
+        },
+        {
+          "name": "indexmap",
+          "version": "1.9.3",
+          "repository": "https://github.com/bluss/indexmap",
+          "copyright": [
+            "Copyright (c) 2016--2017"
+          ]
+        },
+        {
+          "name": "indexmap",
+          "version": "2.14.2",
+          "repository": "https://github.com/indexmap-rs/indexmap",
+          "copyright": [
+            "Copyright (c) 2016--2017"
+          ]
+        },
+        {
+          "name": "infer",
+          "version": "0.22.0",
+          "repository": "https://github.com/bojand/infer",
+          "copyright": [
+            "Copyright (c) 2019 Bojan"
+          ]
+        },
+        {
+          "name": "itoa",
+          "version": "1.0.18",
+          "repository": "https://github.com/dtolnay/itoa",
+          "copyright": []
+        },
+        {
+          "name": "javascriptcore-rs",
+          "version": "1.1.2",
+          "repository": "https://github.com/tauri-apps/javascriptcore-rs",
+          "copyright": [
+            "Copyright (c) 2013-2021, The Gtk-rs Project Developers.",
+            "Copyright (c) 2021, Tauri Programme within The Commons Conservancy."
+          ]
+        },
+        {
+          "name": "javascriptcore-rs-sys",
+          "version": "1.1.1",
+          "repository": "https://github.com/tauri-apps/javascriptcore-rs",
+          "copyright": [
+            "Copyright (c) 2013-2017, The Gtk-rs Project Developers."
+          ]
+        },
+        {
+          "name": "jetscii",
+          "version": "0.5.3",
+          "repository": "https://github.com/shepmaster/jetscii",
+          "copyright": [
+            "Copyright (c) 2015-2018 Jake Goulding"
+          ]
+        },
+        {
+          "name": "json-patch",
+          "version": "4.2.0",
+          "repository": "https://github.com/idubrov/json-patch",
+          "copyright": [
+            "Copyright (c) 2017 Ivan Dubrov"
+          ]
+        },
+        {
+          "name": "jsonptr",
+          "version": "0.7.1",
+          "repository": "https://github.com/chanced/jsonptr",
+          "copyright": [
+            "Copyright (c) 2022 Chance Dinkins"
+          ]
+        },
+        {
+          "name": "keyboard-types",
+          "version": "0.8.3",
+          "repository": "https://github.com/rust-windowing/keyboard-types",
+          "copyright": [
+            "Copyright (c) 2017 Pyfisch"
+          ]
+        },
+        {
+          "name": "keyring-core",
+          "version": "1.0.0",
+          "repository": "https://github.com/open-source-cooperative/keyring-core.git",
+          "copyright": [
+            "Copyright (c) 2016 keyring Developers"
+          ]
+        },
+        {
+          "name": "lazy_static",
+          "version": "1.5.0",
+          "repository": "https://github.com/rust-lang-nursery/lazy-static.rs",
+          "copyright": [
+            "Copyright (c) 2010 The Rust Project Developers"
+          ]
+        },
+        {
+          "name": "libappindicator",
+          "version": "0.9.0",
+          "repository": "",
+          "copyright": [
+            "Copyright (c) 2017-2021 qDot",
+            "Copyright (c) 2021 Tauri Apps Contributors"
+          ]
+        },
+        {
+          "name": "libappindicator-sys",
+          "version": "0.9.0",
+          "repository": "",
+          "copyright": []
+        },
+        {
+          "name": "libc",
+          "version": "0.2.189",
+          "repository": "https://github.com/rust-lang/libc",
+          "copyright": [
+            "Copyright (c) The Rust Project Developers"
+          ]
+        },
+        {
+          "name": "libdbus-sys",
+          "version": "0.2.7",
+          "repository": "https://github.com/diwic/dbus-rs",
+          "copyright": [
+            "Copyright (c) 2014-2018 David Henningsson <diwic@ubuntu.com> and other contributors"
+          ]
+        },
+        {
+          "name": "libsqlite3-sys",
+          "version": "0.38.2",
+          "repository": "https://github.com/rusqlite/rusqlite",
+          "copyright": [
+            "Copyright (c) 2014 The rusqlite developers"
+          ]
+        },
+        {
+          "name": "linux-raw-sys",
+          "version": "0.12.1",
+          "repository": "https://github.com/sunfishcode/linux-raw-sys",
+          "copyright": []
+        },
+        {
+          "name": "lock_api",
+          "version": "0.4.14",
+          "repository": "https://github.com/Amanieu/parking_lot",
+          "copyright": [
+            "Copyright (c) 2016 The Rust Project Developers"
+          ]
+        },
+        {
+          "name": "log",
+          "version": "0.4.34",
+          "repository": "https://github.com/rust-lang/log",
+          "copyright": [
+            "Copyright (c) 2014 The Rust Project Developers"
+          ]
+        },
+        {
+          "name": "mach2",
+          "version": "0.6.0",
+          "repository": "https://github.com/JohnTitor/mach2",
+          "copyright": [
+            "Copyright (c) 2019 Nick Fitzgerald, 2021 Yuki Okushi"
+          ]
+        },
+        {
+          "name": "markup5ever",
+          "version": "0.39.0",
+          "repository": "https://github.com/servo/html5ever",
+          "copyright": [
+            "Copyright (c) 2014 The html5ever Project Developers"
+          ]
+        },
+        {
+          "name": "matchers",
+          "version": "0.2.0",
+          "repository": "https://github.com/hawkw/matchers",
+          "copyright": [
+            "Copyright (c) 2019 Eliza Weisman"
+          ]
+        },
+        {
+          "name": "memchr",
+          "version": "2.8.3",
+          "repository": "https://github.com/BurntSushi/memchr",
+          "copyright": [
+            "Copyright (c) 2015 Andrew Gallant"
+          ]
+        },
+        {
+          "name": "memmap2",
+          "version": "0.9.11",
+          "repository": "https://github.com/RazrFalcon/memmap2-rs",
+          "copyright": [
+            "Copyright (c) 2020 Yevhenii Reizner",
+            "Copyright (c) 2015 Dan Burkert"
+          ]
+        },
+        {
+          "name": "memoffset",
+          "version": "0.9.1",
+          "repository": "https://github.com/Gilnaa/memoffset",
+          "copyright": [
+            "Copyright (c) 2017 Gilad Naaman"
+          ]
+        },
+        {
+          "name": "mime",
+          "version": "0.3.17",
+          "repository": "https://github.com/hyperium/mime",
+          "copyright": [
+            "Copyright (c) 2014 Sean McArthur"
+          ]
+        },
+        {
+          "name": "miniz_oxide",
+          "version": "0.8.9",
+          "repository": "https://github.com/Frommi/miniz_oxide/tree/master/miniz_oxide",
+          "copyright": [
+            "Copyright 2013-2014 RAD Game Tools and Valve Software",
+            "Copyright 2010-2014 Rich Geldreich and Tenacious Software LLC",
+            "Copyright (c) 2017 Frommi",
+            "Copyright (c) 2017-2024 oyvindln"
+          ]
+        },
+        {
+          "name": "miniz_oxide",
+          "version": "0.9.1",
+          "repository": "https://github.com/Frommi/miniz_oxide/tree/master/miniz_oxide",
+          "copyright": [
+            "Copyright 2013-2014 RAD Game Tools and Valve Software",
+            "Copyright 2010-2014 Rich Geldreich and Tenacious Software LLC",
+            "Copyright (c) 2017 Frommi",
+            "Copyright (c) 2017-2024 oyvindln"
+          ]
+        },
+        {
+          "name": "muda",
+          "version": "0.20.0",
+          "repository": "https://github.com/tauri-apps/muda",
+          "copyright": [
+            "Copyright (c) 2022-2022 Tauri Programme within The Commons Conservancy"
+          ]
+        },
+        {
+          "name": "new_debug_unreachable",
+          "version": "1.0.6",
+          "repository": "https://github.com/mbrubeck/rust-debug-unreachable",
+          "copyright": [
+            "Copyright (c) 2015 Jonathan Reem"
+          ]
+        },
+        {
+          "name": "nom",
+          "version": "8.0.0",
+          "repository": "https://github.com/rust-bakery/nom",
+          "copyright": [
+            "Copyright (c) 2014-2019 Geoffroy Couprie"
+          ]
+        },
+        {
+          "name": "nu-ansi-term",
+          "version": "0.50.3",
+          "repository": "https://github.com/nushell/nu-ansi-term",
+          "copyright": [
+            "Copyright (c) 2014 Benjamin Sago",
+            "Copyright (c) 2021-2022 The Nushell Project Developers"
+          ]
+        },
+        {
+          "name": "num-complex",
+          "version": "0.4.6",
+          "repository": "https://github.com/rust-num/num-complex",
+          "copyright": [
+            "Copyright (c) 2014 The Rust Project Developers"
+          ]
+        },
+        {
+          "name": "num-conv",
+          "version": "0.2.2",
+          "repository": "https://github.com/jhpratt/num-conv",
+          "copyright": [
+            "Copyright (c) Jacob Pratt"
+          ]
+        },
+        {
+          "name": "num-integer",
+          "version": "0.1.47",
+          "repository": "https://github.com/rust-num/num-integer",
+          "copyright": [
+            "Copyright (c) 2014 The Rust Project Developers"
+          ]
+        },
+        {
+          "name": "num-traits",
+          "version": "0.2.19",
+          "repository": "https://github.com/rust-num/num-traits",
+          "copyright": [
+            "Copyright (c) 2014 The Rust Project Developers"
+          ]
+        },
+        {
+          "name": "objc2",
+          "version": "0.6.4",
+          "repository": "https://github.com/madsmtm/objc2",
+          "copyright": []
+        },
+        {
+          "name": "objc2-app-kit",
+          "version": "0.3.2",
+          "repository": "https://github.com/madsmtm/objc2",
+          "copyright": []
+        },
+        {
+          "name": "objc2-audio-toolbox",
+          "version": "0.3.2",
+          "repository": "https://github.com/madsmtm/objc2",
+          "copyright": []
+        },
+        {
+          "name": "objc2-core-audio",
+          "version": "0.3.2",
+          "repository": "https://github.com/madsmtm/objc2",
+          "copyright": []
+        },
+        {
+          "name": "objc2-core-audio-types",
+          "version": "0.3.2",
+          "repository": "https://github.com/madsmtm/objc2",
+          "copyright": []
+        },
+        {
+          "name": "objc2-core-foundation",
+          "version": "0.3.2",
+          "repository": "https://github.com/madsmtm/objc2",
+          "copyright": []
+        },
+        {
+          "name": "objc2-core-graphics",
+          "version": "0.3.2",
+          "repository": "https://github.com/madsmtm/objc2",
+          "copyright": []
+        },
+        {
+          "name": "objc2-encode",
+          "version": "4.1.0",
+          "repository": "https://github.com/madsmtm/objc2",
+          "copyright": []
+        },
+        {
+          "name": "objc2-exception-helper",
+          "version": "0.1.1",
+          "repository": "https://github.com/madsmtm/objc2",
+          "copyright": []
+        },
+        {
+          "name": "objc2-foundation",
+          "version": "0.3.2",
+          "repository": "https://github.com/madsmtm/objc2",
+          "copyright": []
+        },
+        {
+          "name": "objc2-quartz-core",
+          "version": "0.3.2",
+          "repository": "https://github.com/madsmtm/objc2",
+          "copyright": []
+        },
+        {
+          "name": "objc2-web-kit",
+          "version": "0.3.2",
+          "repository": "https://github.com/madsmtm/objc2",
+          "copyright": []
+        },
+        {
+          "name": "once_cell",
+          "version": "1.21.4",
+          "repository": "https://github.com/matklad/once_cell",
+          "copyright": []
+        },
+        {
+          "name": "pango",
+          "version": "0.18.3",
+          "repository": "https://github.com/gtk-rs/gtk-rs-core",
+          "copyright": []
+        },
+        {
+          "name": "pango-sys",
+          "version": "0.18.0",
+          "repository": "https://github.com/gtk-rs/gtk-rs-core",
+          "copyright": []
+        },
+        {
+          "name": "parking_lot",
+          "version": "0.12.5",
+          "repository": "https://github.com/Amanieu/parking_lot",
+          "copyright": [
+            "Copyright (c) 2016 The Rust Project Developers"
+          ]
+        },
+        {
+          "name": "parking_lot_core",
+          "version": "0.9.12",
+          "repository": "https://github.com/Amanieu/parking_lot",
+          "copyright": [
+            "Copyright (c) 2016 The Rust Project Developers"
+          ]
+        },
+        {
+          "name": "percent-encoding",
+          "version": "2.3.2",
+          "repository": "https://github.com/servo/rust-url/",
+          "copyright": [
+            "Copyright (c) 2013-2025 The rust-url developers"
+          ]
+        },
+        {
+          "name": "phf",
+          "version": "0.13.1",
+          "repository": "https://github.com/rust-phf/rust-phf",
+          "copyright": [
+            "Copyright (c) 2014-2022 Steven Fackler, Yuki Okushi"
+          ]
+        },
+        {
+          "name": "phf_codegen",
+          "version": "0.13.1",
+          "repository": "https://github.com/rust-phf/rust-phf",
+          "copyright": [
+            "Copyright (c) 2014-2022 Steven Fackler, Yuki Okushi"
+          ]
+        },
+        {
+          "name": "phf_generator",
+          "version": "0.13.1",
+          "repository": "https://github.com/rust-phf/rust-phf",
+          "copyright": [
+            "Copyright (c) 2014-2022 Steven Fackler, Yuki Okushi"
+          ]
+        },
+        {
+          "name": "phf_macros",
+          "version": "0.13.1",
+          "repository": "https://github.com/rust-phf/rust-phf",
+          "copyright": [
+            "Copyright (c) 2014-2022 Steven Fackler, Yuki Okushi"
+          ]
+        },
+        {
+          "name": "phf_shared",
+          "version": "0.13.1",
+          "repository": "https://github.com/rust-phf/rust-phf",
+          "copyright": [
+            "Copyright (c) 2014-2022 Steven Fackler, Yuki Okushi"
+          ]
+        },
+        {
+          "name": "pin-project-lite",
+          "version": "0.2.17",
+          "repository": "https://github.com/taiki-e/pin-project-lite",
+          "copyright": []
+        },
+        {
+          "name": "pkg-config",
+          "version": "0.3.34",
+          "repository": "https://github.com/rust-lang/pkg-config-rs",
+          "copyright": [
+            "Copyright (c) 2014 Alex Crichton"
+          ]
+        },
+        {
+          "name": "plist",
+          "version": "1.10.1",
+          "repository": "https://github.com/ebarnard/rust-plist/",
+          "copyright": [
+            "Copyright (c) 2015 Edward Barnard"
+          ]
+        },
+        {
+          "name": "png",
+          "version": "0.17.16",
+          "repository": "https://github.com/image-rs/image-png",
+          "copyright": [
+            "Copyright (c) 2015 nwin"
+          ]
+        },
+        {
+          "name": "png",
+          "version": "0.18.1",
+          "repository": "https://github.com/image-rs/image-png",
+          "copyright": [
+            "Copyright (c) 2015 nwin"
+          ]
+        },
+        {
+          "name": "powerfmt",
+          "version": "0.2.0",
+          "repository": "https://github.com/jhpratt/powerfmt",
+          "copyright": [
+            "Copyright (c) 2023 Jacob Pratt et al."
+          ]
+        },
+        {
+          "name": "precomputed-hash",
+          "version": "0.1.1",
+          "repository": "https://github.com/emilio/precomputed-hash",
+          "copyright": [
+            "Copyright (c) 2017 Emilio Cobos Álvarez"
+          ]
+        },
+        {
+          "name": "primal-check",
+          "version": "0.3.4",
+          "repository": "https://github.com/huonw/primal",
+          "copyright": [
+            "Copyright (c) 2014 Huon Wilson"
+          ]
+        },
+        {
+          "name": "proc-macro-crate",
+          "version": "1.3.1",
+          "repository": "https://github.com/bkchr/proc-macro-crate",
+          "copyright": []
+        },
+        {
+          "name": "proc-macro-crate",
+          "version": "2.0.2",
+          "repository": "https://github.com/bkchr/proc-macro-crate",
+          "copyright": []
+        },
+        {
+          "name": "proc-macro-error",
+          "version": "1.0.4",
+          "repository": "https://gitlab.com/CreepySkeleton/proc-macro-error",
+          "copyright": [
+            "Copyright (c) 2019-2020 CreepySkeleton"
+          ]
+        },
+        {
+          "name": "proc-macro-error-attr",
+          "version": "1.0.4",
+          "repository": "https://gitlab.com/CreepySkeleton/proc-macro-error",
+          "copyright": [
+            "Copyright (c) 2019-2020 CreepySkeleton"
+          ]
+        },
+        {
+          "name": "proc-macro2",
+          "version": "1.0.107",
+          "repository": "https://github.com/dtolnay/proc-macro2",
+          "copyright": []
+        },
+        {
+          "name": "quick-xml",
+          "version": "0.42.0",
+          "repository": "https://github.com/tafia/quick-xml",
+          "copyright": [
+            "Copyright (c) 2016 Johann Tuffe"
+          ]
+        },
+        {
+          "name": "quote",
+          "version": "1.0.47",
+          "repository": "https://github.com/dtolnay/quote",
+          "copyright": []
+        },
+        {
+          "name": "raw-window-handle",
+          "version": "0.6.2",
+          "repository": "https://github.com/rust-windowing/raw-window-handle",
+          "copyright": [
+            "Copyright (c) 2019 Osspial"
+          ]
+        },
+        {
+          "name": "realfft",
+          "version": "3.5.0",
+          "repository": "https://github.com/HEnquist/realfft",
+          "copyright": []
+        },
+        {
+          "name": "regex",
+          "version": "1.13.1",
+          "repository": "https://github.com/rust-lang/regex",
+          "copyright": [
+            "Copyright (c) 2014 The Rust Project Developers"
+          ]
+        },
+        {
+          "name": "regex-automata",
+          "version": "0.4.18",
+          "repository": "https://github.com/rust-lang/regex",
+          "copyright": [
+            "Copyright (c) 2014 The Rust Project Developers"
+          ]
+        },
+        {
+          "name": "regex-syntax",
+          "version": "0.8.11",
+          "repository": "https://github.com/rust-lang/regex",
+          "copyright": [
+            "Copyright (c) 2014 The Rust Project Developers"
+          ]
+        },
+        {
+          "name": "rfd",
+          "version": "0.16.0",
+          "repository": "https://github.com/PolyMeilex/rfd",
+          "copyright": [
+            "Copyright (c) 2022 Bartłomiej Maryńczak"
+          ]
+        },
+        {
+          "name": "rtrb",
+          "version": "0.4.0",
+          "repository": "https://github.com/mgeier/rtrb",
+          "copyright": []
+        },
+        {
+          "name": "rubato",
+          "version": "5.0.0",
+          "repository": "https://github.com/HEnquist/rubato",
+          "copyright": [
+            "Copyright (c) 2020 Henrik Enquist"
+          ]
+        },
+        {
+          "name": "rusqlite",
+          "version": "0.40.2",
+          "repository": "https://github.com/rusqlite/rusqlite",
+          "copyright": [
+            "Copyright (c) 2014 The rusqlite developers"
+          ]
+        },
+        {
+          "name": "rustc-hash",
+          "version": "2.1.3",
+          "repository": "https://github.com/rust-lang/rustc-hash",
+          "copyright": []
+        },
+        {
+          "name": "rustc_version",
+          "version": "0.4.1",
+          "repository": "https://github.com/djc/rustc-version-rs",
+          "copyright": [
+            "Copyright (c) 2016 The Rust Project Developers"
+          ]
+        },
+        {
+          "name": "rustfft",
+          "version": "6.4.1",
+          "repository": "https://github.com/ejmahler/RustFFT",
+          "copyright": [
+            "Copyright (c) 2015 The RustFFT Developers"
+          ]
+        },
+        {
+          "name": "rustix",
+          "version": "1.1.4",
+          "repository": "https://github.com/bytecodealliance/rustix",
+          "copyright": []
+        },
+        {
+          "name": "rustls",
+          "version": "0.23.45",
+          "repository": "https://github.com/rustls/rustls",
+          "copyright": [
+            "Copyright (c) 2016 Joseph Birr-Pixton <jpixton@gmail.com>"
+          ]
+        },
+        {
+          "name": "rustls-pki-types",
+          "version": "1.15.1",
+          "repository": "https://github.com/rustls/pki-types",
+          "copyright": [
+            "Copyright (c) 2023 Dirkjan Ochtman <dirkjan@ochtman.nl>"
+          ]
+        },
+        {
+          "name": "same-file",
+          "version": "1.0.6",
+          "repository": "https://github.com/BurntSushi/same-file",
+          "copyright": [
+            "Copyright (c) 2017 Andrew Gallant"
+          ]
+        },
+        {
+          "name": "schemars",
+          "version": "0.8.22",
+          "repository": "https://github.com/GREsau/schemars",
+          "copyright": [
+            "Copyright (c) 2019 Graham Esau"
+          ]
+        },
+        {
+          "name": "schemars_derive",
+          "version": "0.8.22",
+          "repository": "https://github.com/GREsau/schemars",
+          "copyright": [
+            "Copyright (c) 2019 Graham Esau"
+          ]
+        },
+        {
+          "name": "scopeguard",
+          "version": "1.2.0",
+          "repository": "https://github.com/bluss/scopeguard",
+          "copyright": [
+            "Copyright (c) 2016-2019 Ulrik Sverdrup \"bluss\" and scopeguard developers"
+          ]
+        },
+        {
+          "name": "security-framework",
+          "version": "3.7.0",
+          "repository": "https://github.com/kornelski/rust-security-framework",
+          "copyright": [
+            "Copyright (c) 2015 Steven Fackler"
+          ]
+        },
+        {
+          "name": "security-framework-sys",
+          "version": "2.17.0",
+          "repository": "https://github.com/kornelski/rust-security-framework",
+          "copyright": [
+            "Copyright (c) 2015 Steven Fackler"
+          ]
+        },
+        {
+          "name": "semver",
+          "version": "1.0.28",
+          "repository": "https://github.com/dtolnay/semver",
+          "copyright": []
+        },
+        {
+          "name": "serde",
+          "version": "1.0.229",
+          "repository": "https://github.com/serde-rs/serde",
+          "copyright": []
+        },
+        {
+          "name": "serde-untagged",
+          "version": "0.1.9",
+          "repository": "https://github.com/dtolnay/serde-untagged",
+          "copyright": []
+        },
+        {
+          "name": "serde_core",
+          "version": "1.0.229",
+          "repository": "https://github.com/serde-rs/serde",
+          "copyright": []
+        },
+        {
+          "name": "serde_derive",
+          "version": "1.0.229",
+          "repository": "https://github.com/serde-rs/serde",
+          "copyright": []
+        },
+        {
+          "name": "serde_derive_internals",
+          "version": "0.29.1",
+          "repository": "https://github.com/serde-rs/serde",
+          "copyright": []
+        },
+        {
+          "name": "serde_json",
+          "version": "1.0.151",
+          "repository": "https://github.com/serde-rs/json",
+          "copyright": []
+        },
+        {
+          "name": "serde_repr",
+          "version": "0.1.21",
+          "repository": "https://github.com/dtolnay/serde-repr",
+          "copyright": []
+        },
+        {
+          "name": "serde_spanned",
+          "version": "0.6.9",
+          "repository": "https://github.com/toml-rs/toml",
+          "copyright": [
+            "Copyright (c) Individual contributors"
+          ]
+        },
+        {
+          "name": "serde_spanned",
+          "version": "1.1.1",
+          "repository": "https://github.com/toml-rs/toml",
+          "copyright": [
+            "Copyright (c) Individual contributors"
+          ]
+        },
+        {
+          "name": "serde_with",
+          "version": "3.23.0",
+          "repository": "https://github.com/jonasbb/serde_with/",
+          "copyright": [
+            "Copyright (c) 2015"
+          ]
+        },
+        {
+          "name": "serde_with_macros",
+          "version": "3.23.0",
+          "repository": "https://github.com/jonasbb/serde_with/",
+          "copyright": [
+            "Copyright (c) 2015"
+          ]
+        },
+        {
+          "name": "serialize-to-javascript",
+          "version": "0.1.2",
+          "repository": "https://github.com/chippers/serialize-to-javascript",
+          "copyright": [
+            "Copyright (c) 2021 Chip Reed"
+          ]
+        },
+        {
+          "name": "serialize-to-javascript-impl",
+          "version": "0.1.2",
+          "repository": "https://github.com/chippers/serialize-to-javascript",
+          "copyright": [
+            "Copyright (c) 2021 Chip Reed"
+          ]
+        },
+        {
+          "name": "servo_arc",
+          "version": "0.4.3",
+          "repository": "https://github.com/servo/stylo",
+          "copyright": []
+        },
+        {
+          "name": "sha2",
+          "version": "0.10.9",
+          "repository": "https://github.com/RustCrypto/hashes",
+          "copyright": [
+            "Copyright (c) 2006-2009 Graydon Hoare",
+            "Copyright (c) 2009-2013 Mozilla Foundation",
+            "Copyright (c) 2016 Artyom Pavlov"
+          ]
+        },
+        {
+          "name": "sha2",
+          "version": "0.11.0",
+          "repository": "https://github.com/RustCrypto/hashes",
+          "copyright": [
+            "Copyright (c) 2016-2026 The RustCrypto Project Developers",
+            "Copyright (c) 2016 Artyom Pavlov",
+            "Copyright (c) 2009-2013 Mozilla Foundation",
+            "Copyright (c) 2006-2009 Graydon Hoare"
+          ]
+        },
+        {
+          "name": "sharded-slab",
+          "version": "0.1.7",
+          "repository": "https://github.com/hawkw/sharded-slab",
+          "copyright": [
+            "Copyright (c) 2019 Eliza Weisman"
+          ]
+        },
+        {
+          "name": "shlex",
+          "version": "2.0.1",
+          "repository": "https://github.com/comex/rust-shlex",
+          "copyright": [
+            "Copyright (c) 2015 Nicholas Allegra (comex)."
+          ]
+        },
+        {
+          "name": "simd-adler32",
+          "version": "0.3.10",
+          "repository": "https://github.com/mcountryman/simd-adler32",
+          "copyright": [
+            "Copyright (c) [2021] [Marvin Countryman]"
+          ]
+        },
+        {
+          "name": "siphasher",
+          "version": "1.0.3",
+          "repository": "https://github.com/jedisct1/rust-siphash",
+          "copyright": []
+        },
+        {
+          "name": "slab",
+          "version": "0.4.12",
+          "repository": "https://github.com/tokio-rs/slab",
+          "copyright": [
+            "Copyright (c) 2019 Carl Lerche"
+          ]
+        },
+        {
+          "name": "smallvec",
+          "version": "1.16.0",
+          "repository": "https://github.com/servo/rust-smallvec",
+          "copyright": [
+            "Copyright (c) 2018 The Servo Project Developers"
+          ]
+        },
+        {
+          "name": "softbuffer",
+          "version": "0.4.8",
+          "repository": "https://github.com/rust-windowing/softbuffer",
+          "copyright": [
+            "Copyright 2022 Kirill Chibisov"
+          ]
+        },
+        {
+          "name": "soup3",
+          "version": "0.5.0",
+          "repository": "https://gitlab.gnome.org/World/Rust/soup3-rs",
+          "copyright": [
+            "Copyright (c) 2013-2017, The Gtk-rs Project Developers."
+          ]
+        },
+        {
+          "name": "soup3-sys",
+          "version": "0.5.0",
+          "repository": "https://gitlab.gnome.org/World/Rust/soup3-rs",
+          "copyright": [
+            "Copyright (c) 2013-2017, The Gtk-rs Project Developers."
+          ]
+        },
+        {
+          "name": "stable_deref_trait",
+          "version": "1.2.1",
+          "repository": "https://github.com/storyyeller/stable_deref_trait",
+          "copyright": [
+            "Copyright (c) 2017 Robert Grosse"
+          ]
+        },
+        {
+          "name": "strength_reduce",
+          "version": "0.2.4",
+          "repository": "http://github.com/ejmahler/strength_reduce",
+          "copyright": [
+            "Copyright (c) 2015 The RustFFT Developers"
+          ]
+        },
+        {
+          "name": "string_cache",
+          "version": "0.9.0",
+          "repository": "https://github.com/servo/string-cache",
+          "copyright": [
+            "Copyright (c) 2012-2013 Mozilla Foundation"
+          ]
+        },
+        {
+          "name": "string_cache_codegen",
+          "version": "0.6.1",
+          "repository": "https://github.com/servo/string-cache",
+          "copyright": [
+            "Copyright (c) 2012-2013 Mozilla Foundation"
+          ]
+        },
+        {
+          "name": "strsim",
+          "version": "0.11.1",
+          "repository": "https://github.com/rapidfuzz/strsim-rs",
+          "copyright": [
+            "Copyright (c) 2015 Danny Guo",
+            "Copyright (c) 2016 Titus Wormer <tituswormer@gmail.com>",
+            "Copyright (c) 2018 Akash Kurdekar"
+          ]
+        },
+        {
+          "name": "swift-rs",
+          "version": "1.0.8",
+          "repository": "https://github.com/Brendonovich/swift-rs",
+          "copyright": [
+            "Copyright (c) 2023 The swift-rs Developers"
+          ]
+        },
+        {
+          "name": "syn",
+          "version": "1.0.109",
+          "repository": "https://github.com/dtolnay/syn",
+          "copyright": []
+        },
+        {
+          "name": "syn",
+          "version": "2.0.119",
+          "repository": "https://github.com/dtolnay/syn",
+          "copyright": []
+        },
+        {
+          "name": "syn",
+          "version": "3.0.5",
+          "repository": "https://github.com/dtolnay/syn",
+          "copyright": []
+        },
+        {
+          "name": "synstructure",
+          "version": "0.13.2",
+          "repository": "https://github.com/mystor/synstructure",
+          "copyright": [
+            "Copyright 2016 Nika Layzell"
+          ]
+        },
+        {
+          "name": "system-deps",
+          "version": "6.2.2",
+          "repository": "https://github.com/gdesmott/system-deps",
+          "copyright": []
+        },
+        {
+          "name": "tauri",
+          "version": "2.12.1",
+          "repository": "https://github.com/tauri-apps/tauri",
+          "copyright": [
+            "Copyright (c) 2017 - Present Tauri Apps Contributors"
+          ]
+        },
+        {
+          "name": "tauri-build",
+          "version": "2.7.1",
+          "repository": "https://github.com/tauri-apps/tauri",
+          "copyright": [
+            "Copyright (c) 2017 - Present Tauri Apps Contributors"
+          ]
+        },
+        {
+          "name": "tauri-codegen",
+          "version": "2.7.1",
+          "repository": "https://github.com/tauri-apps/tauri",
+          "copyright": [
+            "Copyright (c) 2017 - Present Tauri Apps Contributors"
+          ]
+        },
+        {
+          "name": "tauri-macros",
+          "version": "2.7.1",
+          "repository": "https://github.com/tauri-apps/tauri",
+          "copyright": [
+            "Copyright (c) 2017 - Present Tauri Apps Contributors"
+          ]
+        },
+        {
+          "name": "tauri-plugin",
+          "version": "2.7.1",
+          "repository": "https://github.com/tauri-apps/tauri",
+          "copyright": []
+        },
+        {
+          "name": "tauri-plugin-autostart",
+          "version": "2.5.1",
+          "repository": "https://github.com/tauri-apps/plugins-workspace",
+          "copyright": []
+        },
+        {
+          "name": "tauri-plugin-dialog",
+          "version": "2.8.1",
+          "repository": "https://github.com/tauri-apps/plugins-workspace",
+          "copyright": []
+        },
+        {
+          "name": "tauri-plugin-fs",
+          "version": "2.6.0",
+          "repository": "https://github.com/tauri-apps/plugins-workspace",
+          "copyright": []
+        },
+        {
+          "name": "tauri-runtime",
+          "version": "2.12.1",
+          "repository": "https://github.com/tauri-apps/tauri",
+          "copyright": [
+            "Copyright (c) 2017 - Present Tauri Apps Contributors"
+          ]
+        },
+        {
+          "name": "tauri-runtime-wry",
+          "version": "2.12.1",
+          "repository": "https://github.com/tauri-apps/tauri",
+          "copyright": [
+            "Copyright (c) 2017 - Present Tauri Apps Contributors"
+          ]
+        },
+        {
+          "name": "tauri-utils",
+          "version": "2.10.1",
+          "repository": "https://github.com/tauri-apps/tauri",
+          "copyright": [
+            "Copyright (c) 2017 - Present Tauri Apps Contributors"
+          ]
+        },
+        {
+          "name": "tauri-winres",
+          "version": "0.3.6",
+          "repository": "https://github.com/tauri-apps/winres",
+          "copyright": [
+            "Copyright (c) 2023 - Present Tauri Apps Contributors",
+            "Copyright (c) 2016 Max Resch"
+          ]
+        },
+        {
+          "name": "tendril",
+          "version": "0.5.1",
+          "repository": "https://github.com/servo/html5ever",
+          "copyright": [
+            "Copyright (c) 2015 Keegan McAllister"
+          ]
+        },
+        {
+          "name": "thiserror",
+          "version": "1.0.69",
+          "repository": "https://github.com/dtolnay/thiserror",
+          "copyright": []
+        },
+        {
+          "name": "thiserror",
+          "version": "2.0.21",
+          "repository": "https://github.com/dtolnay/thiserror",
+          "copyright": []
+        },
+        {
+          "name": "thiserror-impl",
+          "version": "1.0.69",
+          "repository": "https://github.com/dtolnay/thiserror",
+          "copyright": []
+        },
+        {
+          "name": "thiserror-impl",
+          "version": "2.0.21",
+          "repository": "https://github.com/dtolnay/thiserror",
+          "copyright": []
+        },
+        {
+          "name": "thread_local",
+          "version": "1.1.10",
+          "repository": "https://github.com/Amanieu/thread_local-rs",
+          "copyright": [
+            "Copyright (c) 2016 The Rust Project Developers"
+          ]
+        },
+        {
+          "name": "time",
+          "version": "0.3.55",
+          "repository": "https://github.com/time-rs/time",
+          "copyright": [
+            "Copyright (c) Jacob Pratt et al."
+          ]
+        },
+        {
+          "name": "time-core",
+          "version": "0.1.9",
+          "repository": "https://github.com/time-rs/time",
+          "copyright": [
+            "Copyright (c) Jacob Pratt et al."
+          ]
+        },
+        {
+          "name": "time-macros",
+          "version": "0.2.32",
+          "repository": "https://github.com/time-rs/time",
+          "copyright": [
+            "Copyright (c) Jacob Pratt et al."
+          ]
+        },
+        {
+          "name": "tinyvec",
+          "version": "1.13.2",
+          "repository": "https://github.com/Lokathor/tinyvec",
+          "copyright": []
+        },
+        {
+          "name": "tinyvec_macros",
+          "version": "0.1.1",
+          "repository": "https://github.com/Soveu/tinyvec_macros",
+          "copyright": [
+            "Copyright (c) 2020 Soveu"
+          ]
+        },
+        {
+          "name": "tokio",
+          "version": "1.53.1",
+          "repository": "https://github.com/tokio-rs/tokio",
+          "copyright": [
+            "Copyright (c) Tokio Contributors"
+          ]
+        },
+        {
+          "name": "toml",
+          "version": "0.8.2",
+          "repository": "https://github.com/toml-rs/toml",
+          "copyright": [
+            "Copyright (c) Individual contributors"
+          ]
+        },
+        {
+          "name": "toml",
+          "version": "1.1.5+spec-1.1.0",
+          "repository": "https://github.com/toml-rs/toml",
+          "copyright": [
+            "Copyright (c) Individual contributors"
+          ]
+        },
+        {
+          "name": "toml_datetime",
+          "version": "0.6.3",
+          "repository": "https://github.com/toml-rs/toml",
+          "copyright": [
+            "Copyright (c) 2014 Alex Crichton"
+          ]
+        },
+        {
+          "name": "toml_datetime",
+          "version": "1.1.1+spec-1.1.0",
+          "repository": "https://github.com/toml-rs/toml",
+          "copyright": [
+            "Copyright (c) Individual contributors"
+          ]
+        },
+        {
+          "name": "toml_edit",
+          "version": "0.19.15",
+          "repository": "https://github.com/toml-rs/toml",
+          "copyright": [
+            "Copyright (c) Individual contributors"
+          ]
+        },
+        {
+          "name": "toml_edit",
+          "version": "0.20.2",
+          "repository": "https://github.com/toml-rs/toml",
+          "copyright": [
+            "Copyright (c) Individual contributors"
+          ]
+        },
+        {
+          "name": "toml_parser",
+          "version": "1.1.3+spec-1.1.0",
+          "repository": "https://github.com/toml-rs/toml",
+          "copyright": [
+            "Copyright (c) Individual contributors"
+          ]
+        },
+        {
+          "name": "toml_writer",
+          "version": "1.1.2+spec-1.1.0",
+          "repository": "https://github.com/toml-rs/toml",
+          "copyright": [
+            "Copyright (c) Individual contributors"
+          ]
+        },
+        {
+          "name": "tracing",
+          "version": "0.1.44",
+          "repository": "https://github.com/tokio-rs/tracing",
+          "copyright": [
+            "Copyright (c) 2019 Tokio Contributors"
+          ]
+        },
+        {
+          "name": "tracing-attributes",
+          "version": "0.1.31",
+          "repository": "https://github.com/tokio-rs/tracing",
+          "copyright": [
+            "Copyright (c) 2019 Tokio Contributors"
+          ]
+        },
+        {
+          "name": "tracing-core",
+          "version": "0.1.36",
+          "repository": "https://github.com/tokio-rs/tracing",
+          "copyright": [
+            "Copyright (c) 2014 Mathijs van de Nes"
+          ]
+        },
+        {
+          "name": "tracing-log",
+          "version": "0.2.0",
+          "repository": "https://github.com/tokio-rs/tracing",
+          "copyright": [
+            "Copyright (c) 2019 Tokio Contributors"
+          ]
+        },
+        {
+          "name": "tracing-subscriber",
+          "version": "0.3.23",
+          "repository": "https://github.com/tokio-rs/tracing",
+          "copyright": [
+            "Copyright (c) 2019 Tokio Contributors"
+          ]
+        },
+        {
+          "name": "transcribe-cpp",
+          "version": "0.2.4",
+          "repository": "https://github.com/handy-computer/transcribe.cpp",
+          "copyright": [
+            "Copyright (c) 2026 The transcribe.cpp authors"
+          ]
+        },
+        {
+          "name": "transcribe-cpp-sys",
+          "version": "0.2.4",
+          "repository": "https://github.com/handy-computer/transcribe.cpp",
+          "copyright": [
+            "Copyright (c) 2026 The transcribe.cpp authors"
+          ]
+        },
+        {
+          "name": "transpose",
+          "version": "0.2.3",
+          "repository": "https://github.com/ejmahler/transpose",
+          "copyright": [
+            "Copyright (c) 2022 The transpose Developers"
+          ]
+        },
+        {
+          "name": "tray-icon",
+          "version": "0.25.1",
+          "repository": "https://github.com/tauri-apps/tray-icon",
+          "copyright": [
+            "Copyright (c) 2022-2022 Tauri Programme within The Commons Conservancy"
+          ]
+        },
+        {
+          "name": "typed-arena",
+          "version": "2.0.2",
+          "repository": "https://github.com/SimonSapin/rust-typed-arena",
+          "copyright": [
+            "Copyright (c) 2018 The typed-arena developers"
+          ]
+        },
+        {
+          "name": "typeid",
+          "version": "1.0.3",
+          "repository": "https://github.com/dtolnay/typeid",
+          "copyright": []
+        },
+        {
+          "name": "typenum",
+          "version": "1.20.1",
+          "repository": "https://github.com/paholg/typenum",
+          "copyright": [
+            "Copyright (c) 2014 Paho Lurie-Gregg"
+          ]
+        },
+        {
+          "name": "unicode-ident",
+          "version": "1.0.24",
+          "repository": "https://github.com/dtolnay/unicode-ident",
+          "copyright": []
+        },
+        {
+          "name": "unicode-normalization",
+          "version": "0.1.25",
+          "repository": "https://github.com/unicode-rs/unicode-normalization",
+          "copyright": [
+            "Copyright (c) 2015 The Rust Project Developers"
+          ]
+        },
+        {
+          "name": "unicode-segmentation",
+          "version": "1.13.3",
+          "repository": "https://github.com/unicode-rs/unicode-segmentation",
+          "copyright": [
+            "Copyright (c) 2015 The Rust Project Developers"
+          ]
+        },
+        {
+          "name": "ureq",
+          "version": "3.4.2",
+          "repository": "https://github.com/algesten/ureq",
+          "copyright": [
+            "Copyright (c) 2019 Martin Algesten"
+          ]
+        },
+        {
+          "name": "ureq-proto",
+          "version": "0.6.4",
+          "repository": "https://github.com/algesten/ureq-proto",
+          "copyright": [
+            "Copyright 2022 Martin Algesten"
+          ]
+        },
+        {
+          "name": "url",
+          "version": "2.5.8",
+          "repository": "https://github.com/servo/rust-url",
+          "copyright": [
+            "Copyright (c) 2013-2025 The rust-url developers"
+          ]
+        },
+        {
+          "name": "urlpattern",
+          "version": "0.6.0",
+          "repository": "https://github.com/denoland/rust-urlpattern",
+          "copyright": [
+            "Copyright (c) 2021 the Deno authors"
+          ]
+        },
+        {
+          "name": "utf8-zero",
+          "version": "0.8.1",
+          "repository": "https://github.com/algesten/utf8-zero",
+          "copyright": []
+        },
+        {
+          "name": "utf8_iter",
+          "version": "1.0.4",
+          "repository": "https://github.com/hsivonen/utf8_iter",
+          "copyright": [
+            "Copyright Mozilla Foundation"
+          ]
+        },
+        {
+          "name": "uuid",
+          "version": "1.26.0",
+          "repository": "https://github.com/uuid-rs/uuid",
+          "copyright": [
+            "Copyright (c) 2014 The Rust Project Developers",
+            "Copyright (c) 2018 Ashley Mannix, Christopher Armstrong, Dylan DPC, Hunar Roop Kahlon"
+          ]
+        },
+        {
+          "name": "vcpkg",
+          "version": "0.2.15",
+          "repository": "https://github.com/mcgoo/vcpkg-rs",
+          "copyright": [
+            "Copyright (c) 2017 Jim McGrath"
+          ]
+        },
+        {
+          "name": "version-compare",
+          "version": "0.2.1",
+          "repository": "https://gitlab.com/timvisee/version-compare",
+          "copyright": [
+            "Copyright (c) 2017 Tim Visée"
+          ]
+        },
+        {
+          "name": "version_check",
+          "version": "0.9.5",
+          "repository": "https://github.com/SergioBenitez/version_check",
+          "copyright": [
+            "Copyright (c) 2017-2018 Sergio Benitez"
+          ]
+        },
+        {
+          "name": "visibility",
+          "version": "0.1.1",
+          "repository": "https://github.com/danielhenrymantilla/visibility.rs",
+          "copyright": [
+            "Copyright (c) 2024 Daniel Henry-Mantilla"
+          ]
+        },
+        {
+          "name": "vswhom",
+          "version": "0.1.0",
+          "repository": "https://github.com/nabijaczleweli/vswhom.rs",
+          "copyright": [
+            "Copyright (c) 2019 nabijaczleweli"
+          ]
+        },
+        {
+          "name": "vswhom-sys",
+          "version": "0.1.3",
+          "repository": "https://github.com/nabijaczleweli/vswhom-sys.rs",
+          "copyright": [
+            "Copyright (c) 2019 nabijaczleweli"
+          ]
+        },
+        {
+          "name": "walkdir",
+          "version": "2.5.0",
+          "repository": "https://github.com/BurntSushi/walkdir",
+          "copyright": [
+            "Copyright (c) 2015 Andrew Gallant"
+          ]
+        },
+        {
+          "name": "web-time",
+          "version": "1.1.0",
+          "repository": "https://github.com/daxpedda/web-time",
+          "copyright": [
+            "Copyright (c) 2023 dAxpeDDa"
+          ]
+        },
+        {
+          "name": "web_atoms",
+          "version": "0.2.6",
+          "repository": "https://github.com/servo/html5ever",
+          "copyright": [
+            "Copyright (c) 2014 The html5ever Project Developers"
+          ]
+        },
+        {
+          "name": "webkit2gtk",
+          "version": "2.0.2",
+          "repository": "https://github.com/tauri-apps/webkit2gtk-rs",
+          "copyright": [
+            "Copyright (c) 2016 Boucher, Antoni <bouanto@zoho.com>",
+            "Copyright (c) 2017-2021, The Gtk-rs Project Developers.",
+            "Copyright (c) 2021, Tauri Programme within The Commons Conservancy"
+          ]
+        },
+        {
+          "name": "webkit2gtk-sys",
+          "version": "2.0.2",
+          "repository": "https://github.com/tauri-apps/webkit2gtk-rs",
+          "copyright": [
+            "Copyright (c) 2016 Boucher, Antoni <bouanto@zoho.com>"
+          ]
+        },
+        {
+          "name": "webview2-com",
+          "version": "0.39.1",
+          "repository": "https://github.com/wravery/webview2-rs",
+          "copyright": []
+        },
+        {
+          "name": "webview2-com-macros",
+          "version": "0.8.1",
+          "repository": "https://github.com/wravery/webview2-rs",
+          "copyright": []
+        },
+        {
+          "name": "webview2-com-sys",
+          "version": "0.39.1",
+          "repository": "https://github.com/wravery/webview2-rs",
+          "copyright": []
+        },
+        {
+          "name": "winapi",
+          "version": "0.3.9",
+          "repository": "https://github.com/retep998/winapi-rs",
+          "copyright": [
+            "Copyright (c) 2015-2018 The winapi-rs Developers"
+          ]
+        },
+        {
+          "name": "winapi-util",
+          "version": "0.1.11",
+          "repository": "https://github.com/BurntSushi/winapi-util",
+          "copyright": [
+            "Copyright (c) 2017 Andrew Gallant"
+          ]
+        },
+        {
+          "name": "window-vibrancy",
+          "version": "0.8.1",
+          "repository": "https://github.com/tauri-apps/tauri-plugin-vibrancy",
+          "copyright": [
+            "Copyright (c) 2020-2022 Tauri Programme within The Commons Conservancy"
+          ]
+        },
+        {
+          "name": "windowfunctions",
+          "version": "0.1.1",
+          "repository": "https://github.com/HEnquist/windowfunctions-rs",
+          "copyright": [
+            "Copyright (c) 2025 Henrik Enquist"
+          ]
+        },
+        {
+          "name": "windows",
+          "version": "0.61.3",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows",
+          "version": "0.62.2",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows-collections",
+          "version": "0.2.0",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows-collections",
+          "version": "0.3.2",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows-core",
+          "version": "0.61.2",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows-core",
+          "version": "0.62.2",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows-future",
+          "version": "0.2.1",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows-future",
+          "version": "0.3.2",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows-implement",
+          "version": "0.60.2",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows-interface",
+          "version": "0.59.3",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows-link",
+          "version": "0.1.3",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows-link",
+          "version": "0.2.1",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows-native-keyring-store",
+          "version": "1.1.0",
+          "repository": "https://github.com/open-source-cooperative/windows-native-keyring-store.git",
+          "copyright": [
+            "Copyright (c) 2016 keyring Developers"
+          ]
+        },
+        {
+          "name": "windows-numerics",
+          "version": "0.2.0",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows-numerics",
+          "version": "0.3.1",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows-result",
+          "version": "0.3.4",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows-result",
+          "version": "0.4.1",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows-strings",
+          "version": "0.4.2",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows-strings",
+          "version": "0.5.1",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows-sys",
+          "version": "0.59.0",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows-sys",
+          "version": "0.60.2",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows-sys",
+          "version": "0.61.2",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows-targets",
+          "version": "0.52.6",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows-targets",
+          "version": "0.53.5",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows-threading",
+          "version": "0.1.0",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows-threading",
+          "version": "0.2.1",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows-version",
+          "version": "0.1.7",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows_x86_64_gnu",
+          "version": "0.52.6",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows_x86_64_gnu",
+          "version": "0.53.1",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows_x86_64_msvc",
+          "version": "0.52.6",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "windows_x86_64_msvc",
+          "version": "0.53.1",
+          "repository": "https://github.com/microsoft/windows-rs",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation."
+          ]
+        },
+        {
+          "name": "winnow",
+          "version": "0.5.40",
+          "repository": "https://github.com/winnow-rs/winnow",
+          "copyright": []
+        },
+        {
+          "name": "winnow",
+          "version": "1.0.4",
+          "repository": "https://github.com/winnow-rs/winnow",
+          "copyright": []
+        },
+        {
+          "name": "winreg",
+          "version": "0.10.1",
+          "repository": "https://github.com/gentoo90/winreg-rs",
+          "copyright": [
+            "Copyright (c) 2015 Igor Shaula"
+          ]
+        },
+        {
+          "name": "winreg",
+          "version": "0.55.0",
+          "repository": "https://github.com/gentoo90/winreg-rs",
+          "copyright": [
+            "Copyright (c) 2015 Igor Shaula"
+          ]
+        },
+        {
+          "name": "wry",
+          "version": "0.57.0",
+          "repository": "https://github.com/tauri-apps/wry",
+          "copyright": [
+            "Copyright (c) 2020-2023 Ngo Iok Ui & Tauri Programme within The Commons Conservancy"
+          ]
+        },
+        {
+          "name": "x11",
+          "version": "2.21.0",
+          "repository": "https://github.com/AltF02/x11-rs.git",
+          "copyright": []
+        },
+        {
+          "name": "x11-dl",
+          "version": "2.21.0",
+          "repository": "https://github.com/AltF02/x11-rs.git",
+          "copyright": []
+        },
+        {
+          "name": "x11rb",
+          "version": "0.13.2",
+          "repository": "https://github.com/psychon/x11rb",
+          "copyright": [
+            "Copyright 2019 x11rb Contributers"
+          ]
+        },
+        {
+          "name": "x11rb-protocol",
+          "version": "0.13.2",
+          "repository": "https://github.com/psychon/x11rb",
+          "copyright": [
+            "Copyright 2019 x11rb Contributers"
+          ]
+        },
+        {
+          "name": "xkbcommon",
+          "version": "0.9.0",
+          "repository": "https://github.com/rust-x-bindings/xkbcommon-rs",
+          "copyright": [
+            "Copyright (c) 2016 Remi Thebault <remi.thebault@gmail.com>"
+          ]
+        },
+        {
+          "name": "xkeysym",
+          "version": "0.2.1",
+          "repository": "https://github.com/notgull/xkeysym",
+          "copyright": [
+            "Copyright (c) 2022-2023 John Nunley"
+          ]
+        },
+        {
+          "name": "zeroize",
+          "version": "1.9.0",
+          "repository": "https://github.com/RustCrypto/utils",
+          "copyright": [
+            "Copyright (c) 2018-2026 The RustCrypto Project Developers"
+          ]
+        },
+        {
+          "name": "zmij",
+          "version": "1.0.23",
+          "repository": "https://github.com/dtolnay/zmij",
+          "copyright": []
+        }
+      ]
+    },
+    {
+      "spdx": "MPL-2.0",
+      "name": "Mozilla Public License 2.0",
+      "text": "Mozilla Public License Version 2.0\n==================================\n\n1. Definitions\n--------------\n\n1.1. \"Contributor\"\n    means each individual or legal entity that creates, contributes to\n    the creation of, or owns Covered Software.\n\n1.2. \"Contributor Version\"\n    means the combination of the Contributions of others (if any) used\n    by a Contributor and that particular Contributor's Contribution.\n\n1.3. \"Contribution\"\n    means Covered Software of a particular Contributor.\n\n1.4. \"Covered Software\"\n    means Source Code Form to which the initial Contributor has attached\n    the notice in Exhibit A, the Executable Form of such Source Code\n    Form, and Modifications of such Source Code Form, in each case\n    including portions thereof.\n\n1.5. \"Incompatible With Secondary Licenses\"\n    means\n\n    (a) that the initial Contributor has attached the notice described\n        in Exhibit B to the Covered Software; or\n\n    (b) that the Covered Software was made available under the terms of\n        version 1.1 or earlier of the License, but not also under the\n        terms of a Secondary License.\n\n1.6. \"Executable Form\"\n    means any form of the work other than Source Code Form.\n\n1.7. \"Larger Work\"\n    means a work that combines Covered Software with other material, in \n    a separate file or files, that is not Covered Software.\n\n1.8. \"License\"\n    means this document.\n\n1.9. \"Licensable\"\n    means having the right to grant, to the maximum extent possible,\n    whether at the time of the initial grant or subsequently, any and\n    all of the rights conveyed by this License.\n\n1.10. \"Modifications\"\n    means any of the following:\n\n    (a) any file in Source Code Form that results from an addition to,\n        deletion from, or modification of the contents of Covered\n        Software; or\n\n    (b) any new file in Source Code Form that contains any Covered\n        Software.\n\n1.11. \"Patent Claims\" of a Contributor\n    means any patent claim(s), including without limitation, method,\n    process, and apparatus claims, in any patent Licensable by such\n    Contributor that would be infringed, but for the grant of the\n    License, by the making, using, selling, offering for sale, having\n    made, import, or transfer of either its Contributions or its\n    Contributor Version.\n\n1.12. \"Secondary License\"\n    means either the GNU General Public License, Version 2.0, the GNU\n    Lesser General Public License, Version 2.1, the GNU Affero General\n    Public License, Version 3.0, or any later versions of those\n    licenses.\n\n1.13. \"Source Code Form\"\n    means the form of the work preferred for making modifications.\n\n1.14. \"You\" (or \"Your\")\n    means an individual or a legal entity exercising rights under this\n    License. For legal entities, \"You\" includes any entity that\n    controls, is controlled by, or is under common control with You. For\n    purposes of this definition, \"control\" means (a) the power, direct\n    or indirect, to cause the direction or management of such entity,\n    whether by contract or otherwise, or (b) ownership of more than\n    fifty percent (50%) of the outstanding shares or beneficial\n    ownership of such entity.\n\n2. License Grants and Conditions\n--------------------------------\n\n2.1. Grants\n\nEach Contributor hereby grants You a world-wide, royalty-free,\nnon-exclusive license:\n\n(a) under intellectual property rights (other than patent or trademark)\n    Licensable by such Contributor to use, reproduce, make available,\n    modify, display, perform, distribute, and otherwise exploit its\n    Contributions, either on an unmodified basis, with Modifications, or\n    as part of a Larger Work; and\n\n(b) under Patent Claims of such Contributor to make, use, sell, offer\n    for sale, have made, import, and otherwise transfer either its\n    Contributions or its Contributor Version.\n\n2.2. Effective Date\n\nThe licenses granted in Section 2.1 with respect to any Contribution\nbecome effective for each Contribution on the date the Contributor first\ndistributes such Contribution.\n\n2.3. Limitations on Grant Scope\n\nThe licenses granted in this Section 2 are the only rights granted under\nthis License. No additional rights or licenses will be implied from the\ndistribution or licensing of Covered Software under this License.\nNotwithstanding Section 2.1(b) above, no patent license is granted by a\nContributor:\n\n(a) for any code that a Contributor has removed from Covered Software;\n    or\n\n(b) for infringements caused by: (i) Your and any other third party's\n    modifications of Covered Software, or (ii) the combination of its\n    Contributions with other software (except as part of its Contributor\n    Version); or\n\n(c) under Patent Claims infringed by Covered Software in the absence of\n    its Contributions.\n\nThis License does not grant any rights in the trademarks, service marks,\nor logos of any Contributor (except as may be necessary to comply with\nthe notice requirements in Section 3.4).\n\n2.4. Subsequent Licenses\n\nNo Contributor makes additional grants as a result of Your choice to\ndistribute the Covered Software under a subsequent version of this\nLicense (see Section 10.2) or under the terms of a Secondary License (if\npermitted under the terms of Section 3.3).\n\n2.5. Representation\n\nEach Contributor represents that the Contributor believes its\nContributions are its original creation(s) or it has sufficient rights\nto grant the rights to its Contributions conveyed by this License.\n\n2.6. Fair Use\n\nThis License is not intended to limit any rights You have under\napplicable copyright doctrines of fair use, fair dealing, or other\nequivalents.\n\n2.7. Conditions\n\nSections 3.1, 3.2, 3.3, and 3.4 are conditions of the licenses granted\nin Section 2.1.\n\n3. Responsibilities\n-------------------\n\n3.1. Distribution of Source Form\n\nAll distribution of Covered Software in Source Code Form, including any\nModifications that You create or to which You contribute, must be under\nthe terms of this License. You must inform recipients that the Source\nCode Form of the Covered Software is governed by the terms of this\nLicense, and how they can obtain a copy of this License. You may not\nattempt to alter or restrict the recipients' rights in the Source Code\nForm.\n\n3.2. Distribution of Executable Form\n\nIf You distribute Covered Software in Executable Form then:\n\n(a) such Covered Software must also be made available in Source Code\n    Form, as described in Section 3.1, and You must inform recipients of\n    the Executable Form how they can obtain a copy of such Source Code\n    Form by reasonable means in a timely manner, at a charge no more\n    than the cost of distribution to the recipient; and\n\n(b) You may distribute such Executable Form under the terms of this\n    License, or sublicense it under different terms, provided that the\n    license for the Executable Form does not attempt to limit or alter\n    the recipients' rights in the Source Code Form under this License.\n\n3.3. Distribution of a Larger Work\n\nYou may create and distribute a Larger Work under terms of Your choice,\nprovided that You also comply with the requirements of this License for\nthe Covered Software. If the Larger Work is a combination of Covered\nSoftware with a work governed by one or more Secondary Licenses, and the\nCovered Software is not Incompatible With Secondary Licenses, this\nLicense permits You to additionally distribute such Covered Software\nunder the terms of such Secondary License(s), so that the recipient of\nthe Larger Work may, at their option, further distribute the Covered\nSoftware under the terms of either this License or such Secondary\nLicense(s).\n\n3.4. Notices\n\nYou may not remove or alter the substance of any license notices\n(including copyright notices, patent notices, disclaimers of warranty,\nor limitations of liability) contained within the Source Code Form of\nthe Covered Software, except that You may alter any license notices to\nthe extent required to remedy known factual inaccuracies.\n\n3.5. Application of Additional Terms\n\nYou may choose to offer, and to charge a fee for, warranty, support,\nindemnity or liability obligations to one or more recipients of Covered\nSoftware. However, You may do so only on Your own behalf, and not on\nbehalf of any Contributor. You must make it absolutely clear that any\nsuch warranty, support, indemnity, or liability obligation is offered by\nYou alone, and You hereby agree to indemnify every Contributor for any\nliability incurred by such Contributor as a result of warranty, support,\nindemnity or liability terms You offer. You may include additional\ndisclaimers of warranty and limitations of liability specific to any\njurisdiction.\n\n4. Inability to Comply Due to Statute or Regulation\n---------------------------------------------------\n\nIf it is impossible for You to comply with any of the terms of this\nLicense with respect to some or all of the Covered Software due to\nstatute, judicial order, or regulation then You must: (a) comply with\nthe terms of this License to the maximum extent possible; and (b)\ndescribe the limitations and the code they affect. Such description must\nbe placed in a text file included with all distributions of the Covered\nSoftware under this License. Except to the extent prohibited by statute\nor regulation, such description must be sufficiently detailed for a\nrecipient of ordinary skill to be able to understand it.\n\n5. Termination\n--------------\n\n5.1. The rights granted under this License will terminate automatically\nif You fail to comply with any of its terms. However, if You become\ncompliant, then the rights granted under this License from a particular\nContributor are reinstated (a) provisionally, unless and until such\nContributor explicitly and finally terminates Your grants, and (b) on an\nongoing basis, if such Contributor fails to notify You of the\nnon-compliance by some reasonable means prior to 60 days after You have\ncome back into compliance. Moreover, Your grants from a particular\nContributor are reinstated on an ongoing basis if such Contributor\nnotifies You of the non-compliance by some reasonable means, this is the\nfirst time You have received notice of non-compliance with this License\nfrom such Contributor, and You become compliant prior to 30 days after\nYour receipt of the notice.\n\n5.2. If You initiate litigation against any entity by asserting a patent\ninfringement claim (excluding declaratory judgment actions,\ncounter-claims, and cross-claims) alleging that a Contributor Version\ndirectly or indirectly infringes any patent, then the rights granted to\nYou by any and all Contributors for the Covered Software under Section\n2.1 of this License shall terminate.\n\n5.3. In the event of termination under Sections 5.1 or 5.2 above, all\nend user license agreements (excluding distributors and resellers) which\nhave been validly granted by You or Your distributors under this License\nprior to termination shall survive termination.\n\n************************************************************************\n*                                                                      *\n*  6. Disclaimer of Warranty                                           *\n*  -------------------------                                           *\n*                                                                      *\n*  Covered Software is provided under this License on an \"as is\"       *\n*  basis, without warranty of any kind, either expressed, implied, or  *\n*  statutory, including, without limitation, warranties that the       *\n*  Covered Software is free of defects, merchantable, fit for a        *\n*  particular purpose or non-infringing. The entire risk as to the     *\n*  quality and performance of the Covered Software is with You.        *\n*  Should any Covered Software prove defective in any respect, You     *\n*  (not any Contributor) assume the cost of any necessary servicing,   *\n*  repair, or correction. This disclaimer of warranty constitutes an   *\n*  essential part of this License. No use of any Covered Software is   *\n*  authorized under this License except under this disclaimer.         *\n*                                                                      *\n************************************************************************\n\n************************************************************************\n*                                                                      *\n*  7. Limitation of Liability                                          *\n*  --------------------------                                          *\n*                                                                      *\n*  Under no circumstances and under no legal theory, whether tort      *\n*  (including negligence), contract, or otherwise, shall any           *\n*  Contributor, or anyone who distributes Covered Software as          *\n*  permitted above, be liable to You for any direct, indirect,         *\n*  special, incidental, or consequential damages of any character      *\n*  including, without limitation, damages for lost profits, loss of    *\n*  goodwill, work stoppage, computer failure or malfunction, or any    *\n*  and all other commercial damages or losses, even if such party      *\n*  shall have been informed of the possibility of such damages. This   *\n*  limitation of liability shall not apply to liability for death or   *\n*  personal injury resulting from such party's negligence to the       *\n*  extent applicable law prohibits such limitation. Some               *\n*  jurisdictions do not allow the exclusion or limitation of           *\n*  incidental or consequential damages, so this exclusion and          *\n*  limitation may not apply to You.                                    *\n*                                                                      *\n************************************************************************\n\n8. Litigation\n-------------\n\nAny litigation relating to this License may be brought only in the\ncourts of a jurisdiction where the defendant maintains its principal\nplace of business and such litigation shall be governed by laws of that\njurisdiction, without reference to its conflict-of-law provisions.\nNothing in this Section shall prevent a party's ability to bring\ncross-claims or counter-claims.\n\n9. Miscellaneous\n----------------\n\nThis License represents the complete agreement concerning the subject\nmatter hereof. If any provision of this License is held to be\nunenforceable, such provision shall be reformed only to the extent\nnecessary to make it enforceable. Any law or regulation which provides\nthat the language of a contract shall be construed against the drafter\nshall not be used to construe this License against a Contributor.\n\n10. Versions of the License\n---------------------------\n\n10.1. New Versions\n\nMozilla Foundation is the license steward. Except as provided in Section\n10.3, no one other than the license steward has the right to modify or\npublish new versions of this License. Each version will be given a\ndistinguishing version number.\n\n10.2. Effect of New Versions\n\nYou may distribute the Covered Software under the terms of the version\nof the License under which You originally received the Covered Software,\nor under the terms of any subsequent version published by the license\nsteward.\n\n10.3. Modified Versions\n\nIf you create software not governed by this License, and you want to\ncreate a new license for such software, you may create and use a\nmodified version of this License if you rename the license and remove\nany references to the name of the license steward (except to note that\nsuch modified license differs from this License).\n\n10.4. Distributing Source Code Form that is Incompatible With Secondary\nLicenses\n\nIf You choose to distribute Source Code Form that is Incompatible With\nSecondary Licenses under the terms of this version of the License, the\nnotice described in Exhibit B of this License must be attached.\n\nExhibit A - Source Code Form License Notice\n-------------------------------------------\n\n  This Source Code Form is subject to the terms of the Mozilla Public\n  License, v. 2.0. If a copy of the MPL was not distributed with this\n  file, You can obtain one at https://mozilla.org/MPL/2.0/.\n\nIf it is not possible or desirable to put the notice in a particular\nfile, then You may include the notice in a location (such as a LICENSE\nfile in a relevant directory) where a recipient would be likely to look\nfor such a notice.\n\nYou may add additional accurate notices of copyright ownership.\n\nExhibit B - \"Incompatible With Secondary Licenses\" Notice\n---------------------------------------------------------\n\n  This Source Code Form is \"Incompatible With Secondary Licenses\", as\n  defined by the Mozilla Public License, v. 2.0.",
+      "crates": [
+        {
+          "name": "cssparser",
+          "version": "0.37.0",
+          "repository": "https://github.com/servo/rust-cssparser",
+          "copyright": []
+        },
+        {
+          "name": "cssparser-macros",
+          "version": "0.7.1",
+          "repository": "https://github.com/servo/rust-cssparser",
+          "copyright": []
+        },
+        {
+          "name": "dtoa-short",
+          "version": "0.3.5",
+          "repository": "https://github.com/upsuper/dtoa-short",
+          "copyright": []
+        },
+        {
+          "name": "option-ext",
+          "version": "0.2.0",
+          "repository": "https://github.com/soc/option-ext.git",
+          "copyright": []
+        },
+        {
+          "name": "selectors",
+          "version": "0.38.0",
+          "repository": "https://github.com/servo/stylo",
+          "copyright": []
+        }
+      ]
+    },
+    {
+      "spdx": "Unicode-3.0",
+      "name": "Unicode License v3",
+      "text": "UNICODE LICENSE V3\n\nCOPYRIGHT AND PERMISSION NOTICE\n\nCopyright © 2020-2024 Unicode, Inc.\n\nNOTICE TO USER: Carefully read the following legal agreement. BY\nDOWNLOADING, INSTALLING, COPYING OR OTHERWISE USING DATA FILES, AND/OR\nSOFTWARE, YOU UNEQUIVOCALLY ACCEPT, AND AGREE TO BE BOUND BY, ALL OF THE\nTERMS AND CONDITIONS OF THIS AGREEMENT. IF YOU DO NOT AGREE, DO NOT\nDOWNLOAD, INSTALL, COPY, DISTRIBUTE OR USE THE DATA FILES OR SOFTWARE.\n\nPermission is hereby granted, free of charge, to any person obtaining a\ncopy of data files and any associated documentation (the \"Data Files\") or\nsoftware and any associated documentation (the \"Software\") to deal in the\nData Files or Software without restriction, including without limitation\nthe rights to use, copy, modify, merge, publish, distribute, and/or sell\ncopies of the Data Files or Software, and to permit persons to whom the\nData Files or Software are furnished to do so, provided that either (a)\nthis copyright and permission notice appear with all copies of the Data\nFiles or Software, or (b) this copyright and permission notice appear in\nassociated Documentation.\n\nTHE DATA FILES AND SOFTWARE ARE PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY\nKIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF\nTHIRD PARTY RIGHTS.\n\nIN NO EVENT SHALL THE COPYRIGHT HOLDER OR HOLDERS INCLUDED IN THIS NOTICE\nBE LIABLE FOR ANY CLAIM, OR ANY SPECIAL INDIRECT OR CONSEQUENTIAL DAMAGES,\nOR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,\nWHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,\nARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THE DATA\nFILES OR SOFTWARE.\n\nExcept as contained in this notice, the name of a copyright holder shall\nnot be used in advertising or otherwise to promote the sale, use or other\ndealings in these Data Files or Software without prior written\nauthorization of the copyright holder.\n\nSPDX-License-Identifier: Unicode-3.0\n\n—\n\nPortions of ICU4X may have been adapted from ICU4C and/or ICU4J.\nICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others.",
+      "crates": [
+        {
+          "name": "icu_collections",
+          "version": "2.3.0",
+          "repository": "https://github.com/unicode-org/icu4x",
+          "copyright": [
+            "COPYRIGHT AND PERMISSION NOTICE"
+          ]
+        },
+        {
+          "name": "icu_locale_core",
+          "version": "2.3.0",
+          "repository": "https://github.com/unicode-org/icu4x",
+          "copyright": [
+            "COPYRIGHT AND PERMISSION NOTICE"
+          ]
+        },
+        {
+          "name": "icu_normalizer",
+          "version": "2.3.0",
+          "repository": "https://github.com/unicode-org/icu4x",
+          "copyright": [
+            "COPYRIGHT AND PERMISSION NOTICE"
+          ]
+        },
+        {
+          "name": "icu_normalizer_data",
+          "version": "2.3.0",
+          "repository": "https://github.com/unicode-org/icu4x",
+          "copyright": [
+            "COPYRIGHT AND PERMISSION NOTICE"
+          ]
+        },
+        {
+          "name": "icu_properties",
+          "version": "2.3.0",
+          "repository": "https://github.com/unicode-org/icu4x",
+          "copyright": [
+            "COPYRIGHT AND PERMISSION NOTICE"
+          ]
+        },
+        {
+          "name": "icu_properties_data",
+          "version": "2.3.0",
+          "repository": "https://github.com/unicode-org/icu4x",
+          "copyright": [
+            "COPYRIGHT AND PERMISSION NOTICE"
+          ]
+        },
+        {
+          "name": "icu_provider",
+          "version": "2.3.1",
+          "repository": "https://github.com/unicode-org/icu4x",
+          "copyright": [
+            "COPYRIGHT AND PERMISSION NOTICE"
+          ]
+        },
+        {
+          "name": "litemap",
+          "version": "0.8.3",
+          "repository": "https://github.com/unicode-org/icu4x",
+          "copyright": [
+            "COPYRIGHT AND PERMISSION NOTICE"
+          ]
+        },
+        {
+          "name": "potential_utf",
+          "version": "0.1.6",
+          "repository": "https://github.com/unicode-org/icu4x",
+          "copyright": [
+            "COPYRIGHT AND PERMISSION NOTICE"
+          ]
+        },
+        {
+          "name": "tinystr",
+          "version": "0.8.4",
+          "repository": "https://github.com/unicode-org/icu4x",
+          "copyright": [
+            "COPYRIGHT AND PERMISSION NOTICE"
+          ]
+        },
+        {
+          "name": "unicode-ident",
+          "version": "1.0.24",
+          "repository": "https://github.com/dtolnay/unicode-ident",
+          "copyright": [
+            "COPYRIGHT AND PERMISSION NOTICE"
+          ]
+        },
+        {
+          "name": "writeable",
+          "version": "0.6.4",
+          "repository": "https://github.com/unicode-org/icu4x",
+          "copyright": [
+            "COPYRIGHT AND PERMISSION NOTICE"
+          ]
+        },
+        {
+          "name": "yoke",
+          "version": "0.8.3",
+          "repository": "https://github.com/unicode-org/icu4x",
+          "copyright": [
+            "COPYRIGHT AND PERMISSION NOTICE"
+          ]
+        },
+        {
+          "name": "yoke-derive",
+          "version": "0.8.2",
+          "repository": "https://github.com/unicode-org/icu4x",
+          "copyright": [
+            "COPYRIGHT AND PERMISSION NOTICE"
+          ]
+        },
+        {
+          "name": "zerofrom",
+          "version": "0.1.8",
+          "repository": "https://github.com/unicode-org/icu4x",
+          "copyright": [
+            "COPYRIGHT AND PERMISSION NOTICE"
+          ]
+        },
+        {
+          "name": "zerofrom-derive",
+          "version": "0.1.7",
+          "repository": "https://github.com/unicode-org/icu4x",
+          "copyright": [
+            "COPYRIGHT AND PERMISSION NOTICE"
+          ]
+        },
+        {
+          "name": "zerotrie",
+          "version": "0.2.5",
+          "repository": "https://github.com/unicode-org/icu4x",
+          "copyright": [
+            "COPYRIGHT AND PERMISSION NOTICE"
+          ]
+        },
+        {
+          "name": "zerovec",
+          "version": "0.11.8",
+          "repository": "https://github.com/unicode-org/icu4x",
+          "copyright": [
+            "COPYRIGHT AND PERMISSION NOTICE"
+          ]
+        },
+        {
+          "name": "zerovec-derive",
+          "version": "0.11.6",
+          "repository": "https://github.com/unicode-org/icu4x",
+          "copyright": [
+            "COPYRIGHT AND PERMISSION NOTICE"
+          ]
+        }
+      ]
+    },
+    {
+      "spdx": "Unicode-DFS-2016",
+      "name": "Unicode License Agreement - Data Files and Software (2016)",
+      "text": "UNICODE, INC. LICENSE AGREEMENT - DATA FILES AND SOFTWARE\n\nUnicode Data Files include all data files under the directories http://www.unicode.org/Public/, http://www.unicode.org/reports/, http://www.unicode.org/cldr/data/, http://source.icu-project.org/repos/icu/, and http://www.unicode.org/utility/trac/browser/.\n\nUnicode Data Files do not include PDF online code charts under the directory http://www.unicode.org/Public/.\n\nSoftware includes any source code published in the Unicode Standard or under the directories http://www.unicode.org/Public/, http://www.unicode.org/reports/, http://www.unicode.org/cldr/data/, http://source.icu-project.org/repos/icu/, and http://www.unicode.org/utility/trac/browser/.\n\nNOTICE TO USER: Carefully read the following legal agreement. BY DOWNLOADING, INSTALLING, COPYING OR OTHERWISE USING UNICODE INC.'S DATA FILES (\"DATA FILES\"), AND/OR SOFTWARE (\"SOFTWARE\"), YOU UNEQUIVOCALLY ACCEPT, AND AGREE TO BE BOUND BY, ALL OF THE TERMS AND CONDITIONS OF THIS AGREEMENT. IF YOU DO NOT AGREE, DO NOT DOWNLOAD, INSTALL, COPY, DISTRIBUTE OR USE THE DATA FILES OR SOFTWARE.\n\nCOPYRIGHT AND PERMISSION NOTICE\n\nCopyright © 1991-2016 Unicode, Inc. All rights reserved. Distributed under the Terms of Use in http://www.unicode.org/copyright.html.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of the Unicode data files and any associated documentation (the \"Data Files\") or Unicode software and any associated documentation (the \"Software\") to deal in the Data Files or Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, and/or sell copies of the Data Files or Software, and to permit persons to whom the Data Files or Software are furnished to do so, provided that either\n\n     (a) this copyright and permission notice appear with all copies of the Data Files or Software, or\n     (b) this copyright and permission notice appear in associated Documentation.\n\nTHE DATA FILES AND SOFTWARE ARE PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF THIRD PARTY RIGHTS. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR HOLDERS INCLUDED IN THIS NOTICE BE LIABLE FOR ANY CLAIM, OR ANY SPECIAL INDIRECT OR CONSEQUENTIAL DAMAGES, OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THE DATA FILES OR SOFTWARE.\n\nExcept as contained in this notice, the name of a copyright holder shall not be used in advertising or otherwise to promote the sale, use or other dealings in these Data Files or Software without prior written authorization of the copyright holder.",
+      "crates": [
+        {
+          "name": "finl_unicode",
+          "version": "1.5.0",
+          "repository": "https://github.com/dahosek/finl_unicode",
+          "copyright": [
+            "COPYRIGHT AND PERMISSION NOTICE"
+          ]
+        }
+      ]
+    },
+    {
+      "spdx": "Zlib",
+      "name": "zlib License",
+      "text": "This software is provided 'as-is', without any express or implied warranty. In\nno event will the authors be held liable for any damages arising from the use of\nthis software.\n\nPermission is granted to anyone to use this software for any purpose, including\ncommercial applications, and to alter it and redistribute it freely, subject to\nthe following restrictions:\n\n1. The origin of this software must not be misrepresented; you must not claim\n    that you wrote the original software. If you use this software in a product,\n    an acknowledgment in the product documentation would be appreciated but is\n    not required.\n\n2. Altered source versions must be plainly marked as such, and must not be\n    misrepresented as being the original software.\n\n3. This notice may not be removed or altered from any source distribution.",
+      "crates": [
+        {
+          "name": "foldhash",
+          "version": "0.2.0",
+          "repository": "https://github.com/orlp/foldhash",
+          "copyright": [
+            "Copyright (c) 2024 Orson Peters"
+          ]
+        }
+      ]
+    }
+  ]
+}

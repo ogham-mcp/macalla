@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-meeting-live-stop"
+description = "Enables the meeting_live_stop command without any pre-configured scope."
+commands.allow = ["meeting_live_stop"]
+
+[[permission]]
+identifier = "deny-meeting-live-stop"
+description = "Denies the meeting_live_stop command without any pre-configured scope."
+commands.deny = ["meeting_live_stop"]

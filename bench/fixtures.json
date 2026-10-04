@@ -1,0 +1,25 @@
+{
+  "_comment": "20 raw-dictation fixtures for the Tier 1 bake-off. 'fillers' lists words that MUST be gone from the output; 'keep' lists terms that must survive exactly (mostly lowercase keys from the bake-off, which lowercased replies, so not a guide to case). 'reference' is the Tier 0 text of the case, words unchanged, punctuated and capitalised as the default prompt asks, with the spellings of fixtures/dictionary/seed.json. In a reference, (,) after a word is an optional comma and (-‐‑) an optional hyphen of any of those kinds, {.;:} after a word means any one of those marks, and ~ before a word means its case is not scored. A hyphen or dash in a reply separates words, as the guard's does.",
+  "cases": [
+    {"raw": "um so the thing is uh we need to we need to ship the the parser by friday", "fillers": ["um","uh","so"], "keep": ["parser","Friday"], "reference": "The thing is(,) we need to ship the parser by Friday."},
+    {"raw": "i was saying that um the latency budget is is three hundred milliseconds", "fillers": ["um"], "keep": ["latency"], "reference": "I was saying that the latency budget is three hundred milliseconds."},
+    {"raw": "so basically uh what i what i mean is the vad gates the stream not the other way round", "fillers": ["basically","uh"], "keep": ["stream"], "reference": "What I mean is(,) the VAD gates the stream{,—–} not the other way round."},
+    {"raw": "okay so like we should probably run terragrunt against the azure landing zone first", "fillers": ["okay","like"], "keep": ["terragrunt","azure"], "reference": "Like(,) we should probably run Terragrunt against the Azure landing zone first."},
+    {"raw": "um the postgres database uses pgvector for the embeddings you know", "fillers": ["um","you know"], "keep": ["postgres","pgvector","embeddings"], "reference": "The Postgres database uses pgvector for the embeddings, you know."},
+    {"raw": "i think uh we need to check the the kubectl output before we deploy", "fillers": ["uh"], "keep": ["kubectl"], "reference": "I think we need to check the kubectl output before we deploy."},
+    {"raw": "so the thing is that tailscale runs on the proxmox lxc container", "fillers": ["so"], "keep": ["tailscale","proxmox"], "reference": "The thing is that Tailscale runs on the Proxmox LXC container."},
+    {"raw": "basically um the seam pass rejoins segments at assembly time", "fillers": ["basically","um"], "keep": ["seam","segments"], "reference": "The seam pass rejoins segments at assembly time."},
+    {"raw": "right so we need to we need to measure the p ninety five not just the median", "fillers": ["right","so"], "keep": ["median"], "reference": "We need to measure the ~p ninety(-‐‑) five{,—–} not just the median."},
+    {"raw": "uh the clipboard has to be restored after we we paste the text", "fillers": ["uh"], "keep": ["clipboard","paste"], "reference": "The clipboard has to be restored after we paste the text."},
+    {"raw": "okay um terraform applied the vnet and then the hcl was valid", "fillers": ["okay","um"], "keep": ["terraform","hcl"], "reference": "Terraform applied the VNet(,) and then the HCL was valid."},
+    {"raw": "like i said the the audio callback should only copy samples", "fillers": ["like"], "keep": ["callback","samples"], "reference": "Like I said, the audio callback should only copy samples."},
+    {"raw": "so um the whisper model is is much slower than parakeet on this machine", "fillers": ["so","um"], "keep": ["whisper","parakeet"], "reference": "The Whisper model is much slower than Parakeet on this machine."},
+    {"raw": "you know the accessibility permission cannot be granted programmatically", "fillers": ["you know"], "keep": ["accessibility"], "reference": "The ~accessibility permission cannot be granted programmatically."},
+    {"raw": "uh basically the ring buffer sits between capture and and the vad", "fillers": ["uh","basically"], "keep": ["buffer","capture"], "reference": "The ring buffer sits between capture and the VAD."},
+    {"raw": "so i mean the the notarisation step runs in ci not locally", "fillers": ["so","i mean"], "keep": ["notarisation"], "reference": "The notarisation step runs in CI{,—–} not locally."},
+    {"raw": "um we should probably cache the phonetic keys at at load time", "fillers": ["um"], "keep": ["phonetic"], "reference": "We should probably cache the phonetic keys at load time."},
+    {"raw": "okay so the the tray menu has exactly five items and nothing else", "fillers": ["okay","so"], "keep": ["tray"], "reference": "The tray menu has exactly five items(,) and nothing else."},
+    {"raw": "uh the supabase instance is behind the tailnet not the public internet", "fillers": ["uh"], "keep": ["supabase","tailnet"], "reference": "The Supabase instance is behind the ~tailnet{,—–} not the public internet."},
+    {"raw": "like um the enhancement never blocks the paste that is the whole point", "fillers": ["like","um"], "keep": ["enhancement","paste"], "reference": "Like(,) the enhancement never blocks the paste{.;:—–} ~that is the whole point."}
+  ]
+}

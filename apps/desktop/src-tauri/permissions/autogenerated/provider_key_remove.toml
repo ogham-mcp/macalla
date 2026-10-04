@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-provider-key-remove"
+description = "Enables the provider_key_remove command without any pre-configured scope."
+commands.allow = ["provider_key_remove"]
+
+[[permission]]
+identifier = "deny-provider-key-remove"
+description = "Denies the provider_key_remove command without any pre-configured scope."
+commands.deny = ["provider_key_remove"]

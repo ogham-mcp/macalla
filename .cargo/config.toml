@@ -1,0 +1,32 @@
+# The Swift runtime search path, for the Apple engine's static library.
+#
+# `crates/macalla-engines/build.rs` emits this too, but `cargo:rustc-link-arg`
+# applies only to the targets of the crate that emitted it -- it does NOT
+# propagate to a binary that merely depends on that crate. Without this the
+# engines crate's own tests pass and `macalla doctor` dies at startup with
+#
+#     dyld: Library not loaded: @rpath/libswift_Concurrency.dylib
+#           Reason: no LC_RPATH's found
+#
+# Nothing is bundled: /usr/lib/swift is the OS's own copy, present since macOS
+# 10.14.4. Xcode sets the same path in LD_RUNPATH_SEARCH_PATHS for every Swift
+# target.
+#
+# Note that a RUSTFLAGS environment variable REPLACES these rather than adding
+# to them, so a build with RUSTFLAGS set needs the flag carried over.
+
+[target.aarch64-apple-darwin]
+rustflags = ["-C", "link-arg=-Wl,-rpath,/usr/lib/swift"]
+
+[target.x86_64-apple-darwin]
+rustflags = ["-C", "link-arg=-Wl,-rpath,/usr/lib/swift"]
+
+# No CXXFLAGS workaround here on purpose. The stale Command Line Tools
+# /Library/Developer/CommandLineTools/usr/include/c++/v1 (three files from 2022)
+# that broke every C++ compile with "'mutex' file not found" is fixed the real
+# way now: remove that directory. The old fix pinned the CLT SDK's
+# libc++ with -isystem, which was worse than the disease on a machine whose
+# active toolchain is full Xcode (xcode-select -p): it mixed Xcode's C headers
+# with the CLT's C++ headers and failed with "FP_NAN undefined" / "unknown type
+# name uint32_t". If a machine still has the stale directory, remove it rather
+# than reintroducing the flag.

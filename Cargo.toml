@@ -1,0 +1,55 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/macalla-core",
+    "crates/macalla-engines",
+    "crates/macalla-enhancers",
+    "crates/macalla-platform",
+    "crates/macalla-session",
+    "crates/macalla-translators",
+    "apps/cli",
+    "apps/desktop/src-tauri",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+# The floor CI actually builds on: see the `msrv` job in .github/workflows/ci.yml,
+# which must be raised alongside this line. 1.88 because the lockfile already
+# needs it -- time, plist, serde_with and the icu crates all declare it -- which
+# is what the new job found the first time it ran. Raised to 1.90 on
+# 2026-10-01 for Tauri 2.12, which declares it. Raise this only deliberately.
+rust-version = "1.90"
+license = "MIT"
+repository = "https://github.com/ogham-mcp/macalla"
+authors = ["Kevin Burns"]
+
+[workspace.dependencies]
+macalla-core = { path = "crates/macalla-core" }
+macalla-engines = { path = "crates/macalla-engines" }
+macalla-enhancers = { path = "crates/macalla-enhancers" }
+macalla-platform = { path = "crates/macalla-platform" }
+macalla-session = { path = "crates/macalla-session" }
+macalla-translators = { path = "crates/macalla-translators" }
+
+thiserror = "2"
+anyhow = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+clap = { version = "4", features = ["derive"] }
+rusqlite = { version = "0.40.2", features = ["bundled"] }
+# The non-Apple engines. Optional in the engines crate, on in both apps.
+transcribe-cpp = "0.2.3"
+# Model downloads: blocking, on its own thread, no tokio needed for one file.
+ureq = "3"
+sha2 = "0.11"
+dirs = "7"
+# The speech detector. Pinned exactly: its weights are compiled into
+# the crate, so a new version is a new model, measured before it is taken.
+earshot = "=1.2.2"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1

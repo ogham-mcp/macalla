@@ -1,0 +1,157 @@
+{
+  "_comment": "Seeded ONLY from forms an engine actually produced. Sources: two human takes of fixtures/dictation-script.md through Apple SpeechTranscriber and Parakeet TDT v3, plus the synthesised fixtures. Nothing here is invented — every 'spoken' entry was observed, with one kind of exception: a case_sensitive term fires only on an input written as one of its spoken forms or its written form (exactly, or a lower-case form with its first letter capitalised, as at the start of a sentence), so its written form in lower case ('ogham', 'terraform', ...) and the casings 'TerraForm' and 'cube c t l' are listed as case variants of wanted corrections, not as observed mishearings. 'om' is deliberately not listed: it is an ordinary word. 'azure' is an ordinary word too, but stays: Apple produced it for Azure, and its term has a 0.95 threshold. See docs/benchmarks.md.",
+  "_excluded_note": "Deliberately NOT seeded, though observed: 'parcel'/'passer' -> parser (both are real words; correcting them would break 'send me the parcel'), 'PostgreSQL' -> Postgres (a legitimate alternative name, not a mishearing, and the user's own choice), and the homophones cash/cache and sink/sync (both spellings are ordinary English, so a rule breaks the other sense in the same sentence). These need engine biasing or user judgement, not a blanket rewrite.",
+  "terms": [
+    {
+      "written": "Ogham",
+      "spoken": [
+        "OM",
+        "Om",
+        "Ohm",
+        "Ogam",
+        "oh am",
+        "ogham"
+      ],
+      "case_sensitive": true,
+      "threshold": 0.85
+    },
+    {
+      "written": "Terragrunt",
+      "spoken": [
+        "terra grunt",
+        "Terra Grunt",
+        "TerraGrunt",
+        "terror grunt",
+        "TerraGrant",
+        "terragrunt"
+      ],
+      "case_sensitive": true,
+      "threshold": 0.85
+    },
+    {
+      "written": "Terraform",
+      "spoken": [
+        "terra form",
+        "terror form",
+        "terraform",
+        "TerraForm"
+      ],
+      "case_sensitive": true,
+      "threshold": 0.85
+    },
+    {
+      "written": "Azure",
+      "spoken": [
+        "azure"
+      ],
+      "case_sensitive": true,
+      "threshold": 0.95
+    },
+    {
+      "written": "VNet",
+      "spoken": [
+        "V net",
+        "V-Net",
+        "vee net",
+        "vnet"
+      ],
+      "case_sensitive": true,
+      "threshold": 0.85
+    },
+    {
+      "written": "kubectl",
+      "spoken": [
+        "kube control",
+        "cube control",
+        "Cube CTL",
+        "cube CTL",
+        "kubectrol",
+        "CubeControl",
+        "CubeCTL",
+        "cube c t l"
+      ],
+      "case_sensitive": true,
+      "threshold": 0.85
+    },
+    {
+      "written": "Postgres",
+      "spoken": [
+        "postgress",
+        "postgrass",
+        "post gres",
+        "PoseGrass",
+        "postgres"
+      ],
+      "case_sensitive": true,
+      "threshold": 0.85
+    },
+    {
+      "written": "pgvector",
+      "spoken": [
+        "PG vector",
+        "P G vector",
+        "pg vector"
+      ],
+      "case_sensitive": true,
+      "threshold": 0.85
+    },
+    {
+      "written": "embeddings",
+      "spoken": [
+        "embodings"
+      ],
+      "case_sensitive": false,
+      "threshold": 0.85
+    },
+    {
+      "written": "Supabase",
+      "spoken": [
+        "Superbase",
+        "Super base",
+        "supa base",
+        "SuperBase",
+        "supabase"
+      ],
+      "case_sensitive": true,
+      "threshold": 0.85
+    },
+    {
+      "written": "Tailscale",
+      "spoken": [
+        "tail scale",
+        "Tail Scale",
+        "tailscale"
+      ],
+      "case_sensitive": true,
+      "threshold": 0.85
+    },
+    {
+      "written": "LXC",
+      "spoken": [
+        "LXE",
+        "L X C",
+        "lxc"
+      ],
+      "case_sensitive": true,
+      "threshold": 0.85
+    },
+    {
+      "written": "Proxmox",
+      "spoken": [
+        "prox mox",
+        "Prox Mox",
+        "proxmox"
+      ],
+      "case_sensitive": true,
+      "threshold": 0.85
+    },
+    {
+      "written": "Macalla",
+      "spoken": [
+        "Makala",
+        "Macala",
+        "Mackala"
+      ]
+    }
+  ]
+}

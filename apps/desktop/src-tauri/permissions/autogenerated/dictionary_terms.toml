@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-dictionary-terms"
+description = "Enables the dictionary_terms command without any pre-configured scope."
+commands.allow = ["dictionary_terms"]
+
+[[permission]]
+identifier = "deny-dictionary-terms"
+description = "Denies the dictionary_terms command without any pre-configured scope."
+commands.deny = ["dictionary_terms"]

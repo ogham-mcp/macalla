@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-meeting-clear"
+description = "Enables the meeting_clear command without any pre-configured scope."
+commands.allow = ["meeting_clear"]
+
+[[permission]]
+identifier = "deny-meeting-clear"
+description = "Denies the meeting_clear command without any pre-configured scope."
+commands.deny = ["meeting_clear"]

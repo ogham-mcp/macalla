@@ -1,0 +1,23 @@
+[package]
+name = "macalla-core"
+description = "Pipeline, engine traits, VAD, dictionary, enhancement and history for Macalla. No Tauri dependency; builds and tests headless."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+thiserror.workspace = true
+tracing.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+rubato = "5"
+rtrb = "0.4.0"
+# The Markdown writer (`markdown`) builds a node tree and lets comrak's
+# CommonMark writer escape it, so a hostile transcript can only become the
+# node it was put in as. `default-features = false` keeps the GFM extensions
+# off and keeps `onig`, a C library the default features pull in, out of the
+# tree, so the core still builds headless with no C toolchain.
+comrak = { version = "0.55", default-features = false }

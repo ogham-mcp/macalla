@@ -1,0 +1,159 @@
+/* SPDX-License-Identifier: MIT */
+
+/* Opaque and dark in both themes: it floats over other apps, so it follows
+   no window's palette, and transparency on macOS would need a private API. */
+:root {
+  --overlay-bg: #1c1c1e;
+  --overlay-text: #f2f2f7;
+  --overlay-muted: #8e8e93;
+  --overlay-wave: #2bb5a0;  /* the brand teal; the overlay is always dark, 6.66:1 */
+  --overlay-wave-loud: #ff9f0a;  /* amber: this moment was loud */
+  --overlay-wave-clip: #ff6961;  /* red: this moment was near clipping */
+  --overlay-button: #3a3a3c;  /* the × fill; the glyph is --overlay-text, 10.2:1 */
+  --overlay-button-hover: #48484a;
+  --overlay-finish-hover: #34c4ae;  /* the ✓ fill on hover, a step lighter than --overlay-wave */
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.overlay-body {
+  margin: 0;
+  background: var(--overlay-bg);
+  color: var(--overlay-text);
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-size: 13px;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.overlay {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 14px 8px;
+  height: 96px;
+}
+
+/* The waveform and, while the × shows, the × and ✓ slots at the right end,
+   the ✓ right of the ×. The waveform takes what the slots leave: at the
+   overlay's 360 px that is 268 px beside the slots, 48 bars of about 3.6 px,
+   and the full row, about 5 px a bar, while neither button shows (between
+   dictations, or while the shortcut's key is held). */
+.top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.waveform {
+  /* A flex basis of 0 and no minimum, so the canvas's own pixel width, which
+     overlay.tsx sets from its laid-out width, never feeds back into it. */
+  flex: 1 1 0;
+  min-width: 0;
+  height: 32px;
+  /* Bar colours come from the --overlay-wave* tokens, read by overlay.tsx. */
+}
+
+/* Never shrinks, and stays at the right when a notice hides the waveform.
+   While the × shows, the ✓ keeps its slot even when hidden (overlay.tsx's
+   `slot` and `keepsButtonSlots`), so the × never moves into its place. */
+.overlay-buttons {
+  display: flex;
+  gap: 8px;
+  flex: none;
+  margin-left: auto;
+}
+
+.overlay-button {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  cursor: default;
+}
+
+.overlay-button svg {
+  display: block;
+}
+
+/* A kept slot: laid out, not shown, and no hover or focus look. */
+.overlay-button[data-slot-only] {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.overlay-button:not([data-slot-only]):focus-visible {
+  outline: 2px solid var(--overlay-wave);
+  outline-offset: 2px;
+}
+
+.overlay-button.cancel {
+  background: var(--overlay-button);
+  color: var(--overlay-text);
+}
+
+.overlay-button.cancel:not([data-slot-only]):hover {
+  background: var(--overlay-button-hover);
+}
+
+/* The brand teal with a dark tick: --overlay-bg on --overlay-wave, 6.66:1
+   (7.82:1 on hover). */
+.overlay-button.finish {
+  background: var(--overlay-wave);
+  color: var(--overlay-bg);
+}
+
+.overlay-button.finish:not([data-slot-only]):hover {
+  background: var(--overlay-finish-hover);
+}
+
+.partial {
+  margin: 0;
+  /* Enhancement can leave this row empty (no live words yet, and no
+     "Listening…" once the key is up); without a line box of its own an empty
+     <p> collapses to no height and the hint line jumps up. */
+  min-height: 1.2em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* A sentence about the dictation rather than its words: allowed to wrap,
+   with the waveform out of the way to give it the room. */
+.partial.notice {
+  white-space: normal;
+}
+
+.placeholder {
+  color: var(--overlay-muted);
+}
+
+.hint {
+  margin: 0;
+  font-size: 11px;
+  color: var(--overlay-muted);
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* "Enhancing…" always shows in full, and the destination on the right never
+   shrinks either. */
+.hint .left {
+  display: flex;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.hint .where {
+  white-space: nowrap;
+  color: var(--overlay-text);
+}

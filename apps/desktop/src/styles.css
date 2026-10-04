@@ -1,0 +1,1044 @@
+/* SPDX-License-Identifier: MIT */
+
+:root {
+  --bg: #f5f5f5;
+  --card-bg: #ffffff;
+  --border: #e0e0e0;
+  --text: #1a1a1a;
+  --text-muted: #6b6b6b;
+  /* The brand teal, darkened for the light card. #2bb5a0 itself is
+     2.55:1 on white and fails AA for text; this is 5.28:1, which
+     also beats the 5.08:1 of the green it replaces. */
+  --ready: #12796c;
+  /* Error text needs its own token per theme. It used to be a bare #c0392b
+     in .card-error, which is 5.44:1 on the light card and only 2.64:1 on the
+     dark one -- the one piece of text that must always be readable was the
+     least readable thing in dark mode. */
+  --error: #c0392b;
+  /* The Models page's accuracy dots (off) and the route mark's two colours,
+     the brand's source dot and its echo
+     trail for words that travel. */
+  --pip-off: #d6d6d6;
+  --source: #2bb5a0;
+  --echo: #9a8570;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1e1e1e;
+    --card-bg: #2a2a2a;
+    --border: #3a3a3a;
+    --text: #f0f0f0;
+    --text-muted: #a0a0a0;
+    --ready: #2bb5a0;  /* the brand teal itself, 5.62:1 on the dark card */
+    --error: #f28b82;  /* 6.01:1 on the dark card; #c0392b managed 2.64:1 */
+    --pip-off: #484848;
+    --echo: #c9b8a8;  /* darkened for a light ground in the mockup; lightened back here */
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-size: 13px;
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  /* Matches the main window's width in tauri.conf.json: 560, widened from
+     480 on 2026-09-09 so a History row holds its timestamp and three
+     buttons, and the coming engine and key screens have room. Slimmer
+     than a settings window needs to be was the wrong economy. */
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.card h2 {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.card p {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+/* An error can quote a path, so a word too long for the line breaks. */
+.card-error {
+  color: var(--error);
+  overflow-wrap: anywhere;
+}
+
+/* `.card p` (specificity 0,1,1) outranks `.card-error` alone (0,1,0) and
+   would mute every error line that is a <p> rather than a <span>, same
+   trick as `.card p.summary-stale` below. */
+.card p.card-error {
+  color: var(--error);
+}
+
+/* Each row here is two lines, a name and a status, held 2 px apart by
+   .item-text. At a 4 px gap between rows the two spacings were near enough
+   identical that one engine ran into the next; 8 px makes the row the unit
+   the eye picks up. */
+.engine-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* A batch's files: a name and a status per row, as the engine list has
+   them, and a bar under the one being heard. */
+.batch-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.batch-list .work-bar {
+  margin-top: 4px;
+}
+
+.engine-list li {
+  display: flex;
+  justify-content: space-between;
+}
+
+.item-name {
+  color: var(--text);
+}
+
+/* Status that is not "ready" is muted text like every other secondary line.
+   It used to have its own grey, #8a8a8a, which failed AA in BOTH themes
+   (3.45:1 light, 4.16:1 dark). The words already say "Not compiled in", so
+   nothing was being carried by the hue that needed carrying. */
+.engine-status {
+  color: var(--text-muted);
+}
+
+.engine-status-ready {
+  color: var(--ready);
+}
+
+.steps {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.step {
+  display: flex;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.step-mark {
+  width: 1.2em;
+  flex: none;
+  color: var(--text-muted);
+}
+
+.step-done .step-mark {
+  color: var(--ready);
+}
+
+.step-title {
+  font-weight: 600;
+}
+
+.step-detail {
+  color: var(--text-muted);
+}
+
+.step-action {
+  margin: 2px 0 0;
+  color: var(--text-muted);
+}
+
+/* One button, everywhere. It was called `.back` after the first button that
+   needed it, so anyone adding a button elsewhere reasonably left the class
+   off -- and three of them (Use, Remove, Cancel on the Engine card) rendered
+   as raw platform buttons: Arial, grey fill, square corners, 21 px tall
+   against this one's 26. Naming it for what it is rather than for where it
+   first appeared is most of the fix.
+   The label never wraps; a row gives way around it instead. */
+.button {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font: inherit;
+  padding: 4px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* A button standing on its own -- Back above the cards, or a card's single
+   action -- sits at the left instead of stretching, and needs air above it.
+   Deliberately not on `.button` itself: inside a centred row like an engine
+   or model line, align-self would drag it off centre. */
+.cards > .button {
+  align-self: flex-start;
+}
+
+.attributions {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.attributions li + li {
+  margin-top: 8px;
+}
+
+/* The one secondary line: timestamps, counts, paths, notices, licences.
+   `.notice` was a second copy of this with a different name. It wraps at word
+   boundaries, and breaks inside a word only when the word is too long for the
+   line, as a path or a file name can be. It was `word-break: break-all`, for
+   the paths, and that broke prose mid-word ("full p / arts of a meeting");
+   the History timestamp opts out of breaking below. */
+.card-meta {
+  margin: 2px 0 0;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+/* Dictated or transcribed text can hold a long unbroken token, such as a URL. */
+.history-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.history-raw {
+  color: var(--text-muted);
+  white-space: pre-wrap;
+}
+
+.history-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+/* When the row is too narrow for both, the whole group of buttons drops
+   to its own line, right-aligned, rather than a label wrapping or the
+   last button pushing into the card's edge. */
+.history-row .row-actions {
+  margin-left: auto;
+}
+
+/* The timestamp keeps its own line too, and is the one place breaking inside
+   a word is wrong: a date is not a path. */
+.history-row .card-meta {
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+
+/* Buttons that belong to the item beside them, on History and on a dictionary
+   term. `flex-wrap` is the fix for a measured overflow: with three buttons and
+   no wrapping the group ran 12.8 px past the card at a 360 px window and 52.8
+   px past it at 320. Now it stacks inside the card instead. */
+.row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.step-body {
+  flex: 1;
+}
+
+/* Two or three buttons side by side under a form or a sentence. Named
+   `.step-buttons` while the setup checklist was its only user; it is also the
+   term form's and the Share card's. */
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.card > .button {
+  align-self: flex-start;
+  margin-top: 8px;
+}
+
+/* A job's bar on the Files page, across the card: filled for what is done,
+   with a band sliding along it while a step that counts nothing of its own
+   runs, such as one part of a summary. The native <progress> it replaces was
+   a short pale pill that sat still for the whole of a single part. */
+.work-bar {
+  position: relative;
+  height: 4px;
+  margin-top: 8px;
+  border-radius: 2px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.work-bar-fill {
+  height: 100%;
+  background: var(--ready);
+  transition: width 0.3s ease;
+}
+
+/* The part of the bar not yet filled, where the band runs. Kept off the fill,
+   because a band the fill's colour vanished over it. */
+.work-bar-rest {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  overflow: hidden;
+  /* Moves with the fill, so no bare track or band over the fill shows while
+     the fill grows or shrinks. */
+  transition: left 0.3s ease;
+}
+
+.work-bar-rest::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 30%;
+  background: var(--ready);
+  opacity: 0.6;
+  animation: work-bar-slide 1.4s ease-in-out infinite;
+}
+
+@keyframes work-bar-slide {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(340%);
+  }
+}
+
+@keyframes work-bar-pulse {
+  from {
+    opacity: 0.15;
+  }
+  to {
+    opacity: 0.45;
+  }
+}
+
+/* With reduced motion nothing slides: the band fills the unfilled part and
+   slowly brightens and fades, which is not movement, so the bar still reads
+   as working. */
+@media (prefers-reduced-motion: reduce) {
+  .work-bar-fill,
+  .work-bar-rest {
+    transition: none;
+  }
+
+  .work-bar-rest::after {
+    width: 100%;
+    animation: work-bar-pulse 2s ease-in-out infinite alternate;
+  }
+}
+
+/* A working job's status lines, with its Stop on the right, its label on the
+   first line's baseline, as a History row holds its buttons. */
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.status-row > :first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.progress {
+  float: right;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.steps-also {
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+/* The checklist's last row, where the person tries a dictation without
+   leaving the window. Divided from the rows above like .steps-also, but not
+   muted: it is something to do, not context. */
+.steps-try {
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+}
+
+.try-box {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  font: inherit;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  resize: vertical;
+}
+
+.notice-bar {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #b3261e;
+  color: #ffffff;
+}
+
+.term {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.term-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.term-written {
+  font-weight: 600;
+}
+
+.term-spoken {
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.term-form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.term-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.term-field span {
+  width: 7em;
+  flex: none;
+  color: var(--text-muted);
+}
+
+.term-field input {
+  flex: 1;
+  font: inherit;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: var(--text);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  color: var(--text-muted);
+}
+
+/* Who said a summary quote and when: a button to that turn, quieter than
+   the item it follows. */
+.link.quote-said {
+  color: var(--text-muted);
+}
+
+/* A transcript turn a summary quote went to, lit briefly and then faded. */
+.history-text p {
+  border-radius: 4px;
+  transition: background-color 0.6s ease;
+}
+
+.history-text p.turn-shown {
+  /* The brand teal (--source) at 22%, for a web view without color-mix(),
+     such as an older WebKitGTK; the line after wins where it is known. */
+  background-color: rgba(43, 181, 160, 0.22);
+  background-color: color-mix(in srgb, var(--source) 22%, transparent);
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .history-text p {
+    transition: none;
+  }
+}
+
+/* Above a summary written before the transcript was corrected: in the
+   text's own colour and weight, apart from the muted lines around it, so the
+   summary never looks current. `.card p` would otherwise make it muted. */
+.card p.summary-stale {
+  color: var(--text);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+/* Find in the transcript: the box, its count, and Previous and Next on one
+   row, wrapping on a narrow window. */
+.find-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.find-row .field {
+  min-width: 10em;
+}
+
+.find-count {
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* Every match lit softly, the current one in the brand teal, each with the
+   fallback for a web view without color-mix(), as .turn-shown has. */
+.history-text mark.find-match {
+  color: inherit;
+  border-radius: 2px;
+  background-color: rgba(154, 133, 112, 0.28);
+  background-color: color-mix(in srgb, var(--echo) 35%, transparent);
+}
+
+.history-text mark.find-current {
+  background-color: rgba(43, 181, 160, 0.45);
+  background-color: color-mix(in srgb, var(--source) 45%, transparent);
+  outline: 1px solid var(--ready);
+}
+
+/* A turn's Edit: quiet, and shown only while the turn is pointed at or the
+   button has focus, from the keyboard or given back after Save or Cancel,
+   so a long transcript is not a column of Edits. */
+.link.turn-edit {
+  color: var(--text-muted);
+  opacity: 0;
+}
+
+.history-text p:hover .link.turn-edit,
+.link.turn-edit:focus {
+  opacity: 1;
+}
+
+.link.turn-edit:disabled {
+  visibility: hidden;
+}
+
+/* A turn being corrected: its words in a text area as wide as the card. */
+.turn-editing {
+  margin: 1em 0;
+}
+
+.turn-field {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  resize: vertical;
+  white-space: pre-wrap;
+}
+
+/* A label can name a long address, such as a server's URL: let it shrink and
+   break inside a word that cannot fit, rather than widen the card. */
+.setting-row > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* A note right after a setting row explains that row, so it should read as
+   attached to it -- closer than the row's own 8 px top margin, not flush
+   against it. `.card p` (specificity 0,1,1) zeroes `.card-meta`'s own 2 px
+   (0,1,0); `.card` in this selector outranks it (0,3,0), same trick as
+   `.card .model-dir` above. In the Providers card the note also sits inside
+   `.add-provider`, a flex column with its own 6 px gap between children, so
+   this margin adds to that gap there; everywhere else (History) it is the
+   whole gap, since margins here do not collapse with a flex container's own
+   `gap`. */
+.card .setting-row + .card-meta {
+  margin-top: 4px;
+}
+
+.select {
+  font: inherit;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 8px;
+  /* A select is as wide as its longest option, and a microphone's name is
+     whatever its maker chose. Shrink to the card rather than past it. */
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* The Engine card lists engines under who made them, as a text heading: no
+   logos, which are other companies' marks and would be the only pictures on
+   the page. A rule between groups, like .steps-also, keeps five or six rows
+   readable as groups rather than one long list. */
+.engine-group + .engine-group {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.engine-group-name {
+  margin: 8px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.engine-group-name + .engine-list {
+  margin-top: 4px;
+}
+
+.item-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.item-status {
+  color: var(--text-muted);
+}
+
+.engine-row {
+  align-items: center;
+  gap: 12px;
+}
+
+.engine-in-use {
+  color: var(--ready);
+  font-weight: 400;
+}
+
+.model-dir {
+  margin-top: 12px;
+  font-size: 12px;
+  /* A little more room, so a path that wraps does not crowd the line
+     above it. */
+  line-height: 1.5;
+}
+
+/* A paragraph-sized gap after the models folder line, before whatever
+   follows it. `.card p` sets card paragraph margins to 0 and outranks a
+   single class, so this carries the card in the selector. Only the folder
+   line uses this class. */
+.card .model-dir {
+  margin-bottom: 16px;
+}
+
+/* A long path wraps only where PathWithBreaks put a <wbr>, after a
+   separator; overflow-wrap: anywhere would also break inside a folder
+   name. */
+.model-dir code {
+  font-size: 11px;
+}
+
+
+/* ---- Models page ---- */
+
+.page-head h1 {
+  margin: 2px 0 2px;
+  font-size: 17px;
+  font-weight: 650;
+}
+
+.page-head p {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+/* Accuracy as five dots, the brand's own mark rather than a bar or a count.
+   The measured figure is in the title, for a tooltip. */
+.pips {
+  display: inline-flex;
+  gap: 3px;
+  align-items: center;
+}
+
+/* Local and provider transcription rows (the only two places a status line
+   is immediately followed by its dots) get extra air on top of the 2 px
+   .item-text gap, so the dots read as their own mark instead of crowding
+   the download-size or price line above them. Scoped to this adjacency so
+   no other card's rows move. */
+.item-status + .pips {
+  margin-top: 4px;
+}
+
+.pips i {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--pip-off);
+}
+
+.pips i.on {
+  background: var(--ready);
+}
+
+.pips-na {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* A provider's key or model kind: "Transcription", "Also runs locally". */
+.kind {
+  font-size: 11px;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0 5px;
+  margin-left: 6px;
+  white-space: nowrap;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ready);
+  margin-left: 6px;
+  white-space: nowrap;
+}
+
+.chip::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* The route mark: the brand's source dot, and its echo trail for words that
+   travel. On this Mac the dot alone; sent to a provider, the whole trail. */
+.route {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.route svg {
+  width: 20px;
+  height: 13px;
+  flex: none;
+}
+
+.route-src {
+  fill: var(--source);
+}
+
+.route-echo {
+  fill: var(--echo);
+}
+
+.route[data-to="mac"] {
+  --m-e1: 0;
+  --m-e2: 0;
+  --m-e3: 0;
+}
+
+.in-use {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 8px 0 0;
+}
+
+.in-use dt {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.in-use dd {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+}
+
+/* A password field, or a person's own server address -- the one input on
+   this page that is not a select. */
+.field {
+  font: inherit;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 8px;
+  min-width: 0;
+  flex: 1;
+}
+
+.add-provider {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* A dashed-border note: the Keychain unreachable, or a build with no cloud
+   transcription. Distinct from .card-error -- nothing failed, it is a fact
+   about this build or this machine. */
+.banner {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: var(--bg);
+  border: 1px dashed var(--border);
+  color: var(--text-muted);
+}
+
+.more-line {
+  margin: 12px 0 0;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text-muted);
+}
+
+/* OpenRouter's transcription list, expanded under its row. */
+.or-picker {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.or-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.or-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+}
+
+.or-sub {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.pool-provider {
+  margin: 6px 0 2px;
+  font-size: 11px;
+  font-weight: 650;
+  color: var(--text-muted);
+}
+
+.mono {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 12px;
+}
+
+/* Cleanup: radio rows, off / Apple Intelligence / a person's own server. */
+.choices {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.choices > * + * {
+  border-top: 1px solid var(--border);
+}
+
+.choice-head {
+  display: block;
+  cursor: pointer;
+}
+
+.choice-head input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.choice-head input:disabled + .choice-body {
+  cursor: default;
+}
+
+.choice-body {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  gap: 2px 10px;
+  padding: 9px 12px;
+}
+
+.radio {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--text-muted);
+  margin-top: 2px;
+  display: grid;
+  place-items: center;
+}
+
+.choice-head input:checked + .choice-body .radio {
+  border-color: var(--ready);
+}
+
+.choice-head input:checked + .choice-body .radio::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ready);
+}
+
+.choice-head input:disabled + .choice-body .radio {
+  border-style: dashed;
+}
+
+.choice-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2px 10px;
+}
+
+.choice-more {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 12px 10px 38px;
+}
+
+.inline-field {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.inline-field > span:first-child {
+  width: 5.5em;
+  color: var(--text-muted);
+  flex: none;
+}
+
+.pool {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+}
+
+.pool label {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) 62px;
+  gap: 8px;
+  align-items: center;
+  padding: 3px 0;
+}
+
+/* The cloud pool's ticked order: one model per row, Remove at the end. */
+.pool-order li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+}
+
+/* A licence's full text, under a <details> on the Open-source software page.
+   Wraps like prose (the notices contain long lines) and scrolls rather than
+   stretching the card when a licence is long, such as Apache-2.0. */
+.licence-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 320px;
+  overflow-y: auto;
+  margin: 8px 0 0;
+  padding: 8px;
+  background: var(--surface-sunken, rgba(127, 127, 127, 0.08));
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-muted);
+}

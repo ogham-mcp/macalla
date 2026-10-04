@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-meeting-batch-start"
+description = "Enables the meeting_batch_start command without any pre-configured scope."
+commands.allow = ["meeting_batch_start"]
+
+[[permission]]
+identifier = "deny-meeting-batch-start"
+description = "Denies the meeting_batch_start command without any pre-configured scope."
+commands.deny = ["meeting_batch_start"]

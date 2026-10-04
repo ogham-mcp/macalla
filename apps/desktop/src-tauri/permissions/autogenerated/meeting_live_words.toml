@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-meeting-live-words"
+description = "Enables the meeting_live_words command without any pre-configured scope."
+commands.allow = ["meeting_live_words"]
+
+[[permission]]
+identifier = "deny-meeting-live-words"
+description = "Denies the meeting_live_words command without any pre-configured scope."
+commands.deny = ["meeting_live_words"]

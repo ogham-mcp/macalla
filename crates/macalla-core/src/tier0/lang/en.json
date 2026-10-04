@@ -1,0 +1,133 @@
+{
+  "_comment": "English Tier 0 rules. Editable: this is the list the user can change. Keys are matched case-insensitively on word boundaries.",
+  "language": "en",
+  "_fillers_note": "THREE lists, on two different axes. 'language_gated' ARE real words in other languages -- 'um' is Portuguese 'a/an' and German 'at/around', 'ah' and 'eh' are words elsewhere -- so they are only removed once the language is known to be this one. 'sentence_initial' are real words in THIS language, removed only when they open an utterance: deleting 'so' everywhere mangles 'so the thing is'. Cross-language gating is adopted from Handy's audio_toolkit/text.rs (MIT), which fails closed on unknown languages; the always/sentence_initial split was cross-checked against sebsto/wispr's FillerWordCleaner (Apache-2.0).",
+  "fillers": {
+    "sentence_initial": [
+      "so",
+      "basically",
+      "okay",
+      "ok",
+      "right",
+      "well",
+      "now",
+      "look",
+      "anyway"
+    ],
+    "language_gated": [
+      "um",
+      "ah",
+      "eh",
+      "oh",
+      "er",
+      "ha"
+    ],
+    "phrases_initial": [
+      "you know",
+      "i mean"
+    ]
+  },
+  "_punctuation_note": "Spoken punctuation. Attached to the preceding word with no space.",
+  "punctuation": {
+    "period": ".",
+    "full stop": ".",
+    "dot": ".",
+    "comma": ",",
+    "question mark": "?",
+    "exclamation mark": "!",
+    "exclamation point": "!",
+    "colon": ":",
+    "semicolon": ";",
+    "dash": "—",
+    "open quote": "\"",
+    "close quote": "\""
+  },
+  "_structure_note": "Commands that break or classify blocks. Longest match wins, so 'new paragraph' is tried before 'new'.",
+  "structure": {
+    "new paragraph": "paragraph_break",
+    "new line": "line_break",
+    "new list": "bullet_list",
+    "bulleted list": "bullet_list",
+    "numbered list": "ordered_list",
+    "next item": "next_item",
+    "bullet": "next_item",
+    "new heading": "heading",
+    "new title": "heading",
+    "heading": "heading",
+    "title": "heading"
+  },
+  "_structure_in_list_only_note": "Commands that are also ordinary words. 'bullet points' is a phrase people say; heard in real dictation on 2026-09-09, it turned the rest of the sentence into a list item. These only act while a list is open.",
+  "structure_in_list_only": ["bullet"],
+  "_structure_at_block_start_only_note": "Commands that are also ordinary words: 'we are heading home', 'the title of the book'. Bare, they act only as the first words of a block that does not continue a sentence from the segment before; 'new heading' and 'new title' act anywhere.",
+  "structure_at_block_start_only": [
+    "heading",
+    "title"
+  ],
+  "_cadence_note": "Spoken list cadence. 'one X two Y' becomes an ordered list only when three or more consecutive markers appear -- two is far too easy to trigger on ordinary speech about numbers.",
+  "cadence": {
+    "ordinal_words": [
+      "first",
+      "second",
+      "third",
+      "fourth",
+      "fifth",
+      "sixth",
+      "seventh",
+      "eighth",
+      "ninth",
+      "tenth"
+    ],
+    "number_words": [
+      "one",
+      "two",
+      "three",
+      "four",
+      "five",
+      "six",
+      "seven",
+      "eight",
+      "nine",
+      "ten"
+    ],
+    "minimum_markers": 3
+  },
+  "_numbers_note": "Conservative only. Standalone small numbers stay as words; digits are produced for quantities that read badly spelled out.",
+  "numbers": {
+    "hundred": 100,
+    "thousand": 1000,
+    "million": 1000000,
+    "enabled": true,
+    "minimum_value": 21
+  },
+  "_stutter_note": "A single repeated word is only a stutter for these. Repeating any other word is emphasis -- 'very very good' is not a stutter, and a length heuristic gets that wrong because 'very' is short. An explicit list is the only safe rule.",
+  "stutterable": [
+    "the",
+    "a",
+    "an",
+    "to",
+    "of",
+    "in",
+    "on",
+    "at",
+    "is",
+    "it",
+    "we",
+    "i",
+    "he",
+    "she",
+    "they",
+    "and",
+    "that",
+    "this",
+    "but",
+    "for",
+    "with",
+    "was",
+    "be",
+    "do",
+    "so",
+    "not",
+    "you"
+  ],
+  "_phrases_note": "Only unambiguous discourse markers, and only at the opening. Excluded deliberately: 'like I said' carries the information that the speaker is repeating themselves, and 'sort of'/'kind of' are hedges -- 'sort of working' is not 'working'. Those go to Tier 1, which has the context to judge."
+}

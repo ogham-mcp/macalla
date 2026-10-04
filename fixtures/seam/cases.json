@@ -1,0 +1,383 @@
+[
+  {
+    "name": "two sentences become one paragraph",
+    "engine": "apple",
+    "segments": [
+      "Hey there.",
+      "I'm talking to you now."
+    ],
+    "plain": "Hey there. I'm talking to you now."
+  },
+  {
+    "name": "three sentences, one paragraph, opening fillers gone",
+    "engine": "apple",
+    "segments": [
+      "Okay, so this looks like a good fit.",
+      "Here is my 1st real dictation.",
+      "That's what I think."
+    ],
+    "plain": "This looks like a good fit. Here is my 1st real dictation. That's what I think."
+  },
+  {
+    "name": "a sentence split by a pause is rejoined",
+    "engine": "apple",
+    "segments": [
+      "I went to the",
+      "shop today."
+    ],
+    "plain": "I went to the shop today."
+  },
+  {
+    "name": "the engine restarts with a capital after a comma",
+    "engine": "apple",
+    "segments": [
+      "But otherwise,",
+      "The detections are forcing new sentences."
+    ],
+    "plain": "But otherwise, the detections are forcing new sentences."
+  },
+  {
+    "name": "real dictation, 2026-09-09",
+    "engine": "apple",
+    "segments": [
+      "A coherent sentence would be acceptable and then when we actually break into lists, or the texts are lists like one, two, three, or",
+      "bullet points, then we would break it into like a list format.",
+      "But otherwise, I mean,",
+      "The detections, I think, are actually forcing new sentences.",
+      "That's what I think."
+    ],
+    "plain": "A coherent sentence would be acceptable and then when we actually break into lists, or the texts are lists like one, two, three, or bullet points, then we would break it into like a list format. But otherwise, I mean, the detections, I think, are actually forcing new sentences. That's what I think."
+  },
+  {
+    "name": "a lowercase start after a full stop gets its capital, and the dictionary its term",
+    "engine": "apple",
+    "segments": [
+      "Well, I'm typing to you now.",
+      "courtesy of Makala."
+    ],
+    "plain": "I'm typing to you now. Courtesy of Macalla."
+  },
+  {
+    "name": "I keeps its capital",
+    "engine": "apple",
+    "segments": [
+      "And then",
+      "I shipped it."
+    ],
+    "plain": "And then I shipped it."
+  },
+  {
+    "name": "an acronym keeps its capitals",
+    "engine": "apple",
+    "segments": [
+      "We deploy with",
+      "AWS every day."
+    ],
+    "plain": "We deploy with AWS every day."
+  },
+  {
+    "name": "a dictionary term survives the seam",
+    "engine": "apple",
+    "segments": [
+      "We looked it up in",
+      "Makala yesterday."
+    ],
+    "plain": "We looked it up in Macalla yesterday."
+  },
+  {
+    "name": "an exclamation mark is a terminator",
+    "engine": "apple",
+    "segments": [
+      "Ship it!",
+      "then rest."
+    ],
+    "plain": "Ship it! Then rest."
+  },
+  {
+    "name": "duplicate punctuation at the seam is dropped",
+    "engine": "apple",
+    "segments": [
+      "Ship it.",
+      ". Then rest."
+    ],
+    "plain": "Ship it. Then rest."
+  },
+  {
+    "name": "new paragraph closes a segment",
+    "engine": "apple",
+    "segments": [
+      "We shipped it. New paragraph.",
+      "The tests pass."
+    ],
+    "plain": "We shipped it.\nThe tests pass."
+  },
+  {
+    "name": "new paragraph opens a segment",
+    "engine": "apple",
+    "segments": [
+      "We shipped it.",
+      "New paragraph. The tests pass."
+    ],
+    "plain": "We shipped it.\nThe tests pass."
+  },
+  {
+    "name": "new paragraph alone in a segment",
+    "engine": "apple",
+    "segments": [
+      "We shipped it.",
+      "New paragraph.",
+      "The tests pass."
+    ],
+    "plain": "We shipped it.\nThe tests pass."
+  },
+  {
+    "name": "the engine's comma before a command goes",
+    "engine": "apple",
+    "segments": [
+      "We shipped it, new paragraph, the tests pass."
+    ],
+    "plain": "We shipped it\nThe tests pass."
+  },
+  {
+    "name": "new line closes a segment",
+    "engine": "apple",
+    "segments": [
+      "Dear Sam comma new line.",
+      "Thanks for the build."
+    ],
+    "plain": "Dear Sam,\nThanks for the build."
+  },
+  {
+    "name": "a numbered list across three segments",
+    "engine": "apple",
+    "segments": [
+      "Two things. Numbered list.",
+      "Review the spec.",
+      "Next item. Run the benchmarks."
+    ],
+    "plain": "Two things.\nReview the spec.\nRun the benchmarks.",
+    "markdown": "Two things.\n1. Review the spec.\n2. Run the benchmarks."
+  },
+  {
+    "name": "a pause inside a list item continues the item",
+    "engine": "apple",
+    "segments": [
+      "New list. Apples and",
+      "pears.",
+      "Next item. Grapes."
+    ],
+    "plain": "Apples and pears.\nGrapes.",
+    "markdown": "- Apples and pears.\n- Grapes."
+  },
+  {
+    "name": "bullet points is a phrase outside a list",
+    "engine": "apple",
+    "segments": [
+      "I like bullet points."
+    ],
+    "plain": "I like bullet points."
+  },
+  {
+    "name": "bullet inside a list is the next item",
+    "engine": "apple",
+    "segments": [
+      "New list. Apples. Bullet. Pears."
+    ],
+    "plain": "Apples.\nPears.",
+    "markdown": "- Apples.\n- Pears."
+  },
+  {
+    "name": "a heading ends at the pause",
+    "engine": "apple",
+    "segments": [
+      "Heading. Resource budgets.",
+      "Idle RSS is low."
+    ],
+    "plain": "Resource budgets.\nIdle RSS is low.",
+    "markdown": "## Resource budgets.\nIdle RSS is low."
+  },
+  {
+    "name": "a removed filler passes its capital on",
+    "engine": "apple",
+    "segments": [
+      "We shipped it.",
+      "Um, the tests pass."
+    ],
+    "plain": "We shipped it. The tests pass."
+  },
+  {
+    "name": "a filler mid-sentence at the seam",
+    "engine": "apple",
+    "segments": [
+      "And then we",
+      "um shipped it."
+    ],
+    "plain": "And then we shipped it."
+  },
+  {
+    "name": "a contraction is a plain word",
+    "engine": "apple",
+    "segments": [
+      "We tried,",
+      "Don't do that."
+    ],
+    "plain": "We tried, don't do that."
+  },
+  {
+    "name": "after a colon the case is left alone",
+    "engine": "apple",
+    "segments": [
+      "Two things:",
+      "First, the spec."
+    ],
+    "plain": "Two things: First, the spec."
+  },
+  {
+    "name": "an empty segment is ignored",
+    "engine": "apple",
+    "segments": [
+      "Hello.",
+      "   ",
+      "World."
+    ],
+    "plain": "Hello. World."
+  },
+  {
+    "name": "a question mark is a terminator",
+    "engine": "apple",
+    "segments": [
+      "Is it done?",
+      "yes it is."
+    ],
+    "plain": "Is it done? Yes it is."
+  },
+  {
+    "name": "a semicolon continues",
+    "engine": "apple",
+    "segments": [
+      "We tried;",
+      "It failed."
+    ],
+    "plain": "We tried; it failed."
+  },
+  {
+    "name": "a number keeps its shape",
+    "engine": "apple",
+    "segments": [
+      "Here is my",
+      "1st real dictation."
+    ],
+    "plain": "Here is my 1st real dictation."
+  },
+  {
+    "name": "mixed case is left alone",
+    "engine": "apple",
+    "segments": [
+      "I bought an",
+      "iPhone yesterday."
+    ],
+    "plain": "I bought an iPhone yesterday."
+  },
+  {
+    "name": "so after a full stop is a filler",
+    "engine": "apple",
+    "segments": [
+      "We shipped it.",
+      "So the tests pass."
+    ],
+    "plain": "We shipped it. The tests pass."
+  },
+  {
+    "name": "so mid-sentence is a word",
+    "engine": "apple",
+    "segments": [
+      "And then,",
+      "so we fixed it."
+    ],
+    "plain": "And then, so we fixed it."
+  },
+  {
+    "name": "vad: two segments, one sentence",
+    "engine": "vad",
+    "segments": [
+      "we need to ship",
+      "the build today"
+    ],
+    "plain": "We need to ship the build today"
+  },
+  {
+    "name": "vad: a spoken period, then a capital across the seam",
+    "engine": "vad",
+    "segments": [
+      "ship it period",
+      "then rest"
+    ],
+    "plain": "Ship it. Then rest"
+  },
+  {
+    "name": "vad: new paragraph closes a segment",
+    "engine": "vad",
+    "segments": [
+      "we shipped it new paragraph",
+      "the tests pass"
+    ],
+    "plain": "We shipped it\nThe tests pass"
+  },
+  {
+    "name": "vad: new paragraph opens a segment",
+    "engine": "vad",
+    "segments": [
+      "we shipped it",
+      "new paragraph the tests pass"
+    ],
+    "plain": "We shipped it\nThe tests pass"
+  },
+  {
+    "name": "vad: a list item continues across the cut",
+    "engine": "vad",
+    "segments": [
+      "new list apples and",
+      "pears next item grapes"
+    ],
+    "plain": "Apples and pears\nGrapes",
+    "markdown": "- Apples and pears\n- Grapes"
+  },
+  {
+    "name": "vad: a spoken comma at the cut",
+    "engine": "vad",
+    "segments": [
+      "we tried comma",
+      "then we rested"
+    ],
+    "plain": "We tried, then we rested"
+  },
+  {
+    "name": "vad: so at a cut is a word, because nothing says a sentence ended",
+    "engine": "vad",
+    "segments": [
+      "the parser",
+      "failed today",
+      "so we fixed it"
+    ],
+    "plain": "The parser failed today so we fixed it"
+  },
+  {
+    "name": "vad: next item across the cut keeps the list numbered",
+    "engine": "vad",
+    "segments": [
+      "numbered list review the spec",
+      "next item run the benchmarks"
+    ],
+    "plain": "Review the spec\nRun the benchmarks",
+    "markdown": "1. Review the spec\n2. Run the benchmarks"
+  },
+  {
+    "name": "vad: a universal filler at the cut still goes",
+    "engine": "vad",
+    "segments": [
+      "and then we",
+      "um shipped it"
+    ],
+    "plain": "And then we shipped it"
+  }
+]

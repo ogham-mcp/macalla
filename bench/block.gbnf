@@ -1,0 +1,8 @@
+# Block schema for Tier 1, matching crates/macalla-core/src/block.rs.
+# The model cannot emit free text: the grammar is the enforcement, and the
+# >40% change guard is the second net behind it.
+root   ::= "{" ws "\"text\":" ws string "," ws "\"kind\":" ws kind ws "}"
+kind   ::= "\"paragraph\"" | "\"list_item\"" | "\"heading\""
+string ::= "\"" char* "\""
+char   ::= [^"\\] | "\\" ["\\/bfnrt]
+ws     ::= [ \t\n]*

@@ -1,0 +1,120 @@
+[
+  {
+    "name": "three numbered points in one breath",
+    "engine": "apple",
+    "segments": [
+      "One, review the spec. Two, run the benchmarks. Three, write it up."
+    ],
+    "plain": "Review the spec.\nRun the benchmarks.\nWrite it up.",
+    "markdown": "1. Review the spec.\n2. Run the benchmarks.\n3. Write it up."
+  },
+  {
+    "name": "a cadence across pauses, with an introduction",
+    "engine": "apple",
+    "segments": [
+      "Three things.",
+      "One, review the spec.",
+      "Two, run the benchmarks.",
+      "Three, write it up."
+    ],
+    "plain": "Three things.\nReview the spec.\nRun the benchmarks.\nWrite it up.",
+    "markdown": "Three things.\n1. Review the spec.\n2. Run the benchmarks.\n3. Write it up."
+  },
+  {
+    "name": "two markers are speech about numbers",
+    "engine": "apple",
+    "segments": [
+      "One, the spec. Two, the benchmarks."
+    ],
+    "plain": "One, the spec. Two, the benchmarks."
+  },
+  {
+    "name": "counting is not a list",
+    "engine": "apple",
+    "segments": [
+      "The texts are lists like one, two, three, or bullet points."
+    ],
+    "plain": "The texts are lists like one, two, three, or bullet points."
+  },
+  {
+    "name": "numbers inside a sentence are not markers when the engine punctuates",
+    "engine": "apple",
+    "segments": [
+      "I have one apple, two pears and three oranges."
+    ],
+    "plain": "I have one apple, two pears and three oranges."
+  },
+  {
+    "name": "ordinals make a list too",
+    "engine": "apple",
+    "segments": [
+      "First, the spec. Second, the benchmarks. Third, the write-up."
+    ],
+    "plain": "The spec.\nThe benchmarks.\nThe write-up.",
+    "markdown": "1. The spec.\n2. The benchmarks.\n3. The write-up."
+  },
+  {
+    "name": "the engine's own digit forms count",
+    "engine": "apple",
+    "segments": [
+      "1st, the spec. 2nd, the benchmarks. 3rd, the write-up."
+    ],
+    "plain": "The spec.\nThe benchmarks.\nThe write-up.",
+    "markdown": "1. The spec.\n2. The benchmarks.\n3. The write-up."
+  },
+  {
+    "name": "a colon introduction and semicolon separators",
+    "engine": "apple",
+    "segments": [
+      "Three things: one, the spec; two, the benchmarks; three, the write-up."
+    ],
+    "plain": "Three things:\nThe spec\nThe benchmarks\nThe write-up.",
+    "markdown": "Three things:\n1. The spec\n2. The benchmarks\n3. The write-up."
+  },
+  {
+    "name": "a fourth item after a pause joins the list",
+    "engine": "apple",
+    "segments": [
+      "One, the spec. Two, the benchmarks. Three, the write-up.",
+      "Four, the release."
+    ],
+    "plain": "The spec.\nThe benchmarks.\nThe write-up.\nThe release.",
+    "markdown": "1. The spec.\n2. The benchmarks.\n3. The write-up.\n4. The release."
+  },
+  {
+    "name": "vad: a cadence in one segment",
+    "engine": "vad",
+    "segments": [
+      "one review the spec two run the benchmarks three write it up"
+    ],
+    "plain": "Review the spec\nRun the benchmarks\nWrite it up",
+    "markdown": "1. Review the spec\n2. Run the benchmarks\n3. Write it up"
+  },
+  {
+    "name": "vad: a cadence across cuts",
+    "engine": "vad",
+    "segments": [
+      "one review the spec",
+      "two run the benchmarks",
+      "three write it up"
+    ],
+    "plain": "Review the spec\nRun the benchmarks\nWrite it up",
+    "markdown": "1. Review the spec\n2. Run the benchmarks\n3. Write it up"
+  },
+  {
+    "name": "vad: two markers are left alone",
+    "engine": "vad",
+    "segments": [
+      "we shipped one build and two fixes"
+    ],
+    "plain": "We shipped one build and two fixes"
+  },
+  {
+    "name": "vad: markers out of order are not a cadence",
+    "engine": "vad",
+    "segments": [
+      "two of them left and one stayed and three came back"
+    ],
+    "plain": "Two of them left and one stayed and three came back"
+  }
+]

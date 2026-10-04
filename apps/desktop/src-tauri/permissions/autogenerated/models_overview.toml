@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-models-overview"
+description = "Enables the models_overview command without any pre-configured scope."
+commands.allow = ["models_overview"]
+
+[[permission]]
+identifier = "deny-models-overview"
+description = "Denies the models_overview command without any pre-configured scope."
+commands.deny = ["models_overview"]

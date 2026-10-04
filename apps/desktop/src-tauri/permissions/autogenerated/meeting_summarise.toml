@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-meeting-summarise"
+description = "Enables the meeting_summarise command without any pre-configured scope."
+commands.allow = ["meeting_summarise"]
+
+[[permission]]
+identifier = "deny-meeting-summarise"
+description = "Denies the meeting_summarise command without any pre-configured scope."
+commands.deny = ["meeting_summarise"]

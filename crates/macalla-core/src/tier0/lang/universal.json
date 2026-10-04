@@ -1,0 +1,21 @@
+{
+  "_comment": "UNIVERSAL fillers: tokens that are not lexical words in ANY language Macalla can output, so removing them cannot corrupt text even when the language is unknown or wrong. This list is GLOBAL, not per-language -- a Portuguese dictation containing 'uh' should still lose it. Anything that is a real word somewhere ('um' pt/de, 'ha' es, 'ah'/'eh' interjections) belongs in a language table's language_gated list instead. Shape adopted from Handy's UNIVERSAL_FILLER_WORDS (MIT).",
+  "fillers": [
+    "uh",
+    "uhm",
+    "umm",
+    "uhh",
+    "uhhh",
+    "ehh",
+    "ehm",
+    "ahm",
+    "hmm",
+    "hm",
+    "mh",
+    "mmm",
+    "mm",
+    "mhm",
+    "uh-huh",
+    "erm"
+  ]
+}

@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-dictation-finish"
+description = "Enables the dictation_finish command without any pre-configured scope."
+commands.allow = ["dictation_finish"]
+
+[[permission]]
+identifier = "deny-dictation-finish"
+description = "Denies the dictation_finish command without any pre-configured scope."
+commands.deny = ["dictation_finish"]

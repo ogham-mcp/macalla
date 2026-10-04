@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-pool-models"
+description = "Enables the pool_models command without any pre-configured scope."
+commands.allow = ["pool_models"]
+
+[[permission]]
+identifier = "deny-pool-models"
+description = "Denies the pool_models command without any pre-configured scope."
+commands.deny = ["pool_models"]

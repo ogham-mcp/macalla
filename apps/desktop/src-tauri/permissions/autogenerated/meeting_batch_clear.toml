@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-meeting-batch-clear"
+description = "Enables the meeting_batch_clear command without any pre-configured scope."
+commands.allow = ["meeting_batch_clear"]
+
+[[permission]]
+identifier = "deny-meeting-batch-clear"
+description = "Denies the meeting_batch_clear command without any pre-configured scope."
+commands.deny = ["meeting_batch_clear"]

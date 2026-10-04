@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-history-send-again"
+description = "Enables the history_send_again command without any pre-configured scope."
+commands.allow = ["history_send_again"]
+
+[[permission]]
+identifier = "deny-history-send-again"
+description = "Denies the history_send_again command without any pre-configured scope."
+commands.deny = ["history_send_again"]

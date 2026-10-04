@@ -1,0 +1,39 @@
+# PICT model for Tier 0. Pairwise coverage of the dimensions that interact,
+# rather than a golden file per combination -- the full cross product is 7425
+# cases and almost all of them test nothing new.
+#
+#   pict fixtures/combinatorial/tier0.pict /o:2 > cases.tsv
+#
+# The oracle is NOT a fixed expected string. Generated inputs are checked
+# against PROPERTIES that must hold whatever the combination:
+#   - Tier 0 never invents a word (it is a filter with no generative step)
+#   - a gated filler survives when the language is not its gating language
+#   - a sentence-initial word survives mid-sentence
+# Golden strings would need regenerating every time a rule changes; properties
+# do not.
+
+Language:    en, de, es, fr, it, pt, ja, ko, zh, yue, unknown
+FillerClass: always, gated, initial, phrase, none
+Position:    opening, mid, after_terminator
+Stutter:     none, single, multi
+Structure:   none, paragraph, heading, bullet, ordered
+Punctuation: none, comma, period
+
+# --- Constraints: state honestly what data we actually have. ---
+
+# Cross-language gated fillers are only populated for these three.
+IF [FillerClass] = "gated" THEN [Language] IN {"en", "de", "fr"};
+
+# Sentence-initial words and multi-word markers exist only in the English
+# table. The other nine are stubs or partially populated.
+IF [FillerClass] IN {"initial", "phrase"} THEN [Language] = "en";
+
+# Structure commands, spoken punctuation and the stutterable list are English
+# only. Populating them elsewhere needs a native speaker, not a translation of
+# the English keys.
+IF [Structure]   <> "none" THEN [Language] = "en";
+IF [Punctuation] <> "none" THEN [Language] = "en";
+IF [Stutter]     <> "none" THEN [Language] = "en";
+
+# Position is only meaningful when there is a filler to place.
+IF [FillerClass] = "none" THEN [Position] = "opening";

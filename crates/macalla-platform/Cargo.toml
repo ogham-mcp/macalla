@@ -1,0 +1,75 @@
+[package]
+name = "macalla-platform"
+description = "Hotkey, text insertion and permission checks for Macalla, per OS."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[features]
+# OFF by default, deliberately. A global-key listener needs a desktop session,
+# and the CLI is meant to be headless and work on a Linux server
+# with no display -- a default-on listener breaks that promise at the Cargo
+# level. The desktop app and the macOS CLI turn it on; a server build never
+# sees it. The listener itself is macOS-only for now: a tap of our own over
+# CoreGraphics, keycodes and flags only (see src/tap.rs for why not rdev).
+#
+# The recogniser, the keycode table and their tests build either way, so the
+# state machine is still covered on a headless box.
+default = []
+hotkey = []
+
+[dependencies]
+# The microphone. Unconditional, unlike `hotkey` below: needing an
+# audio stack is this crate's job, and `libasound2-dev` on Linux is a build
+# dependency of the crate that talks to devices. The hotkey is different -- a
+# listener needs a display session, which would break the headless CLI
+# promise, so it stays behind the feature above.
+cpal = "0.18.2"
+
+arboard = { version = "3.6.1", default-features = false }
+
+thiserror.workspace = true
+tracing.workspace = true
+macalla-core.workspace = true
+
+# The event tap and the synthetic keystrokes. Versions match what Tauri
+# already brings in, so nothing is duplicated in the lockfile. enigo is for
+# the other platforms: on macOS it asks HIToolbox for keycodes off the main
+# queue and macOS 26 traps the process (see src/keys.rs).
+[target.'cfg(target_os = "macos")'.dependencies]
+core-graphics = "0.25"
+core-foundation = "0.10"
+# The AirPods stem press (src/mute.rs): an Objective-C block handed to
+# AVAudioApplication. Both are already in the lockfile through Tauri.
+objc2 = { version = "0.6", features = ["exception"] }
+block2 = "0.6"
+# API keys in the login keychain (src/secrets.rs).
+apple-native-keyring-store = { version = "1.0.2", features = ["keychain"] }
+# System audio through a Core Audio process tap (src/system_audio.rs). All
+# four are already in the lockfile through cpal, at these versions; only the
+# features the tap needs are asked for. `block2` and `dispatch2` are for
+# AudioDeviceCreateIOProcIDWithBlock, whose block Core Audio owns until the
+# IO proc is destroyed, and for the property listener blocks.
+# `AudioHardwareDeprecated` holds kAudioDevicePropertyStreamFormat, the
+# format the aggregate device's input stream delivers; cpal already turns
+# it on, so it adds nothing to the build.
+objc2-core-audio = { version = "0.3.2", default-features = false, features = ["std", "AudioHardware", "AudioHardwareDeprecated", "objc2", "objc2-foundation", "objc2-core-audio-types", "block2", "dispatch2"] }
+objc2-core-audio-types = { version = "0.3.2", default-features = false, features = ["std", "CoreAudioBaseTypes", "objc2"] }
+objc2-core-foundation = { version = "0.3.2", default-features = false, features = ["std", "CFString", "CFDictionary", "CFArray", "CFNumber"] }
+objc2-foundation = { version = "0.3.2", default-features = false, features = ["std", "NSArray", "NSString", "NSValue"] }
+
+# The credential store on the platforms that have one here: the keychain on
+# macOS, the Credential Manager on Windows. Linux is parked (2026-09-11): the
+# Secret Service store would add 55 crates, about 1.98 MB of downloads, and no
+# reference app has solved it, so Linux takes keys from the environment for now.
+[target.'cfg(any(target_os = "macos", target_os = "windows"))'.dependencies]
+keyring-core = "1.0.0"
+
+[target.'cfg(target_os = "windows")'.dependencies]
+windows-native-keyring-store = "1.1.0"
+
+[target.'cfg(not(target_os = "macos"))'.dependencies]
+enigo = "0.6.1"
