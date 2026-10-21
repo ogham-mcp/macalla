@@ -109,6 +109,18 @@ export interface EnhancementMissed {
   in_history: boolean;
 }
 
+/**
+ * Mirrors `src-tauri::dictation::EngineLoadingView`, on the
+ * `dictation-loading` event: a press, a click or the tray started a
+ * dictation that waits on an on-device model loading. `engine` is the
+ * engine's display name; `reason` is "open" while a session opens on it
+ * (at launch, after a switch) and "reload" after an idle unload.
+ */
+export interface EngineLoading {
+  engine: string;
+  reason: "open" | "reload";
+}
+
 /** Every speech model this build can fetch, and whether it is here. */
 export function modelsList(): Promise<ModelView[]> {
   return invoke("models_list");
@@ -158,6 +170,60 @@ export function setupSteps(): Promise<StepSummary[]> {
 /** The shortcut to hold, the way the key caps read. */
 export function shortcut(): Promise<string> {
   return invoke("shortcut");
+}
+
+/** Mirrors `src-tauri::shortcut::ShortcutRow`: one choice in the Shortcut
+ * card's list. `value` is what `shortcutChoose` takes. */
+export interface ShortcutRow {
+  label: string;
+  value: string;
+  note: string | null;
+}
+
+/** Mirrors `src-tauri::shortcut::ShortcutView`: the Shortcut card, every
+ * sentence already composed in Rust. */
+export interface ShortcutView {
+  heading: string;
+  about: string;
+  rows: ShortcutRow[];
+  chosen: string;
+  record_option: string;
+  press_the_keys: string;
+  cancel: string;
+}
+
+/** The Shortcut card's list, the one in use, and its sentences. */
+export function shortcutView(): Promise<ShortcutView> {
+  return invoke("shortcut_view");
+}
+
+/** Use this shortcut from now on, in the form `Shortcut::parse` reads
+ * ("Right Option", "shift+fn"). Rejects with a sentence if refused. */
+export function shortcutChoose(text: string): Promise<void> {
+  return invoke("shortcut_choose", { text });
+}
+
+/**
+ * A key going down or up in this window, by `KeyboardEvent.code`. Windows calls
+ * no keyboard hook while a Macalla window has focus, so the window passes its
+ * keys to the shortcut itself. Does nothing off Windows.
+ */
+export function shortcutKey(code: string, down: boolean, repeat: boolean): Promise<void> {
+  return invoke("shortcut_key", { code, down, repeat });
+}
+
+/**
+ * This window lost focus with these keys (`KeyboardEvent.code`) still down by
+ * its count. Each is let go unless it is still physically held. Does nothing
+ * off Windows.
+ */
+export function shortcutFocusLost(codes: string[]): Promise<void> {
+  return invoke("shortcut_focus_lost", { codes });
+}
+
+/** While recording, the current shortcut starts nothing. Always turn it back off. */
+export function shortcutRecord(on: boolean): Promise<void> {
+  return invoke("shortcut_record", { on });
 }
 
 /**
@@ -340,6 +406,22 @@ export function historyRetention(): Promise<RetentionView> {
 /** Change how long history is kept. Takes effect at once. */
 export function historySetRetention(value: string): Promise<void> {
   return invoke("history_set_retention", { value });
+}
+
+/** Mirrors `src-tauri::commands::UnloadView`. */
+export interface UnloadView {
+  current: string;
+  choices: { value: string; label: string }[];
+}
+
+/** How long an idle local engine stays loaded, and the choices. */
+export function unloadChoice(): Promise<UnloadView> {
+  return invoke("unload_choice");
+}
+
+/** Change how long an idle local engine stays loaded. Takes effect at once. */
+export function unloadChoose(value: string): Promise<void> {
+  return invoke("unload_choose", { value });
 }
 
 /** Mirrors `src-tauri::dictionary::DictionaryInfo`. */

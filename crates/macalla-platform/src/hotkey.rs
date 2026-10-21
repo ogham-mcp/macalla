@@ -249,6 +249,67 @@ impl Shortcut {
     }
 }
 
+/// Why [`Shortcut::check`] turned a shortcut down. A reason, not a sentence:
+/// the app turns each into words in its own catalogue.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Refusal {
+    /// The trigger is an ordinary key. Macalla's keyboard tap only listens --
+    /// it does not swallow the event -- so an ordinary key would type while you
+    /// dictate, and it stops working the moment macOS Secure Event Input is on
+    /// (a password field). A modifier held on its own, or Fn, does neither.
+    WouldType,
+    /// Esc discards a dictation, so it cannot also start one.
+    Esc,
+    /// Alt held on its own, away from macOS. Letting go of a bare Alt moves
+    /// the focused app into its menu bar, so the paste that follows lands in
+    /// the menu, not the text. (On macOS the same key is Option, which does
+    /// nothing of the kind.)
+    MenuKey,
+}
+
+/// The keys the Shortcut card offers as quick choices, as text
+/// [`Shortcut::parse`] accepts. Each is a key held on its own: a modifier that
+/// reports its release and keeps working while macOS Secure Event Input is on,
+/// or Fn. The first is the platform default. A left/right variant not listed
+/// is set through "Record a key".
+#[cfg(target_os = "macos")]
+pub const PRESETS: &[&str] = &[
+    "Right Option",
+    "Left Option",
+    "Right Command",
+    "Right Control",
+    "Right Shift",
+    "Fn",
+];
+
+/// Off macOS there is no Option or Command key, and Fn is not delivered to
+/// software, so the quick choices are the modifiers a PC keyboard has. The
+/// first is the platform default (Right Ctrl).
+///
+/// Right Alt is left out: on a layout with AltGr it is AltGr, which Windows
+/// delivers as Ctrl with Alt. Alt on either side is refused outright
+/// ([`Refusal::MenuKey`]).
+#[cfg(not(target_os = "macos"))]
+pub const PRESETS: &[&str] = &["Right Control", "Left Control", "Right Shift", "Left Shift"];
+
+impl Shortcut {
+    /// Whether this shortcut is one Macalla will take. A modifier held on its
+    /// own, or Fn (which may be gated by modifiers), is always fine: it types
+    /// nothing and survives Secure Event Input. An ordinary key is refused,
+    /// because the tap does not swallow it and it would type. ([`Shortcut::parse`]
+    /// only ever yields `Key::Mod` with no modifiers -- a bare modifier -- and
+    /// turns a modifier-only combination down as ambiguous for a hold, so a
+    /// gated `Key::Mod` never reaches here.)
+    pub fn check(&self) -> Result<(), Refusal> {
+        match self.key {
+            Key::Mod(Modifier::Alt, _) if !cfg!(target_os = "macos") => Err(Refusal::MenuKey),
+            Key::Mod(..) | Key::Fn => Ok(()),
+            Key::Esc => Err(Refusal::Esc),
+            Key::Char(_) => Err(Refusal::WouldType),
+        }
+    }
+}
+
 /// "right option", "Left Cmd" and so on: a side and a modifier, nothing else.
 fn parse_sided_modifier(part: &str) -> Option<Key> {
     let mut words = part.split_whitespace().map(str::to_lowercase);
@@ -433,6 +494,7 @@ pub struct Listener {
     events: std::sync::mpsc::Receiver<crate::Result<Action>>,
     recogniser: std::sync::Arc<std::sync::Mutex<Recogniser>>,
     held: HeldWatch,
+    actions: std::sync::mpsc::Sender<crate::Result<Action>>,
 }
 
 /// What [`Listener::on_held`] set, called from the tap thread.
@@ -463,6 +525,43 @@ impl DictationState {
     }
 }
 
+/// What a running [`Listener`] lets the app change. Cheap to clone.
+#[cfg(all(feature = "hotkey", target_os = "macos"))]
+#[derive(Clone)]
+pub struct Controls {
+    recogniser: std::sync::Arc<std::sync::Mutex<Recogniser>>,
+    /// To send the `Stop` a swap or a pause can owe a running dictation.
+    actions: std::sync::mpsc::Sender<crate::Result<Action>>,
+}
+
+#[cfg(all(feature = "hotkey", target_os = "macos"))]
+impl Controls {
+    /// Change the shortcut while running. The tap thread cannot be restarted
+    /// (one per process), so this swaps the shortcut inside the shared
+    /// recogniser and forgets its key state.
+    pub fn set_shortcut(&self, shortcut: Shortcut) {
+        let stopped = self.lock().set_shortcut(shortcut);
+        self.send(stopped);
+    }
+
+    /// While `paused`, key events produce no action. The Shortcut card pauses
+    /// the listener while it records a new shortcut.
+    pub fn pause(&self, paused: bool) {
+        let stopped = self.lock().set_paused(paused);
+        self.send(stopped);
+    }
+
+    fn lock(&self) -> std::sync::MutexGuard<'_, Recogniser> {
+        self.recogniser.lock().unwrap_or_else(|p| p.into_inner())
+    }
+
+    fn send(&self, action: Option<Action>) {
+        if let Some(action) = action {
+            let _ = self.actions.send(Ok(action));
+        }
+    }
+}
+
 #[cfg(all(feature = "hotkey", target_os = "macos"))]
 impl Listener {
     /// Start watching for `shortcut`.
@@ -478,6 +577,7 @@ impl Listener {
         let recogniser = shared.clone();
         let held = HeldWatch::default();
         let watch = held.clone();
+        let actions = tx.clone();
         std::thread::Builder::new()
             .name("macalla-hotkey".into())
             .spawn(move || {
@@ -511,6 +611,27 @@ impl Listener {
             events,
             recogniser: shared,
             held,
+            actions,
+        }
+    }
+
+    /// Change the shortcut while running. See [`Controls::set_shortcut`].
+    pub fn set_shortcut(&self, shortcut: Shortcut) {
+        self.controls().set_shortcut(shortcut);
+    }
+
+    /// While `paused`, key events produce no action. See [`Controls::pause`].
+    pub fn pause(&self, paused: bool) {
+        self.controls().pause(paused);
+    }
+
+    /// A handle for [`Listener::set_shortcut`] and [`Listener::pause`] from
+    /// elsewhere, once the listener itself has gone to the thread that waits
+    /// on it.
+    pub fn controls(&self) -> Controls {
+        Controls {
+            recogniser: self.recogniser.clone(),
+            actions: self.actions.clone(),
         }
     }
 
@@ -536,6 +657,11 @@ impl Listener {
         self.events.try_recv().ok()
     }
 }
+
+// The Windows listener, the same shape as the macOS one above, over the
+// keyboard hook instead of the event tap.
+#[cfg(all(feature = "hotkey", target_os = "windows"))]
+pub use crate::hotkey_windows::{Controls, DictationState, Listener};
 
 /// Turns key events into [`Action`]s.
 pub struct Recogniser {
@@ -568,6 +694,9 @@ pub struct Recogniser {
     /// discards. Any other key in between resets it, so "Esc, type, Esc" is
     /// two ordinary escapes and not a discard.
     esc_armed: bool,
+    /// While set, no key produces an action: the Shortcut card is recording
+    /// a new one and the current one must not start a dictation.
+    paused: bool,
 }
 
 impl Recogniser {
@@ -582,7 +711,27 @@ impl Recogniser {
             next: false,
             ending: false,
             esc_armed: false,
+            paused: false,
         }
+    }
+
+    /// Swap the shortcut and forget every key state, so nothing stays held
+    /// and the new key works at once. Returns `Stop` when the old shortcut
+    /// had a dictation under way, as [`Recogniser::reset`] does. What the app
+    /// says about a dictation running is kept.
+    pub fn set_shortcut(&mut self, shortcut: Shortcut) -> Option<Action> {
+        let stopped = self.reset();
+        self.shortcut = shortcut;
+        stopped
+    }
+
+    /// While paused, [`Recogniser::press`] and [`Recogniser::release`] do
+    /// nothing. Key state is forgotten both ways, so a key held across the
+    /// change is not counted as held.
+    pub fn set_paused(&mut self, paused: bool) -> Option<Action> {
+        let stopped = self.reset();
+        self.paused = paused;
+        stopped
     }
 
     /// Whether exactly the required modifiers are down -- no more, no fewer.
@@ -595,7 +744,7 @@ impl Recogniser {
 
     /// Whether a delivered key is this shortcut's trigger. A shortcut that
     /// does not name a side accepts both; one that does accepts only that one.
-    fn is_trigger(&self, pressed: Key) -> bool {
+    pub(crate) fn is_trigger(&self, pressed: Key) -> bool {
         match (self.shortcut.key, pressed) {
             (Key::Mod(want, Side::Either), Key::Mod(got, _)) => want == got,
             (Key::Mod(want, want_side), Key::Mod(got, got_side)) => {
@@ -698,6 +847,9 @@ impl Recogniser {
     /// simulating an unreleased repeat) -- so removing the latch entirely is
     /// safe rather than merely papering over the same gap.
     pub fn press(&mut self, key: Key) -> Option<Action> {
+        if self.paused {
+            return None;
+        }
         // Esc twice in a row while dictating discards it.
         // Counted, not timed: the recogniser has no clock, and "the last key
         // was also Esc" is the rule a person can predict. Any other key --
@@ -763,6 +915,9 @@ impl Recogniser {
 
     /// A key came up.
     pub fn release(&mut self, key: Key) -> Option<Action> {
+        if self.paused {
+            return None;
+        }
         if key == Key::Esc && self.shortcut.key != Key::Esc {
             return None;
         }
@@ -852,6 +1007,105 @@ impl Recogniser {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn right_option() -> Shortcut {
+        Shortcut::parse("right option").unwrap()
+    }
+
+    #[test]
+    fn every_preset_round_trips_and_is_allowed() {
+        for text in PRESETS {
+            let parsed = Shortcut::parse(text).unwrap_or_else(|e| panic!("{text:?}: {e}"));
+            assert_eq!(parsed.check(), Ok(()), "{text:?}");
+            assert_eq!(Shortcut::parse(&parsed.to_string()).unwrap(), parsed);
+        }
+        if cfg!(target_os = "macos") {
+            assert_eq!(
+                Shortcut::parse(PRESETS[0]).unwrap(),
+                Shortcut::default_for_platform()
+            );
+        }
+    }
+
+    fn check(text: &str) -> Result<(), Refusal> {
+        Shortcut::parse(text).unwrap().check()
+    }
+
+    #[test]
+    fn check_refuses_any_trigger_that_types() {
+        // The tap only listens, so an ordinary key would type while dictating
+        // and dies under Secure Input -- with a modifier held or not.
+        assert_eq!(check("d"), Err(Refusal::WouldType));
+        assert_eq!(check("shift+a"), Err(Refusal::WouldType));
+        assert_eq!(check("cmd+c"), Err(Refusal::WouldType));
+        assert_eq!(check("cmd+space"), Err(Refusal::WouldType));
+        assert_eq!(check("ctrl+space"), Err(Refusal::WouldType));
+        assert_eq!(check("cmd+shift+3"), Err(Refusal::WouldType));
+        assert_eq!(check("cmd+shift+d"), Err(Refusal::WouldType));
+        assert_eq!(check("ctrl+option+space"), Err(Refusal::WouldType));
+        assert_eq!(
+            Shortcut {
+                modifiers: BTreeSet::new(),
+                key: Key::Esc
+            }
+            .check(),
+            Err(Refusal::Esc)
+        );
+    }
+
+    #[test]
+    fn check_allows_a_modifier_or_fn_held() {
+        assert_eq!(check("right cmd"), Ok(()));
+        assert_eq!(check("right ctrl"), Ok(()));
+        assert_eq!(check("left shift"), Ok(()));
+        assert_eq!(check("fn"), Ok(()));
+        // Fn gated by a modifier: Fn is the trigger, the modifier gates it.
+        assert_eq!(check("shift+fn"), Ok(()));
+    }
+
+    #[test]
+    fn alt_on_its_own_is_option_on_macos_and_a_menu_key_elsewhere() {
+        for text in ["right option", "left alt"] {
+            if cfg!(target_os = "macos") {
+                assert_eq!(check(text), Ok(()), "{text}");
+            } else {
+                assert_eq!(check(text), Err(Refusal::MenuKey), "{text}");
+            }
+        }
+    }
+
+    #[test]
+    fn switching_shortcut_while_a_key_is_held_leaves_nothing_held() {
+        let mut r = Recogniser::new(right_option(), Mode::Hold);
+        let ropt = Key::Mod(Modifier::Alt, Side::Right);
+        assert_eq!(r.press(ropt), Some(Action::Start));
+        assert!(r.is_held());
+        // The old shortcut was mid-dictation: it is stopped, not left running.
+        assert_eq!(
+            r.set_shortcut(Shortcut::parse("right ctrl").unwrap()),
+            Some(Action::Stop)
+        );
+        assert!(!r.is_held());
+        // The old key does nothing now; the new one works at once.
+        assert_eq!(r.press(ropt), None);
+        r.release(ropt);
+        let rctl = Key::Mod(Modifier::Control, Side::Right);
+        assert_eq!(r.press(rctl), Some(Action::Start));
+        assert_eq!(r.release(rctl), Some(Action::Stop));
+    }
+
+    #[test]
+    fn paused_produces_no_actions_and_resumes() {
+        let mut r = Recogniser::new(right_option(), Mode::Hold);
+        let ropt = Key::Mod(Modifier::Alt, Side::Right);
+        assert_eq!(r.set_paused(true), None);
+        assert_eq!(r.press(ropt), None);
+        assert_eq!(r.release(ropt), None);
+        assert!(!r.is_held());
+        assert_eq!(r.set_paused(false), None);
+        assert_eq!(r.press(ropt), Some(Action::Start));
+        assert_eq!(r.release(ropt), Some(Action::Stop));
+    }
 
     #[test]
     fn left_and_right_modifiers_are_the_same_key_in_a_chord() {

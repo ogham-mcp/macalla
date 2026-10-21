@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-shortcut-view"
+description = "Enables the shortcut_view command without any pre-configured scope."
+commands.allow = ["shortcut_view"]
+
+[[permission]]
+identifier = "deny-shortcut-view"
+description = "Denies the shortcut_view command without any pre-configured scope."
+commands.deny = ["shortcut_view"]

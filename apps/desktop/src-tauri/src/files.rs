@@ -1505,7 +1505,7 @@ pub fn meeting_open_file(
     let spawned = std::thread::Builder::new()
         .name("macalla-meeting".into())
         .spawn(move || {
-            let lend = || dictator.meeting_tools();
+            let lend = || dictator.meeting_tools_loaded();
             let hold = |holds: bool| meetings_for_thread.holding_model(job, holds);
             let mut progress = |event: ProgressEvent| {
                 let _ = app.emit("meeting-progress", event);
@@ -2209,7 +2209,7 @@ pub fn meeting_batch_start(
         .name("macalla-batch".into())
         .spawn(move || {
             let ended = finish_batch(&meetings_for_thread, job, || {
-                let lend = || dictator.meeting_tools();
+                let lend = || dictator.meeting_tools_loaded();
                 let hold = |holds: bool| meetings_for_thread.holding_model(job, holds);
                 let mut save = |name: &str, extension: &str, text: &str| {
                     save_new(&dir, name, &date, extension, text)
@@ -2684,7 +2684,7 @@ pub fn meeting_live_start(
             .spawn(move || {
                 // The microphone dictation would listen through now.
                 let device = dictator.device();
-                let lend = || dictator.meeting_tools();
+                let lend = || dictator.meeting_tools_loaded();
                 let hold = |holds: bool| meetings.holding_model(job, holds);
                 let mut ready = |committed: Committed| meetings.live_ready(job, committed);
                 let mut open = || -> macalla_session::Result<(Box<dyn Source>, CallAudio)> {

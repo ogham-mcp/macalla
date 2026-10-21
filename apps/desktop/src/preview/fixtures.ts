@@ -24,8 +24,10 @@ import type {
   PoolProviderView,
   ProviderKeysView,
   RetentionView,
+  UnloadView,
   RunningLive,
   RunningSummary,
+  ShortcutView,
   StepSummary,
   TermView,
   TranslationOptions,
@@ -185,6 +187,31 @@ export const FIXTURE_SETUP_STEPS_ELSEWHERE_DONE = [
 /** "Right Option" is the default hold-to-talk key on macOS. */
 export const FIXTURE_SHORTCUT = "Right Option";
 
+/** The Shortcut card, as `shortcut_view` returns it for the default. */
+export const FIXTURE_SHORTCUT_VIEW: ShortcutView = {
+  heading: "Shortcut",
+  about: "Hold Right Option to dictate.",
+  rows: [
+    "Right Option",
+    "Left Option",
+    "Right Cmd",
+    "Right Ctrl",
+    "Right Shift",
+    "Fn",
+  ].map((label) => ({
+    label,
+    value: label,
+    note:
+      label === "Fn"
+        ? "macOS may also use Fn (Globe) for its own dictation or the emoji picker. You can change that in System Settings, under Keyboard."
+        : null,
+  })),
+  chosen: "Right Option",
+  record_option: "Record a key…",
+  press_the_keys: "Press a key…",
+  cancel: "Cancel",
+};
+
 export const FIXTURE_DICTIONARY_INFO = {
   path: FIXTURE_DICTIONARY_PATH,
   terms: 10,
@@ -224,6 +251,18 @@ export const FIXTURE_HISTORY_RETENTION = {
     { value: "30d", label: "30 days" },
   ],
 } satisfies RetentionView;
+
+export const FIXTURE_UNLOAD = {
+  current: "5",
+  choices: [
+    { value: "2", label: "2 minutes" },
+    { value: "5", label: "5 minutes" },
+    { value: "15", label: "15 minutes" },
+    { value: "30", label: "30 minutes" },
+    { value: "60", label: "1 hour" },
+    { value: "indefinite", label: "Keep loaded" },
+  ],
+} satisfies UnloadView;
 
 export const FIXTURE_INPUT_DEVICE = "MacBook Pro Microphone";
 

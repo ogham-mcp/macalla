@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "overlay",
-  "description": "The dictation overlay: the core defaults, for the events it listens to, and only the commands behind its cancel and finish buttons",
+  "description": "The dictation overlay: the core defaults, for the events it listens to, and the commands behind its cancel and finish buttons, and on Windows the two that pass the shortcut its keys should it ever have focus",
   "windows": ["overlay"],
-  "permissions": ["core:default", "allow-dictation-cancel", "allow-dictation-finish"]
+  "permissions": ["core:default", "allow-dictation-cancel", "allow-dictation-finish", "allow-shortcut-key", "allow-shortcut-focus-lost"]
 }

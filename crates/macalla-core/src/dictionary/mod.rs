@@ -820,7 +820,20 @@ impl Dictionary {
                         })
                         .unwrap_or_default();
                     let tail: String = tail.chars().rev().collect();
-                    out.push(format!("{head}{}{tail}", t.written));
+                    // Except what the written form already has at that end:
+                    // ".NET" typed as ".NET" carries its own full stop, and
+                    // carrying it again wrote "..NET" ("C#" became "C##").
+                    let written = t.written.as_str();
+                    let own_head: String = written
+                        .chars()
+                        .take_while(|c| !c.is_alphanumeric())
+                        .collect();
+                    let own_tail = &written[written
+                        .trim_end_matches(|c: char| !c.is_alphanumeric())
+                        .len()..];
+                    let head = head.strip_suffix(own_head.as_str()).unwrap_or(&head);
+                    let tail = tail.strip_prefix(own_tail).unwrap_or(&tail);
+                    out.push(format!("{head}{written}{tail}"));
                     gi += n;
                     matched = true;
                     break;

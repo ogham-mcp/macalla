@@ -74,8 +74,15 @@ const FRAME: Duration = Duration::from_millis(120);
 // They are template images: solid black with an alpha channel, tinted by
 // macOS to match the menu bar and inverted when the bar is dark or the item
 // is selected. That is why there is no light and dark pair here.
+//
+// Windows and Linux do not tint, and a black glyph vanishes on a dark
+// taskbar, so away from macOS the tray shows the app's own mark ([`MARK`])
+// instead and holds it steady while a dictation runs: the overlay and the
+// Stop and Cancel items say a dictation is running there.
+#[cfg(target_os = "macos")]
 static IDLE: Image<'static> = tauri::include_image!("./icons/MenuBar/StatusIdle@2x.png");
 
+#[cfg(target_os = "macos")]
 static LISTENING: [Image<'static>; 6] = [
     tauri::include_image!("./icons/MenuBar/StatusListening-1@2x.png"),
     tauri::include_image!("./icons/MenuBar/StatusListening-2@2x.png"),
@@ -84,6 +91,30 @@ static LISTENING: [Image<'static>; 6] = [
     tauri::include_image!("./icons/MenuBar/StatusListening-5@2x.png"),
     tauri::include_image!("./icons/MenuBar/StatusListening-6@2x.png"),
 ];
+
+/// The app icon, dark tile and all, which reads on a light taskbar and a dark
+/// one alike. 32 px so a 200% display still gets a sharp 16-point icon.
+#[cfg(not(target_os = "macos"))]
+static MARK: Image<'static> = tauri::include_image!("./icons/32x32.png");
+
+/// Whether the tray artwork is a template for the OS to tint: only macOS does.
+const TEMPLATE: bool = cfg!(target_os = "macos");
+
+/// The image the tray shows for this state and frame.
+#[cfg(target_os = "macos")]
+fn artwork(listening: bool, frame: usize) -> &'static Image<'static> {
+    if listening {
+        &LISTENING[frame % LISTENING.len()]
+    } else {
+        &IDLE
+    }
+}
+
+/// The image the tray shows for this state and frame: always the app's mark.
+#[cfg(not(target_os = "macos"))]
+fn artwork(_listening: bool, _frame: usize) -> &'static Image<'static> {
+    &MARK
+}
 
 /// The channel that tells the Microphone submenu's refresher thread
 /// ([`spawn_microphone_menu_refresher`]) to rebuild it, managed as app state
@@ -140,11 +171,8 @@ pub fn build(app: &AppHandle<Wry>) -> tauri::Result<()> {
     )?;
 
     let tray = TrayIconBuilder::new()
-        .icon(IDLE.clone())
-        // No-op away from macOS. Elsewhere the frames render as the flat
-        // black glyph they are, which is right on a light taskbar and wrong
-        // on a dark one; Windows and Linux packaging picks that up.
-        .icon_as_template(true)
+        .icon(artwork(false, 0).clone())
+        .icon_as_template(TEMPLATE)
         .menu(&menu)
         .show_menu_on_left_click(true)
         .on_menu_event(on_menu_event)
@@ -235,7 +263,7 @@ fn animate(
             // set_icon followed by set_icon_as_template renders twice and
             // flickers; this sets both at once. Away from macOS it falls
             // back to a plain set_icon.
-            if let Err(e) = tray.set_icon_with_as_template(Some(image.clone()), true) {
+            if let Err(e) = tray.set_icon_with_as_template(Some(image.clone()), TEMPLATE) {
                 tracing::info!("tray: could not set the icon: {e}");
             }
         };
@@ -269,10 +297,11 @@ fn animate(
         let mut frame = 0usize;
 
         loop {
-            let next = if listening {
+            let next = if listening && TEMPLATE {
                 rx.recv_timeout(FRAME)
             } else {
-                // Idle: no timer, no wake-ups. Park until something happens.
+                // Idle, or away from macOS where the artwork does not move:
+                // no timer, no wake-ups. Park until something happens.
                 rx.recv().map_err(|_| RecvTimeoutError::Disconnected)
             };
 
@@ -281,13 +310,13 @@ fn animate(
                 Ok(now) => {
                     listening = now;
                     frame = 0;
-                    show(if now { &LISTENING[0] } else { &IDLE });
+                    show(artwork(now, 0));
                     relabel(now);
                     show_cancel(now);
                 }
                 Err(RecvTimeoutError::Timeout) => {
-                    frame = (frame + 1) % LISTENING.len();
-                    show(&LISTENING[frame]);
+                    frame = frame.wrapping_add(1);
+                    show(artwork(true, frame));
                 }
                 Err(RecvTimeoutError::Disconnected) => return,
             }

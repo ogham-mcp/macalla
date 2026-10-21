@@ -397,6 +397,21 @@ pub const TRANSLATE_TO_HELP: &str =
     "The language to translate into, as a code, for example de or fr.";
 pub const TRANSLATE_FORMAT_HELP: &str = "How to print the translated transcript.";
 
+/// Said on stderr as an on-device model starts loading, before `listen`
+/// says it is listening: a large model takes seconds, and the first load on
+/// a machine much longer, with nothing else on screen. `engine` is the
+/// engine's name, which is data. The CLI never unloads, so `Reload` is only
+/// here because the session's reasons are matched whole.
+pub fn loading_engine(engine: &str, reason: macalla_session::LoadReason) -> String {
+    match reason {
+        macalla_session::LoadReason::Open => format!(
+            "  loading {engine} -- this can take a moment, and longer the first time on this \
+             computer"
+        ),
+        macalla_session::LoadReason::Reload => format!("  loading {engine} again"),
+    }
+}
+
 /// Said when `macalla translate` is given a recording.
 pub const TRANSLATE_NEEDS_TRANSCRIPT: &str = "translate reads a transcript file (.vtt, .srt or \
                                               .txt), not a recording; save the recording's \
@@ -465,6 +480,20 @@ pub const MARKDOWN: macalla_core::markdown::Words<'static> = macalla_core::markd
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn a_model_load_is_said_whole_with_the_engine_named() {
+        use macalla_session::LoadReason;
+        assert_eq!(
+            loading_engine("Parakeet", LoadReason::Open),
+            "  loading Parakeet -- this can take a moment, and longer the first time on this \
+             computer"
+        );
+        assert_eq!(
+            loading_engine("Parakeet", LoadReason::Reload),
+            "  loading Parakeet again"
+        );
+    }
 
     #[test]
     fn a_live_meeting_that_kept_its_words_says_why_it_stopped_and_never_that_nothing_was_kept() {

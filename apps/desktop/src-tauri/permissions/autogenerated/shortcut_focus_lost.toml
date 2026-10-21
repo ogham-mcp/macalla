@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-shortcut-focus-lost"
+description = "Enables the shortcut_focus_lost command without any pre-configured scope."
+commands.allow = ["shortcut_focus_lost"]
+
+[[permission]]
+identifier = "deny-shortcut-focus-lost"
+description = "Denies the shortcut_focus_lost command without any pre-configured scope."
+commands.deny = ["shortcut_focus_lost"]

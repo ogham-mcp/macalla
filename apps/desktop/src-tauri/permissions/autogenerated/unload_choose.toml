@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-unload-choose"
+description = "Enables the unload_choose command without any pre-configured scope."
+commands.allow = ["unload_choose"]
+
+[[permission]]
+identifier = "deny-unload-choose"
+description = "Denies the unload_choose command without any pre-configured scope."
+commands.deny = ["unload_choose"]

@@ -25,7 +25,9 @@ use super::{
     Running, FORMATS,
 };
 use crate::translate_words as words;
-use macalla_core::translate::{Progress, TranslateError, Translator, Unavailable};
+use macalla_core::translate::{
+    installed_source, Progress, TranslateError, Translator, Unavailable,
+};
 use macalla_session::meeting::MeetingTranscript;
 use serde::Serialize;
 use std::sync::atomic::AtomicBool;
@@ -407,7 +409,7 @@ pub fn meeting_translation_check(
     dictator: State<'_, Dictator>,
     target: String,
 ) -> Option<Said> {
-    let source = source_language(&dictator);
+    let source = installed_source(translation.0.as_ref(), &source_language(&dictator), &target);
     translation
         .0
         .availability(&source, &target)
@@ -447,6 +449,9 @@ pub fn meeting_translate(
                 meetings_for_thread.translation_progressed(job, event.clone());
                 let _ = app.emit("translation-progress", event);
             };
+            // Here, not before the thread: the translator is never asked on
+            // the main thread.
+            let source = installed_source(translator.as_ref(), &source, &target);
             let outcome = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
                 run_translation(
                     translator.as_ref(),

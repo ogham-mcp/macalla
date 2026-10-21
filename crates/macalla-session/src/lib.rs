@@ -797,6 +797,15 @@ pub struct Session {
     /// [`Dictation::front_app`]. [`macalla_platform::frontmost_app`]; a test
     /// names an app of its own.
     front_app: fn() -> Option<String>,
+    /// The on-device engine's id, kept so an unloaded engine can be rebuilt by
+    /// id, and so `engine_id()`/the UI still name it while it is unloaded.
+    local_id: &'static str,
+    /// How the local engine is (re)built after an idle unload. See
+    /// [`EngineBuilder`].
+    build_engine: EngineBuilder,
+    /// True while the local engine has been dropped to free memory; the next
+    /// dictation rebuilds it ([`Session::ensure_engine_loaded`]).
+    engine_unloaded: bool,
 }
 
 /// A cloud transcription engine, ready for the next key release.
@@ -838,6 +847,94 @@ impl SttEngine for NoPreview {
         Err(macalla_core::Error::Unsupported {
             engine: "none",
             what: "transcription",
+        })
+    }
+}
+
+/// How [`Session`] (re)builds its local engine, by id and language. Production
+/// is [`macalla_engines::registry::open`]; a test injects a fake. Injected like
+/// `detector`/`front_app` so the unload/reload path is tested without loading a
+/// real model.
+type EngineBuilder = fn(&str, &str) -> macalla_core::Result<Box<dyn SttEngine>>;
+
+/// Why an on-device model is being loaded into this process.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum LoadReason {
+    /// A session is opening on it: at launch, after a switch, or once its
+    /// model has landed. The first load on a machine also compiles the
+    /// model's GPU shaders, which takes ten seconds or more.
+    Open,
+    /// An idle unload dropped it ([`Session::unload_engine`]), and a
+    /// dictation needs it back.
+    Reload,
+}
+
+/// A model load that is about to start, so a trigger can say so while it
+/// runs: which engine, by registry id, and why. No words: each app says it
+/// in its own.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct EngineLoad {
+    pub engine: &'static str,
+    pub reason: LoadReason,
+}
+
+/// The load an open of `info`'s engine starts, if it starts one worth
+/// saying: a downloaded model this build can run. Apple Speech loads
+/// nothing into this process, and an engine that cannot open fails at
+/// once, with nothing to wait for.
+fn load_on_open(info: Option<&registry::EngineInfo>) -> Option<EngineLoad> {
+    let info = info?;
+    let loads = info.model.is_some() && matches!(info.availability, registry::Availability::Ready);
+    loads.then_some(EngineLoad {
+        engine: info.id,
+        reason: LoadReason::Open,
+    })
+}
+
+/// Build the on-device engine `id` with `build`, telling `on_load` first
+/// when `load` says the build loads a model. Told before, never after: the
+/// caller shows the wait while it happens.
+fn open_engine_reporting(
+    id: &str,
+    language: &str,
+    build: EngineBuilder,
+    load: Option<EngineLoad>,
+    on_load: &mut dyn FnMut(&EngineLoad),
+) -> macalla_core::Result<Box<dyn SttEngine>> {
+    if let Some(load) = load {
+        on_load(&load);
+    }
+    build(id, language)
+}
+
+/// Stands in for a local engine that has been unloaded to free its memory
+/// after an idle period (see [`Session::unload_engine`]). It keeps the real
+/// engine's id, so `engine_id()` and the UI still name the engine while it is
+/// unloaded; [`Session::ensure_engine_loaded`] rebuilds the real engine before
+/// any dictation, so `stream`/`transcribe` here are reached only by a bug.
+struct Unloaded(&'static str);
+
+impl SttEngine for Unloaded {
+    fn id(&self) -> &'static str {
+        self.0
+    }
+    fn caps(&self) -> EngineCaps {
+        EngineCaps::batch()
+    }
+    fn stream(&self, _ctx: &SttContext) -> macalla_core::Result<Box<dyn SttStream>> {
+        Err(macalla_core::Error::Unsupported {
+            engine: self.0,
+            what: "a live preview before the engine is reloaded",
+        })
+    }
+    fn transcribe(
+        &self,
+        _audio: &AudioSegment,
+        _ctx: &SttContext,
+    ) -> macalla_core::Result<Transcript> {
+        Err(macalla_core::Error::Unsupported {
+            engine: self.0,
+            what: "transcription before the engine is reloaded",
         })
     }
 }
@@ -896,6 +993,38 @@ impl Session {
     /// reason. Without a cloud engine, no local engine is still
     /// [`Error::NoEngine`].
     pub fn open_with_keys(config: Config, keys: &dyn SecretStore) -> Result<Self> {
+        Self::open_with_keys_reporting(config, keys, &mut |_| {})
+    }
+
+    /// Like [`Session::open`], telling `on_load` just before the on-device
+    /// engine's model starts loading -- the slow part of an open, seconds
+    /// for a large model and longer on a machine's first load -- so a
+    /// trigger can show the wait. Not told for an engine that loads nothing
+    /// into this process (Apple Speech) or cannot open.
+    pub fn open_reporting(config: Config, on_load: &mut dyn FnMut(&EngineLoad)) -> Result<Self> {
+        Self::open_with_keys_reporting(config, &SystemSecrets::new(), on_load)
+    }
+
+    /// [`Session::open_with_keys`], telling `on_load` as
+    /// [`Session::open_reporting`] does.
+    pub fn open_with_keys_reporting(
+        config: Config,
+        keys: &dyn SecretStore,
+        on_load: &mut dyn FnMut(&EngineLoad),
+    ) -> Result<Self> {
+        Self::open_with(config, keys, registry::find, registry::open, on_load)
+    }
+
+    /// [`Session::open_with_keys_reporting`] with the registry's lookup and
+    /// build passed in, so a test can check what is reported without a
+    /// real model.
+    fn open_with(
+        config: Config,
+        keys: &dyn SecretStore,
+        find: fn(&str) -> Option<registry::EngineInfo>,
+        build: EngineBuilder,
+        on_load: &mut dyn FnMut(&EngineLoad),
+    ) -> Result<Self> {
         // The cloud engine first. "Needs a key" is the answer a person can
         // act on whatever this machine's own engine can do, and building one
         // sends nothing.
@@ -910,7 +1039,8 @@ impl Session {
             .engine
             .clone()
             .unwrap_or_else(|| registry::default_engine_id().to_string());
-        let engine = match registry::open(&id, &config.language) {
+        let load = load_on_open(find(&id).as_ref());
+        let engine = match open_engine_reporting(&id, &config.language, build, load, on_load) {
             // No engine and no cloud is no session, said before the
             // dictionary is looked for, as it always was.
             Err(e) if cloud.is_none() => return Err(Error::NoEngine(e)),
@@ -985,6 +1115,9 @@ impl Session {
         config: Config,
     ) -> Self {
         let language = config.language;
+        // Before `engine` is moved into the Arc below: its id is kept so an
+        // unloaded engine can be rebuilt by id.
+        let local_id = engine.id();
         let cloud = cloud.map(|(provider, cloud_engine)| {
             let (pipeline, terms) = fit(cloud_engine.as_ref(), dictionary.clone(), &language);
             Cloud {
@@ -1027,6 +1160,9 @@ impl Session {
             armed: None,
             detector: speech_detector,
             front_app: macalla_platform::frontmost_app,
+            local_id,
+            build_engine: macalla_engines::registry::open,
+            engine_unloaded: false,
         }
     }
 
@@ -1259,6 +1395,76 @@ impl Session {
     /// [`Progress::CloudSent`]'s `heard` text.
     pub fn local_engine_id(&self) -> &'static str {
         self.engine.id()
+    }
+
+    /// Whether the local engine is loaded (not freed by an idle unload). The
+    /// host's idle timer checks this before unloading again.
+    pub fn engine_loaded(&self) -> bool {
+        !self.engine_unloaded
+    }
+
+    /// Whether this engine is worth unloading: one that keeps a downloaded
+    /// model resident in the process (Parakeet, Whisper, ...), not Apple
+    /// Speech, which runs out of process (~13 MB, nothing to free) or a
+    /// cloud-only session with no on-device engine. Read from the registry's
+    /// `model` field, so no engine id is hardcoded here.
+    pub fn engine_unloadable(&self) -> bool {
+        macalla_engines::registry::find(self.local_id)
+            .and_then(|info| info.model)
+            .is_some()
+    }
+
+    /// Drop the local engine to return its memory to the OS -- a resident
+    /// Parakeet is ~900 MB and SPEC §7's idle budget is 400 MB. A placeholder
+    /// keeps the engine's id so the UI still names it; the next dictation
+    /// rebuilds it ([`Session::ensure_engine_loaded`]). A no-op only while
+    /// already unloaded.
+    ///
+    /// The armed microphone is left as it is: it stays armed between dictations
+    /// for a fast start, which is NOT a live dictation, so it must not stop an
+    /// unload (the engine and the mic are independent; the reload happens before
+    /// the next dictation records). An actually-running dictation cannot reach
+    /// here: the host only unloads while its loop waits for the next command,
+    /// and a dictation blocks that loop elsewhere. This is only the mechanism:
+    /// the host decides WHEN, from its idle timer and the person's setting, and
+    /// gates on [`Session::engine_unloadable`].
+    pub fn unload_engine(&mut self) {
+        if self.engine_unloaded {
+            return;
+        }
+        self.engine = Arc::new(Unloaded(self.local_id));
+        self.engine_unloaded = true;
+        tracing::info!(engine = self.local_id, "unloaded the idle local engine");
+    }
+
+    /// Rebuild the local engine if an idle unload dropped it, so the next
+    /// dictation has it. The pipeline is left as it is: it is derived from the
+    /// engine's capabilities, which a rebuild of the same engine does not
+    /// change. A no-op (and cheap) when the engine is already loaded, so any
+    /// host can call it before a dictation without caring whether it unloaded.
+    pub fn ensure_engine_loaded(&mut self) -> Result<()> {
+        self.ensure_engine_loaded_with(|_| {})
+    }
+
+    /// [`Session::ensure_engine_loaded`], telling `on_load` just before a
+    /// reload starts, and not at all when the engine is loaded. One call
+    /// rather than a check and then a load, so a trigger cannot ask
+    /// [`Session::engine_loaded`], say something, and load on a different
+    /// answer.
+    pub fn ensure_engine_loaded_with(&mut self, on_load: impl FnOnce(&EngineLoad)) -> Result<()> {
+        if !self.engine_unloaded {
+            return Ok(());
+        }
+        on_load(&EngineLoad {
+            engine: self.local_id,
+            reason: LoadReason::Reload,
+        });
+        let language = self.context.language.clone().unwrap_or_default();
+        let engine = (self.build_engine)(self.local_id, &language)?;
+        self.engine = Arc::from(engine);
+        self.engine_unloaded = false;
+        tracing::info!(engine = self.local_id, "reloaded the local engine");
+        Ok(())
     }
 
     /// The engine whose words are in this dictation's document, for History:
@@ -3177,6 +3383,214 @@ mod tests {
 
     fn energy() -> Box<dyn SpeechDetector> {
         Box::new(macalla_core::vad::energy::EnergyDetector::new())
+    }
+
+    #[test]
+    fn an_unloaded_engine_frees_then_rebuilds_on_demand() {
+        // The reload goes through an injected builder, so the test never loads
+        // a real model: exactly why `build_engine` is a field.
+        fn rebuild(_id: &str, _lang: &str) -> macalla_core::Result<Box<dyn SttEngine>> {
+            Ok(Box::new(FakeEngine::new(EngineCaps::stream_first())))
+        }
+        let mut s = session(FakeEngine::new(EngineCaps::stream_first()));
+        s.build_engine = rebuild;
+
+        assert!(s.engine_loaded());
+        s.unload_engine();
+        assert!(!s.engine_loaded(), "unload drops the engine");
+        // The id is kept so the UI still names the engine while it is unloaded.
+        assert_eq!(s.engine_id(), "fake");
+
+        s.ensure_engine_loaded().unwrap();
+        assert!(s.engine_loaded(), "the next dictation rebuilds it");
+        // Loading again is a cheap no-op, so any host can call it unconditionally.
+        s.ensure_engine_loaded().unwrap();
+        assert!(s.engine_loaded());
+    }
+
+    /// A builder as slow as a real model's load can be, for the tests that
+    /// time how soon the caller hears a load is starting.
+    const SLOW_BUILD: Duration = Duration::from_secs(2);
+
+    fn slow_rebuild(_id: &str, _lang: &str) -> macalla_core::Result<Box<dyn SttEngine>> {
+        std::thread::sleep(SLOW_BUILD);
+        Ok(Box::new(FakeEngine::new(EngineCaps::stream_first())))
+    }
+
+    fn fast_rebuild(_id: &str, _lang: &str) -> macalla_core::Result<Box<dyn SttEngine>> {
+        Ok(Box::new(FakeEngine::new(EngineCaps::stream_first())))
+    }
+
+    #[test]
+    fn a_reload_says_it_is_starting_before_the_slow_build_and_only_when_one_is_needed() {
+        let mut s = session(FakeEngine::new(EngineCaps::stream_first()));
+        s.build_engine = slow_rebuild;
+
+        // Loaded: nothing to load, so nothing is said.
+        let mut told = Vec::new();
+        s.ensure_engine_loaded_with(|load| told.push(*load))
+            .unwrap();
+        assert!(told.is_empty(), "a loaded engine is not loaded again");
+
+        s.unload_engine();
+        let asked = Instant::now();
+        let mut first_feedback = None;
+        s.ensure_engine_loaded_with(|load| {
+            first_feedback = Some(asked.elapsed());
+            told.push(*load);
+        })
+        .unwrap();
+        let whole = asked.elapsed();
+        let first_feedback = first_feedback.expect("the caller is told a load is starting");
+        assert_eq!(
+            told,
+            vec![EngineLoad {
+                engine: "fake",
+                reason: LoadReason::Reload,
+            }]
+        );
+        // Told before the build, not after it.
+        assert!(whole >= SLOW_BUILD);
+        assert!(first_feedback < SLOW_BUILD / 2, "{first_feedback:?}");
+        assert!(s.engine_loaded());
+    }
+
+    #[test]
+    fn an_open_says_it_is_starting_before_the_slow_build() {
+        let asked = Instant::now();
+        let mut first_feedback = None;
+        let mut told = Vec::new();
+        let load = EngineLoad {
+            engine: "fake",
+            reason: LoadReason::Open,
+        };
+        let engine = open_engine_reporting("fake", "en-GB", slow_rebuild, Some(load), &mut |l| {
+            first_feedback.get_or_insert(asked.elapsed());
+            told.push(*l);
+        });
+        let whole = asked.elapsed();
+        assert!(engine.is_ok());
+        let first_feedback = first_feedback.expect("the caller is told a load is starting");
+        assert_eq!(told, vec![load]);
+        assert!(whole >= SLOW_BUILD);
+        assert!(first_feedback < SLOW_BUILD / 2, "{first_feedback:?}");
+
+        // Nothing to load, nothing said: the build still runs.
+        let mut said = false;
+        let engine = open_engine_reporting("fake", "en-GB", fast_rebuild, None, &mut |_| {
+            said = true;
+        });
+        assert!(engine.is_ok());
+        assert!(!said);
+    }
+
+    #[test]
+    fn an_open_asks_the_registry_about_its_engine_and_reports_the_load() {
+        // The composition `open_with_keys_reporting` runs, with the registry
+        // lookup and the build injected: an engine the lookup calls a ready
+        // downloaded model is reported before it is built, and one it does
+        // not know is built without a word. Breaking the wiring -- no
+        // lookup, or a load of `None` -- silences the first.
+        fn ready_model(id: &str) -> Option<registry::EngineInfo> {
+            (id == "fake").then(|| registry::EngineInfo {
+                id: "fake",
+                name: "Fake",
+                group: "Test",
+                model: Some("fake-model"),
+                blurb: "",
+                availability: registry::Availability::Ready,
+                languages: Vec::new(),
+                downloadable: Vec::new(),
+            })
+        }
+        let config = |engine: &str| Config {
+            engine: Some(engine.to_string()),
+            dictionary: Some("../../fixtures/dictionary/seed.json".into()),
+            ..Config::default()
+        };
+        let keys = macalla_platform::secrets::MemoryStore::new();
+
+        let mut told = Vec::new();
+        let opened = Session::open_with(
+            config("fake"),
+            &keys,
+            ready_model,
+            fast_rebuild,
+            &mut |load| told.push(*load),
+        );
+        assert!(opened.is_ok());
+        assert_eq!(
+            told,
+            vec![EngineLoad {
+                engine: "fake",
+                reason: LoadReason::Open,
+            }]
+        );
+
+        let mut said = false;
+        let opened = Session::open_with(
+            config("unknown"),
+            &keys,
+            ready_model,
+            fast_rebuild,
+            &mut |_| said = true,
+        );
+        assert!(opened.is_ok());
+        assert!(!said);
+    }
+
+    #[test]
+    fn an_open_reports_a_load_only_for_a_downloaded_model_it_can_run() {
+        let info = |model: Option<&'static str>, availability| registry::EngineInfo {
+            id: "parakeet",
+            name: "Parakeet",
+            group: "NVIDIA",
+            model,
+            blurb: "",
+            availability,
+            languages: Vec::new(),
+            downloadable: Vec::new(),
+        };
+        assert_eq!(
+            load_on_open(Some(&info(Some("m"), registry::Availability::Ready))),
+            Some(EngineLoad {
+                engine: "parakeet",
+                reason: LoadReason::Open,
+            })
+        );
+        // Apple Speech: nothing loads into this process.
+        assert_eq!(
+            load_on_open(Some(&info(None, registry::Availability::Ready))),
+            None
+        );
+        // A model not yet downloaded fails at once, with nothing to wait for.
+        assert_eq!(
+            load_on_open(Some(&info(
+                Some("m"),
+                registry::Availability::NeedsDownload("m".into())
+            ))),
+            None
+        );
+        assert_eq!(load_on_open(None), None);
+    }
+
+    #[test]
+    fn only_a_model_backed_engine_is_worth_unloading() {
+        // A fake is not in the registry, so like Apple Speech (model: None) it
+        // has nothing resident to free and is not unloadable -- the check that
+        // stops the idle timer churning the out-of-process engine. A
+        // transcribe.cpp engine (model: Some) is unloadable; that is registry
+        // data, asserted directly here so this test needs no model present.
+        let s = session(FakeEngine::new(EngineCaps::stream_first()));
+        assert!(!s.engine_unloadable());
+
+        let model_backed = macalla_engines::registry::engines()
+            .into_iter()
+            .any(|e| e.model.is_some());
+        assert!(
+            model_backed,
+            "the registry should list at least one model-backed engine"
+        );
     }
 
     #[test]

@@ -13,13 +13,14 @@ authors.workspace = true
 # and the CLI is meant to be headless and work on a Linux server
 # with no display -- a default-on listener breaks that promise at the Cargo
 # level. The desktop app and the macOS CLI turn it on; a server build never
-# sees it. The listener itself is macOS-only for now: a tap of our own over
-# CoreGraphics, keycodes and flags only (see src/tap.rs for why not rdev).
+# sees it. The listener is a tap of our own over CoreGraphics on macOS,
+# keycodes and flags only (see src/tap.rs for why not rdev), and a low-level
+# keyboard hook on Windows (src/hook.rs). Linux has none yet.
 #
 # The recogniser, the keycode table and their tests build either way, so the
 # state machine is still covered on a headless box.
 default = []
-hotkey = []
+hotkey = ["dep:windows-sys"]
 
 [dependencies]
 # The microphone. Unconditional, unlike `hotkey` below: needing an
@@ -70,6 +71,15 @@ keyring-core = "1.0.0"
 
 [target.'cfg(target_os = "windows")'.dependencies]
 windows-native-keyring-store = "1.1.0"
+# The keyboard hook (src/hook.rs), behind the `hotkey` feature. Already in the
+# lockfile at this version through Tauri and cpal; raw bindings only, and only
+# the four API families the hook calls.
+windows-sys = { version = "0.61", optional = true, features = [
+    "Win32_Foundation",
+    "Win32_System_LibraryLoader",
+    "Win32_UI_Input_KeyboardAndMouse",
+    "Win32_UI_WindowsAndMessaging",
+] }
 
 [target.'cfg(not(target_os = "macos"))'.dependencies]
 enigo = "0.6.1"

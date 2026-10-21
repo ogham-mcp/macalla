@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-shortcut-choose"
+description = "Enables the shortcut_choose command without any pre-configured scope."
+commands.allow = ["shortcut_choose"]
+
+[[permission]]
+identifier = "deny-shortcut-choose"
+description = "Denies the shortcut_choose command without any pre-configured scope."
+commands.deny = ["shortcut_choose"]

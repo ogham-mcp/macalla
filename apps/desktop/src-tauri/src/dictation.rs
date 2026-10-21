@@ -23,7 +23,7 @@ use std::cell::{Cell, RefCell};
 use std::collections::VecDeque;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::mpsc::{self, Receiver, RecvTimeoutError, Sender, TryRecvError};
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Condvar, Mutex};
 use tauri::{AppHandle, Emitter, Manager, Wry};
 
 /// The overlay window's size, matching `tauri.conf.json`. Positioned from
@@ -40,9 +40,8 @@ const IDLE_DEVICE_POLL: std::time::Duration = std::time::Duration::from_secs(2);
 /// What a trigger tells the dictation thread.
 ///
 /// The whole protocol, on every platform. Only the shortcut sends Start and
-/// Stop, and the shortcut is macOS-only until another backend lands, so
-/// elsewhere those variants are part of the protocol and not yet
-/// constructed. Discard also comes from a click ([`Dictator::cancel`]), and
+/// Stop, and the shortcut exists on macOS and Windows only, so on Linux
+/// those variants are part of the protocol and not yet constructed. Discard also comes from a click ([`Dictator::cancel`]), and
 /// Finish only from one ([`Dictator::finish`]).
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
@@ -67,6 +66,9 @@ pub enum Command {
     ReloadDictionary,
     /// A model landed: if there is no session yet, try to open one now.
     ReopenEngine,
+    /// The Files page is about to borrow the engine: bring it back if an
+    /// idle unload dropped it, and lend it again ([`Dictator::meeting_tools_loaded`]).
+    LoadEngine,
     /// The person chose another engine or transcription provider: open a
     /// session on it. One model per session, so the old one goes; a
     /// dictation in progress finishes first.
@@ -228,6 +230,23 @@ pub struct Dictator {
     status: OpenedStatusShared,
     cancel: CancelGate,
     microphone: MicrophoneOwner,
+    /// Whether a model is loading, so a Start or a Toggle sent here can
+    /// say so before it waits in the channel ([`send_trigger`]).
+    loading: EngineLoading,
+    // On Linux there is no listener to control, so `ShortcutControl` is empty
+    // and nothing reads this field; it is kept so the struct is built the same
+    // way on every platform.
+    #[cfg_attr(not(any(target_os = "macos", target_os = "windows")), allow(dead_code))]
+    shortcut: ShortcutControl,
+}
+
+/// What the Shortcut card changes in the running listener: the shortcut
+/// itself, and whether it listens at all while a new one is recorded. Does
+/// nothing where there is no listener (Linux).
+#[derive(Clone)]
+struct ShortcutControl {
+    #[cfg(any(target_os = "macos", target_os = "windows"))]
+    controls: macalla_platform::hotkey::Controls,
 }
 
 /// Who has the microphone: a dictation, a live meeting, or neither. One
@@ -578,22 +597,107 @@ impl HeldRow {
 /// an engine switch or a dictionary reload reaches the next file; `None` while
 /// no session is open. A meeting already running keeps what it borrowed.
 #[derive(Clone, Default)]
-struct LentTools(Arc<Mutex<Option<macalla_session::meeting::MeetingTools>>>);
+struct LentTools(Arc<(Mutex<Lent>, Condvar)>);
+
+/// What [`LentTools`] holds: the tools, and whether the session's engine was
+/// loaded when they were lent. Unloaded tools carry the session's stand-in,
+/// which refuses to transcribe.
+#[derive(Default)]
+struct Lent {
+    tools: Option<macalla_session::meeting::MeetingTools>,
+    loaded: bool,
+}
+
+/// How long a file waits for an unloaded engine to come back. A model loads
+/// in about a second on a recent Mac and can take ten or more on an older one.
+const LOAD_FOR_FILES_WAIT: std::time::Duration = std::time::Duration::from_secs(120);
 
 impl LentTools {
     fn get(&self) -> Option<macalla_session::meeting::MeetingTools> {
-        self.0.lock().ok().and_then(|tools| tools.clone())
+        self.0 .0.lock().ok().and_then(|lent| lent.tools.clone())
     }
 
     fn set(&self, session: Option<&Session>) {
-        let tools = session.and_then(|session| session.meeting_tools().ok());
-        if let Ok(mut current) = self.0.lock() {
-            *current = tools;
+        let loaded = session.is_some_and(Session::engine_loaded);
+        self.put(
+            session.and_then(|session| session.meeting_tools().ok()),
+            loaded,
+        );
+    }
+
+    fn put(&self, tools: Option<macalla_session::meeting::MeetingTools>, loaded: bool) {
+        let (lent, changed) = &*self.0;
+        if let Ok(mut current) = lent.lock() {
+            *current = Lent { tools, loaded };
         }
+        changed.notify_all();
+    }
+
+    /// Whether the tools lent now are an unloaded engine's.
+    fn unloaded(&self) -> bool {
+        self.0
+             .0
+            .lock()
+            .is_ok_and(|lent| lent.tools.is_some() && !lent.loaded)
+    }
+
+    /// Wait up to `wait` for the tools to be lent loaded, or taken back, and
+    /// return what is lent then.
+    fn get_loaded(
+        &self,
+        wait: std::time::Duration,
+    ) -> Option<macalla_session::meeting::MeetingTools> {
+        let (lent, changed) = &*self.0;
+        let Ok(guard) = lent.lock() else {
+            return None;
+        };
+        let guard = match changed
+            .wait_timeout_while(guard, wait, |lent| lent.tools.is_some() && !lent.loaded)
+        {
+            Ok((guard, _)) => guard,
+            Err(poisoned) => poisoned.into_inner().0,
+        };
+        guard.tools.clone()
     }
 }
 
 impl Dictator {
+    /// Hold `shortcut` to dictate from now on, in place of the one in use.
+    pub fn apply_shortcut(&self, shortcut: macalla_platform::hotkey::Shortcut) {
+        #[cfg(any(target_os = "macos", target_os = "windows"))]
+        self.shortcut.controls.set_shortcut(shortcut);
+        #[cfg(not(any(target_os = "macos", target_os = "windows")))]
+        let _ = shortcut;
+    }
+
+    /// Stop the shortcut starting anything while a new one is recorded, or
+    /// let it go on.
+    pub fn pause_shortcut(&self, paused: bool) {
+        #[cfg(any(target_os = "macos", target_os = "windows"))]
+        self.shortcut.controls.pause(paused);
+        #[cfg(not(any(target_os = "macos", target_os = "windows")))]
+        let _ = paused;
+    }
+
+    /// A key the page saw while one of Macalla's own windows had focus, which
+    /// the Windows hook cannot see then (`Controls::deliver`). Nothing to do
+    /// elsewhere: the macOS tap hears keys whichever window has focus.
+    pub fn deliver_key(&self, event: macalla_platform::vkey::HookEvent) {
+        #[cfg(target_os = "windows")]
+        self.shortcut.controls.deliver(event);
+        #[cfg(not(target_os = "windows"))]
+        let _ = event;
+    }
+
+    /// The page lost focus with `code` still down by its count: let it go
+    /// unless the key is still physically held (`Controls::focus_lost_with`).
+    pub fn key_focus_lost(&self, code: u32) {
+        #[cfg(target_os = "windows")]
+        self.shortcut.controls.focus_lost_with(code);
+        #[cfg(not(target_os = "windows"))]
+        let _ = code;
+    }
+
     /// The input device the next dictation will listen through, if known.
     pub fn device(&self) -> Option<String> {
         self.device.get()
@@ -609,6 +713,22 @@ impl Dictator {
     /// pipeline and cleanup. `None` while no session is open.
     pub fn meeting_tools(&self) -> Option<macalla_session::meeting::MeetingTools> {
         self.lent.get()
+    }
+
+    /// [`Dictator::meeting_tools`] for a file about to be heard: if an idle
+    /// unload dropped the engine, ask the dictation thread to load it again
+    /// and wait until it is lent loaded. Blocks, so never on the main thread.
+    /// If the load fails or takes too long, what is lent is returned anyway,
+    /// and the file fails as it would have.
+    pub fn meeting_tools_loaded(&self) -> Option<macalla_session::meeting::MeetingTools> {
+        if !self.lent.unloaded() {
+            return self.lent.get();
+        }
+        // Not through `send`: this is not a trigger, and shows no overlay.
+        if self.tx.send(Command::LoadEngine).is_err() {
+            return self.lent.get();
+        }
+        self.lent.get_loaded(LOAD_FOR_FILES_WAIT)
     }
 
     /// The History row whose recording can be sent again, if any.
@@ -643,7 +763,14 @@ impl Dictator {
     }
 
     pub fn send(&self, command: Command) {
-        if self.tx.send(command).is_err() {
+        let sent = send_from_trigger(
+            &self.app,
+            &self.tx,
+            &self.loading,
+            &self.shutdown.quitting,
+            command,
+        );
+        if sent.is_err() {
             // The thread never started or has gone -- almost always because
             // no engine could be opened, which was logged once at startup.
             // A tray item that looks live and does nothing is worse than a
@@ -778,20 +905,22 @@ pub fn start(app: AppHandle<Wry>, history: HistoryHandle) -> Dictator {
     let device = DeviceInUse::default();
     let status = OpenedStatusShared::default();
     let held = HeldRow::default();
+    #[cfg(any(target_os = "macos", target_os = "windows"))]
+    let shortcut = crate::shortcut::chosen(&history);
 
     // Whether the shortcut's key is held, as last told to the overlay: by
     // the listener's thread whenever the key goes down or up, and by the
     // dictation thread as each dictation starts and ends. A tray click
     // changes nothing.
-    #[cfg(target_os = "macos")]
+    #[cfg(any(target_os = "macos", target_os = "windows"))]
     let key_held = KeyHeld::default();
-    #[cfg(target_os = "macos")]
+    #[cfg(any(target_os = "macos", target_os = "windows"))]
     let (listener, on_dictating): (macalla_platform::hotkey::Listener, OnDictating) = {
-        use macalla_platform::hotkey::{Listener, Mode, Shortcut};
-        // Hold to dictate, on the platform default. Configurable later from
-        // the Shortcut card; the key events become the same commands the
-        // tray sends, which is the whole point of the channel.
-        let listener = Listener::start(Shortcut::default_for_platform(), Mode::Hold);
+        use macalla_platform::hotkey::{Listener, Mode};
+        // Hold to dictate, on the saved choice or the platform default. The
+        // Shortcut card changes it live; the key events become the same
+        // commands the tray sends, which is the whole point of the channel.
+        let listener = Listener::start(shortcut.clone(), Mode::Hold);
         let watch_held = key_held.clone();
         let watch_app = app.clone();
         listener.on_held(move |now| {
@@ -818,7 +947,9 @@ pub fn start(app: AppHandle<Wry>, history: HistoryHandle) -> Dictator {
         );
         (listener, on_dictating)
     };
-    #[cfg(not(target_os = "macos"))]
+    #[cfg(any(target_os = "macos", target_os = "windows"))]
+    let shortcut_controls = listener.controls();
+    #[cfg(not(any(target_os = "macos", target_os = "windows")))]
     let on_dictating: OnDictating = Box::new(|_| false);
 
     // The AirPods stem, the AirPods Max crown, a headset's mute button:
@@ -868,6 +999,8 @@ pub fn start(app: AppHandle<Wry>, history: HistoryHandle) -> Dictator {
     let thread_quitting = Arc::clone(&quitting);
     let deadline = QuitDeadline::default();
     let thread_deadline = deadline.clone();
+    let loading = EngineLoading::default();
+    let thread_loading = loading.clone();
     let handle = std::thread::Builder::new()
         .name("macalla-dictation".into())
         .spawn(move || {
@@ -885,22 +1018,33 @@ pub fn start(app: AppHandle<Wry>, history: HistoryHandle) -> Dictator {
                     quitting: thread_quitting,
                     deadline: thread_deadline,
                     microphone: thread_microphone,
+                    loading: thread_loading,
                 },
             )
         })
         .expect("spawn the dictation thread");
 
-    #[cfg(target_os = "macos")]
+    #[cfg(any(target_os = "macos", target_os = "windows"))]
     {
-        let shortcut = macalla_platform::hotkey::Shortcut::default_for_platform();
         let forward = tx.clone();
         let listener_app = app.clone();
+        let listener_loading = loading.clone();
+        let listener_quitting = Arc::clone(&quitting);
+        #[cfg(target_os = "windows")]
+        let shortcut_name = shortcut.to_string();
         std::thread::Builder::new()
             .name("macalla-shortcut".into())
             .spawn(move || {
                 while let Some(event) = listener.recv() {
                     match event {
-                        Ok(action) => forward.send(command_for(action)).ok(),
+                        Ok(action) => send_from_trigger(
+                            &listener_app,
+                            &forward,
+                            &listener_loading,
+                            &listener_quitting,
+                            command_for(action),
+                        )
+                        .ok(),
                         Err(e) => {
                             // Usually Input Monitoring. Said on the settings
                             // screen and the checklist brought forward,
@@ -908,15 +1052,25 @@ pub fn start(app: AppHandle<Wry>, history: HistoryHandle) -> Dictator {
                             // a broken app and the log is not where anyone
                             // looks first.
                             tracing::error!(error = %e, "the shortcut listener stopped");
+                            #[cfg(target_os = "macos")]
+                            {
+                                let _ = listener_app.emit(
+                                    "dictation-error",
+                                    "The shortcut cannot see your keys. Turn on Input Monitoring \
+                                     for Macalla in System Settings, then open Macalla again.",
+                                );
+                                if let Some(window) = listener_app.get_webview_window("main") {
+                                    let _ = listener_app.emit_to("main", "navigate", "settings");
+                                    let _ = window.show();
+                                }
+                            }
+                            // Windows asks for no permission, so there is no
+                            // pane to send anyone to: say the tray still works.
+                            #[cfg(target_os = "windows")]
                             let _ = listener_app.emit(
                                 "dictation-error",
-                                "The shortcut cannot see your keys. Turn on Input Monitoring \
-                                 for Macalla in System Settings, then open Macalla again.",
+                                crate::shortcut_words::not_listening(&shortcut_name),
                             );
-                            if let Some(window) = listener_app.get_webview_window("main") {
-                                let _ = listener_app.emit_to("main", "navigate", "settings");
-                                let _ = window.show();
-                            }
                             break;
                         }
                     };
@@ -943,6 +1097,11 @@ pub fn start(app: AppHandle<Wry>, history: HistoryHandle) -> Dictator {
         shutdown,
         cancel,
         microphone,
+        loading,
+        shortcut: ShortcutControl {
+            #[cfg(any(target_os = "macos", target_os = "windows"))]
+            controls: shortcut_controls,
+        },
     }
 }
 
@@ -1000,6 +1159,9 @@ fn verdict(rx: &Receiver<Command>, pending: &mut Pending) -> Verdict {
             // as `None`); with no session the Send-again arm never drains,
             // so the idle arm sees it. Nothing to do.
             Ok(Command::ReopenEngine) => {}
+            // A dictation is running, so the engine is loaded; the loop lends
+            // it again before the next wait.
+            Ok(Command::LoadEngine) => {}
             // A click for this dictation only: never the next one.
             Ok(Command::Finish) if pending.released => {}
             Ok(Command::Discard) => {
@@ -1972,7 +2134,7 @@ fn late_cleanup_to_keep<R, T>(
     }
 }
 
-/// [`OpenedStatus`] for what [`try_open`] found, with the session's own
+/// [`OpenedStatus`] for what [`try_open_reporting`] found, with the session's own
 /// stored cleanup choices for [`cleanup_status`]'s `Failed` arm -- pure, so
 /// a test drives it with a canned [`Opened`] and never needs a window.
 fn opened_status(
@@ -2608,8 +2770,15 @@ enum Opened {
 /// Models page, a key removed by hand from the keychain, a rebuild without
 /// the feature, or a stored id that is no longer a real provider all land
 /// here; `opened_status` says what opened instead.
-fn try_open(config: &Config, keys: &dyn SecretStore) -> Opened {
-    match Session::open_with_keys(config.clone(), keys) {
+///
+/// `on_load` is told as a model starts loading, on either attempt
+/// ([`Session::open_with_keys_reporting`]).
+fn try_open_reporting(
+    config: &Config,
+    keys: &dyn SecretStore,
+    on_load: &mut dyn FnMut(&macalla_session::EngineLoad),
+) -> Opened {
+    match Session::open_with_keys_reporting(config.clone(), keys, on_load) {
         Ok(session) if !session.can_dictate() => Opened::PreviewMissing(session),
         Ok(session) => Opened::Ready(session),
         Err(e) if config.cloud.is_some() && is_cloud_reason(&e) => {
@@ -2633,7 +2802,7 @@ fn try_open(config: &Config, keys: &dyn SecretStore) -> Opened {
                 cloud: None,
                 ..config.clone()
             };
-            match Session::open_with_keys(local_config, keys) {
+            match Session::open_with_keys_reporting(local_config, keys, on_load) {
                 Ok(session) => {
                     tracing::warn!(
                         error = %e,
@@ -2673,7 +2842,7 @@ fn try_open(config: &Config, keys: &dyn SecretStore) -> Opened {
     }
 }
 
-/// [`try_open`]'s [`Opened::Failed`] notice when the stored cloud choice
+/// [`try_open_reporting`]'s [`Opened::Failed`] notice when the stored cloud choice
 /// failed for a reason of its own and the local engine it fell back to
 /// failed too: `local_failure`'s own sentence
 /// ([`crate::say::say`]), plus that the saved provider was
@@ -2823,10 +2992,11 @@ fn open_session(
     status: &OpenedStatusShared,
     lent: &LentTools,
     keys: &dyn SecretStore,
+    loading: &EngineLoading,
 ) -> Option<Session> {
     let opened = open_and_lend(
         app,
-        || try_open(config, keys),
+        || loading.during(|on_load| try_open_reporting(config, keys, on_load)),
         |opened| status.set(app, opened_status(opened, &config.cleanup)),
         lent,
     );
@@ -2907,7 +3077,10 @@ fn show_overlay(app: &AppHandle<Wry>) {
         OVERLAY_HEIGHT,
         OVERLAY_BOTTOM_MARGIN,
     );
-    #[cfg(not(target_os = "macos"))]
+    // Tauri's `show()` would take focus on Windows (`overlay_windows`).
+    #[cfg(target_os = "windows")]
+    crate::overlay_windows::show(&overlay);
+    #[cfg(not(any(target_os = "macos", target_os = "windows")))]
     let _ = overlay.show();
 }
 
@@ -2935,8 +3108,222 @@ fn hide_overlay(app: &AppHandle<Wry>) {
         return;
     }
     if let Some(overlay) = app.get_webview_window("overlay") {
+        // Shown through Win32 on Windows, so hidden the same way.
+        #[cfg(target_os = "windows")]
+        crate::overlay_windows::hide(&overlay);
+        #[cfg(not(target_os = "windows"))]
         let _ = overlay.hide();
     }
+}
+
+/// The event that tells the overlay an on-device model is loading before a
+/// dictation can start, with an [`EngineLoadingView`]: told as a press, a
+/// click or the tray's Start Dictation lands while the session's model
+/// loads, so the person sees a wait and not a dead key. The overlay words
+/// it (`overlayWords.ts`), and "listening" replaces it.
+const ENGINE_LOADING: &str = "dictation-loading";
+
+/// Why the model is loading, as the overlay reads it.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize)]
+#[serde(rename_all = "lowercase")]
+enum LoadReasonView {
+    Open,
+    Reload,
+}
+
+/// [`ENGINE_LOADING`]'s payload: the engine's name, which is data, and why.
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize)]
+struct EngineLoadingView {
+    engine: String,
+    reason: LoadReasonView,
+}
+
+/// The session's typed load as the overlay is sent it: the engine by its
+/// registry name, or its id where the registry has no name for it.
+fn loading_view(load: &macalla_session::EngineLoad) -> EngineLoadingView {
+    let engine = macalla_engines::registry::find(load.engine)
+        .map_or(load.engine, |info| info.name)
+        .to_string();
+    let reason = match load.reason {
+        macalla_session::LoadReason::Open => LoadReasonView::Open,
+        macalla_session::LoadReason::Reload => LoadReasonView::Reload,
+    };
+    EngineLoadingView { engine, reason }
+}
+
+/// Bring back an engine an idle unload dropped before this dictation
+/// records, telling `tell` as the reload starts: it can take seconds, and
+/// the press that asked for it showed nothing until it was over. One call
+/// into the session, which decides whether there is anything to load.
+fn reload_for_dictation(
+    session: &mut Session,
+    tell: impl FnOnce(EngineLoadingView),
+) -> macalla_session::Result<()> {
+    session.ensure_engine_loaded_with(|load| tell(loading_view(load)))
+}
+
+/// Whether a session's model is loading now, shared between the dictation
+/// thread, which is blocked in the open while it is, and the triggers --
+/// the shortcut's thread and [`Dictator::send`] -- which are not. A press
+/// that lands during the open waits in the channel until the open is over;
+/// this is how it can say so at once.
+///
+/// One lock for both sides, and a trigger tells the overlay while holding
+/// it: so the open cannot be over, and the dictation thread cannot reach a
+/// press's "listening", while a press that saw the load is still telling
+/// it. The lock is never held across anything that waits on another
+/// thread: telling is an `emit`, a non-blocking send, and the overlay is
+/// shown after the lock is let go. The main thread takes it, through the
+/// tray, so that matters.
+#[derive(Clone, Default)]
+struct EngineLoading(Arc<Mutex<LoadingNow>>);
+
+#[derive(Default)]
+struct LoadingNow {
+    /// The load in flight, from the session's report until the open ends.
+    load: Option<EngineLoadingView>,
+    /// The overlay may be saying a model is loading: told by any trigger,
+    /// or shown by a dictation's own reload. Cleared only when that line
+    /// goes -- the overlay hidden, or "listening" said over it -- never by
+    /// a turn merely starting, because one flag serves every press: a turn
+    /// for an earlier press must not take it from the press that was told.
+    shown: bool,
+}
+
+impl EngineLoading {
+    fn lock(&self) -> std::sync::MutexGuard<'_, LoadingNow> {
+        self.0.lock().unwrap_or_else(|p| p.into_inner())
+    }
+
+    /// Run `open`, handing it what the session reports a load to, and say
+    /// a load is in flight from that report until `open` returns or
+    /// panics.
+    fn during<R>(&self, open: impl FnOnce(&mut dyn FnMut(&macalla_session::EngineLoad)) -> R) -> R {
+        struct Over<'a>(&'a EngineLoading);
+        impl Drop for Over<'_> {
+            fn drop(&mut self) {
+                self.0.lock().load = None;
+            }
+        }
+        let _over = Over(self);
+        open(&mut |load| self.lock().load = Some(loading_view(load)))
+    }
+
+    /// The load in flight, if any.
+    #[cfg(test)]
+    fn now(&self) -> Option<EngineLoadingView> {
+        self.lock().load.clone()
+    }
+
+    /// For a trigger about to send `command`: if it would start a
+    /// dictation and a load is in flight, tell `tell` while holding the
+    /// lock, and say whether it did. Not while `quitting`: nothing starts
+    /// then, and the overlay is not shown.
+    fn tell_if_loading(
+        &self,
+        command: Command,
+        quitting: bool,
+        tell: impl FnOnce(&EngineLoadingView),
+    ) -> bool {
+        if quitting || !matches!(command, Command::Start | Command::Toggle) {
+            return false;
+        }
+        let mut now = self.lock();
+        let Some(load) = now.load.as_ref() else {
+            return false;
+        };
+        tell(load);
+        now.shown = true;
+        true
+    }
+
+    /// A dictation's own reload has shown the overlay saying it loads.
+    fn mark_shown(&self) {
+        self.lock().shown = true;
+    }
+
+    /// "Listening" has been said, which replaces any loading line.
+    fn listening(&self) {
+        self.lock().shown = false;
+    }
+
+    /// Whether the overlay may still say a model is loading, clearing it:
+    /// asked only by whoever is about to hide the overlay.
+    fn take_shown(&self) -> bool {
+        std::mem::take(&mut self.lock().shown)
+    }
+}
+
+/// A dictation turn that ends before "listening": if the overlay may still
+/// say a model is loading -- told by any press, or shown by this turn's
+/// reload -- take it down with `hide`, or it says so for good.
+fn end_without_dictation(loading: &EngineLoading, hide: impl FnOnce()) {
+    if loading.take_shown() {
+        hide();
+    }
+}
+
+/// Tell the overlay a model is loading before this dictation, and show it:
+/// the dictation thread's own reload. Counted as a dictation's start is
+/// ([`OverlayShown::starting`]), so a notice from the last one that comes
+/// due now hides nothing of it.
+fn show_loading(
+    app: &AppHandle<Wry>,
+    shown: &OverlayShown,
+    loading: &EngineLoading,
+    view: &EngineLoadingView,
+) {
+    loading.mark_shown();
+    let counted = shown.starting();
+    let _ = app.emit(ENGINE_LOADING, view);
+    show_overlay(app);
+    drop(counted);
+}
+
+/// How every trigger sends its command to the dictation thread: if a model
+/// is loading, the overlay is told (`tell`, under [`EngineLoading`]'s lock)
+/// and shown (`show`) first, so it says so now and not once the load is
+/// over; then the command goes. If it cannot go -- the thread has gone --
+/// the overlay comes down again (`hide`), since nothing would ever replace
+/// the loading line.
+fn send_trigger(
+    tx: &Sender<Command>,
+    command: Command,
+    loading: &EngineLoading,
+    quitting: &AtomicBool,
+    tell: impl FnOnce(&EngineLoadingView),
+    show: impl FnOnce(),
+    hide: impl FnOnce(),
+) -> Result<(), mpsc::SendError<Command>> {
+    if loading.tell_if_loading(command, quitting.load(Ordering::Relaxed), tell) {
+        show();
+    }
+    let sent = tx.send(command);
+    if sent.is_err() {
+        end_without_dictation(loading, hide);
+    }
+    sent
+}
+
+/// [`send_trigger`] on the app's overlay.
+fn send_from_trigger(
+    app: &AppHandle<Wry>,
+    tx: &Sender<Command>,
+    loading: &EngineLoading,
+    quitting: &AtomicBool,
+    command: Command,
+) -> Result<(), mpsc::SendError<Command>> {
+    send_trigger(
+        tx,
+        command,
+        loading,
+        quitting,
+        |view| {
+            let _ = app.emit(ENGINE_LOADING, view);
+        },
+        || show_overlay(app),
+        || hide_overlay(app),
+    )
 }
 
 /// What `run`'s idle wait does with the next command, decided before any of
@@ -2985,6 +3372,7 @@ fn idle_step(command: Command, quitting: bool) -> IdleStep {
         Command::SwitchEngine
             | Command::SwitchCleanup
             | Command::ReopenEngine
+            | Command::LoadEngine
             | Command::Start
             | Command::Toggle
             | Command::SendAgain { .. }
@@ -3045,6 +3433,8 @@ struct Shared {
     quitting: Arc<AtomicBool>,
     deadline: QuitDeadline,
     microphone: MicrophoneOwner,
+    /// Set while an open loads a model, for the triggers to read.
+    loading: EngineLoading,
 }
 
 /// Say, on the overlay and the page, why a dictation trigger did nothing:
@@ -3136,6 +3526,7 @@ fn run(
         quitting,
         deadline,
         microphone,
+        loading,
     } = shared;
     // The app's own dictionary, not the working directory's. Seeded on the
     // first run; a failure here is logged and the session runs without one
@@ -3169,7 +3560,7 @@ fn run(
     let keys = SystemSecrets::new();
     // None when the engine cannot open -- off macOS, that is a model not yet
     // downloaded. The thread stays, so a download can bring it up.
-    let mut session = open_session(&app, &config, &device, &status, &lent, &keys);
+    let mut session = open_session(&app, &config, &device, &status, &lent, &keys, &loading);
     let mut switch_after = false;
     // Triggers the last dictation held back for after it: a press during its
     // wait, and whatever came behind it. Read before the channel.
@@ -3181,6 +3572,9 @@ fn run(
     // default actually moved. See the idle tick below and
     // `device_snapshot_changed`.
     let mut devices = DeviceSnapshot::default();
+    // When the last dictation ended, or the loop started: the idle-unload
+    // timer in the wait below measures from here, and any command resets it.
+    let mut last_active = std::time::Instant::now();
 
     // Read the file again after an edit. Failure keeps the dictionary the
     // session already has, and says so.
@@ -3217,7 +3611,7 @@ fn run(
             // alive past the drop. A file already running keeps its own.
             lent.set(None);
             drop(session.take()); // the old model goes before the new one loads
-            session = open_session(&app, &config, &device, &status, &lent, &keys);
+            session = open_session(&app, &config, &device, &status, &lent, &keys, &loading);
             let kept = match (session.as_ref(), carried) {
                 (Some(session), Some(held)) => session.keep_held(held),
                 _ => false,
@@ -3238,6 +3632,23 @@ fn run(
                 if let Some(session) = session.as_mut() {
                     if session.follow_device() {
                         device.set(&app, session.device_name());
+                    }
+                }
+                // Free a resident local engine after the chosen idle time, so a
+                // ~900 MB model is not held while nobody is dictating (SPEC §7's
+                // 400 MB idle budget). The setting is read fresh so a change
+                // takes effect within a tick; `indefinite` (None) keeps it
+                // loaded. Apple Speech and a cloud-only session are not
+                // unloadable, so they are left alone. The next dictation
+                // reloads it ([`Session::ensure_engine_loaded`] below).
+                if let Some(after) = history.unload_after() {
+                    if let Some(session) = session.as_mut() {
+                        if session.engine_loaded()
+                            && session.engine_unloadable()
+                            && last_active.elapsed() >= after
+                        {
+                            session.unload_engine();
+                        }
                     }
                 }
                 // The one non-polling signal the tray's Microphone submenu
@@ -3261,6 +3672,9 @@ fn run(
             // Nothing can say anything more; leave exactly as Shutdown does.
             Err(RecvTimeoutError::Disconnected) => break,
         };
+        // Any command is activity: reset the idle-unload clock, so the model is
+        // not dropped out from under someone who is interacting with the app.
+        last_active = std::time::Instant::now();
         // Must run before every branch below that opens a model, starts a
         // dictation or sends a cloud request -- ReopenEngine, SwitchEngine
         // (by way of switch_after), SendAgain, and Start or Toggle -- so
@@ -3268,13 +3682,25 @@ fn run(
         if idle_step(command, quitting.load(Ordering::Relaxed)) == IdleStep::Leave {
             break;
         }
+        if command == Command::LoadEngine {
+            // The `continue` lends the session again at the top of the loop,
+            // loaded or not, so a file waiting in `meeting_tools_loaded` is
+            // answered either way. The command reset the idle clock above, so
+            // the next tick does not unload it again at once.
+            if let Some(session) = session.as_mut() {
+                if let Err(e) = session.ensure_engine_loaded() {
+                    tracing::warn!("could not reload the engine for a file: {e}");
+                }
+            }
+            continue;
+        }
         if command == Command::ReopenEngine {
             // No session, or one that cannot dictate: the model that just
             // landed may be what it was missing.
             if !session.as_ref().is_some_and(Session::can_dictate) {
                 lent.set(None);
                 drop(session.take());
-                session = open_session(&app, &config, &device, &status, &lent, &keys);
+                session = open_session(&app, &config, &device, &status, &lent, &keys, &loading);
             }
             continue;
         }
@@ -3463,7 +3889,12 @@ fn run(
         // meeting cannot start while this dictation runs or finishes.
         let turn = with_microphone_for_dictation(
             &microphone,
-            |refused| refuse_dictation(&app, &overlay_shown, refused),
+            |refused| {
+                // The refusal's sentence replaces any loading line, and
+                // its own timer hides the overlay.
+                loading.listening();
+                refuse_dictation(&app, &overlay_shown, refused)
+            },
             || {
                 let Some(session) = session.as_mut() else {
                     let _ = app.emit(
@@ -3471,8 +3902,45 @@ fn run(
                         "No speech engine is ready yet. Choose one under Transcription on the Models \
                          page, and download its model there if it needs one.",
                     );
+                    // A press told of an open's load ([`send_trigger`]) finds
+                    // no engine after it: the loading line comes down.
+                    end_without_dictation(&loading, || hide_overlay(&app));
                     return Turn::Next;
                 };
+                // The idle timer may have dropped the local engine to free
+                // memory; bring it back before this dictation records, and
+                // say so on the overlay while it loads: seconds in which the
+                // press would otherwise show nothing. A reload failure is
+                // handled like no engine being ready.
+                //
+                // `quitting` is read before the reload, so an app on its way
+                // out does not spend seconds loading a model, and again in
+                // the callback right before the overlay is shown, as below
+                // before "listening": off the macOS panel, showing it blocks
+                // the main thread on primary_monitor during Exit. Seen there,
+                // the overlay is not shown and the turn leaves once the
+                // session returns; a reload already under way cannot be
+                // stopped.
+                if quitting.load(Ordering::Relaxed) {
+                    return Turn::Leave;
+                }
+                let mut quit_seen = false;
+                let reloaded = reload_for_dictation(session, |view| {
+                    if quitting.load(Ordering::Relaxed) {
+                        quit_seen = true;
+                        return;
+                    }
+                    show_loading(&app, &overlay_shown, &loading, &view);
+                });
+                if quit_seen {
+                    return Turn::Leave;
+                }
+                if let Err(e) = reloaded {
+                    tracing::error!(error = %e, "could not reload the local engine");
+                    let _ = app.emit("dictation-error", crate::say::say(&e));
+                    end_without_dictation(&loading, || hide_overlay(&app));
+                    return Turn::Next;
+                }
                 // idle_step's read of `quitting`, above, can be stale by the time
                 // execution reaches here -- signal() can run in between. Read again
                 // right before anything that starts a dictation: the "listening"
@@ -3501,6 +3969,8 @@ fn run(
                 // ([`OverlayShown::starting`]).
                 let counted = overlay_shown.starting();
                 let _ = app.emit("dictation-state", "listening");
+                // Said over any loading line, so there is none left to hide.
+                loading.listening();
                 // The session lets a held recording go as the dictation starts, so
                 // History stops offering to send it again.
                 held_row.set(&app, None);
@@ -4263,6 +4733,11 @@ fn engine_fault_notice(cloud: Option<&CloudResult>, fault: &macalla_core::Error)
 mod tests {
     use super::*;
     use macalla_session::CloudFailure;
+
+    /// [`try_open_reporting`] with nothing to tell.
+    fn try_open(config: &Config, keys: &dyn SecretStore) -> Opened {
+        try_open_reporting(config, keys, &mut |_| {})
+    }
 
     /// A locally-ready engine from the real registry, for a test that must
     /// exercise `try_open`'s own `registry::open` call: `try_open` takes
@@ -5924,6 +6399,385 @@ mod tests {
         Session::with_engine(Box::new(FakeEngine), dictionary, "fake", Config::default())
     }
 
+    fn reload_of(engine: &str) -> EngineLoadingView {
+        EngineLoadingView {
+            engine: engine.to_string(),
+            reason: LoadReasonView::Reload,
+        }
+    }
+
+    fn open_of(engine: &str) -> EngineLoadingView {
+        EngineLoadingView {
+            engine: engine.to_string(),
+            reason: LoadReasonView::Open,
+        }
+    }
+
+    #[test]
+    fn a_reload_before_a_dictation_tells_the_overlay_before_it_loads() {
+        let mut session = fake_session();
+        // Loaded: nothing to tell.
+        let mut told = Vec::new();
+        reload_for_dictation(&mut session, |view| told.push(view)).unwrap();
+        assert!(told.is_empty());
+
+        session.unload_engine();
+        // The fake is not in the registry, so the rebuild itself fails: the
+        // overlay must have been told before it was tried, and the name
+        // falls back to the id.
+        let asked = std::time::Instant::now();
+        let mut first_feedback = None;
+        let reloaded = reload_for_dictation(&mut session, |view| {
+            first_feedback = Some(asked.elapsed());
+            told.push(view);
+        });
+        assert!(reloaded.is_err());
+        assert_eq!(told, vec![reload_of("fake")]);
+        // Generous: a loaded CI machine, and only a registry lookup between.
+        let first_feedback = first_feedback.expect("told");
+        assert!(
+            first_feedback < std::time::Duration::from_secs(1),
+            "{first_feedback:?}"
+        );
+    }
+
+    #[test]
+    fn the_overlay_is_sent_the_engine_by_name_and_the_reason_as_a_word() {
+        let load = macalla_session::EngineLoad {
+            engine: "fake",
+            reason: macalla_session::LoadReason::Open,
+        };
+        assert_eq!(loading_view(&load), open_of("fake"));
+        assert_eq!(
+            serde_json::to_value(reload_of("Parakeet")).unwrap(),
+            serde_json::json!({ "engine": "Parakeet", "reason": "reload" })
+        );
+    }
+
+    /// An open that reports a load of `engine` and then takes `took`, as a
+    /// model's first load does.
+    fn slow_open(
+        loading: &EngineLoading,
+        engine: &'static str,
+        took: std::time::Duration,
+    ) -> std::thread::JoinHandle<()> {
+        let loading = loading.clone();
+        std::thread::spawn(move || {
+            loading.during(|on_load| {
+                on_load(&macalla_session::EngineLoad {
+                    engine,
+                    reason: macalla_session::LoadReason::Open,
+                });
+                std::thread::sleep(took);
+            });
+        })
+    }
+
+    /// Wait, briefly, for `loading` to say a load is in flight.
+    fn until_loading(loading: &EngineLoading) {
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(5);
+        while loading.now().is_none() {
+            assert!(
+                std::time::Instant::now() < deadline,
+                "the open never reported its load"
+            );
+            std::thread::sleep(std::time::Duration::from_millis(1));
+        }
+    }
+
+    #[test]
+    fn a_press_during_an_open_is_told_the_load_at_once_and_not_after_it() {
+        let loading = EngineLoading::default();
+        let open = slow_open(&loading, "fake", std::time::Duration::from_secs(2));
+        until_loading(&loading);
+
+        let pressed = std::time::Instant::now();
+        let mut first_feedback = None;
+        let mut told = Vec::new();
+        let said = loading.tell_if_loading(Command::Start, false, |view| {
+            first_feedback = Some(pressed.elapsed());
+            told.push(view.clone());
+        });
+        let first_feedback = first_feedback.expect("a press during the open is told");
+        assert!(said);
+        assert_eq!(told, vec![open_of("fake")]);
+        assert!(
+            first_feedback < std::time::Duration::from_secs(1),
+            "{first_feedback:?}"
+        );
+
+        open.join().unwrap();
+        assert!(loading.now().is_none(), "the open is over");
+        let said = loading.tell_if_loading(Command::Start, false, |_| {
+            panic!("nothing loads now, so nothing is told")
+        });
+        assert!(!said);
+    }
+
+    #[test]
+    fn only_a_press_or_a_click_that_starts_is_told_and_never_while_quitting() {
+        let loading = EngineLoading::default();
+        let open = slow_open(&loading, "fake", std::time::Duration::from_millis(300));
+        until_loading(&loading);
+        for command in [
+            Command::Stop,
+            Command::Discard,
+            Command::Finish,
+            Command::SwitchEngine,
+            Command::ReloadDictionary,
+        ] {
+            assert!(
+                !loading.tell_if_loading(command, false, |_| panic!("{command:?} was told")),
+                "{command:?}"
+            );
+        }
+        assert!(!loading.tell_if_loading(Command::Start, true, |_| panic!("told while quitting")));
+        assert!(
+            !loading.take_shown(),
+            "nothing was told, so nothing to hide"
+        );
+        assert!(loading.tell_if_loading(Command::Toggle, false, |_| {}));
+        assert!(loading.take_shown());
+        open.join().unwrap();
+    }
+
+    #[test]
+    fn an_open_cannot_end_while_a_press_is_being_told() {
+        // The open finishing as the key goes down: the press read "loading"
+        // and is telling the overlay. The open must not be over -- and the
+        // thread on to the press's "listening" -- until that is said, or the
+        // overlay would show the load on top of a running dictation.
+        let loading = EngineLoading::default();
+        let (reported, until_reported) = mpsc::channel::<()>();
+        let (release, released) = mpsc::channel::<()>();
+        let (returning, until_returning) = mpsc::channel::<()>();
+        let (finished, until_finished) = mpsc::channel::<()>();
+        let open = {
+            let loading = loading.clone();
+            std::thread::spawn(move || {
+                loading.during(|on_load| {
+                    on_load(&macalla_session::EngineLoad {
+                        engine: "fake",
+                        reason: macalla_session::LoadReason::Open,
+                    });
+                    reported.send(()).unwrap();
+                    released.recv().unwrap();
+                    // The open's own work is done; only its end is left,
+                    // which needs the lock the press is holding.
+                    returning.send(()).unwrap();
+                });
+                finished.send(()).unwrap();
+            })
+        };
+        until_reported.recv().unwrap();
+        let said = loading.tell_if_loading(Command::Start, false, |_| {
+            release.send(()).unwrap();
+            until_returning.recv().unwrap();
+            // Holding the lock: the open cannot end however long this
+            // waits. Without it, it ends at once.
+            assert_eq!(
+                until_finished.recv_timeout(std::time::Duration::from_secs(1)),
+                Err(mpsc::RecvTimeoutError::Timeout),
+                "the open ended while the press was being told"
+            );
+        });
+        assert!(said);
+        open.join().unwrap();
+        assert!(until_finished.try_recv().is_ok());
+    }
+
+    #[test]
+    fn an_open_that_panics_still_stops_saying_it_loads() {
+        let loading = EngineLoading::default();
+        let panicked = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            loading.during(|on_load| {
+                on_load(&macalla_session::EngineLoad {
+                    engine: "fake",
+                    reason: macalla_session::LoadReason::Open,
+                });
+                panic!("the model would not load");
+            })
+        }));
+        assert!(panicked.is_err());
+        assert!(loading.now().is_none());
+    }
+
+    /// What a trigger did, in order, for `send_trigger`'s tests.
+    #[derive(Debug, PartialEq, Eq)]
+    enum Did {
+        Told(EngineLoadingView),
+        Shown,
+        Hidden,
+    }
+
+    /// `send_trigger` with every effect recorded in `did`.
+    fn trigger(
+        tx: &Sender<Command>,
+        command: Command,
+        loading: &EngineLoading,
+        quitting: bool,
+        did: &RefCell<Vec<Did>>,
+    ) -> Result<(), mpsc::SendError<Command>> {
+        send_trigger(
+            tx,
+            command,
+            loading,
+            &AtomicBool::new(quitting),
+            |view| did.borrow_mut().push(Did::Told(view.clone())),
+            || did.borrow_mut().push(Did::Shown),
+            || did.borrow_mut().push(Did::Hidden),
+        )
+    }
+
+    #[test]
+    fn a_trigger_during_a_load_tells_then_shows_then_sends() {
+        let loading = EngineLoading::default();
+        let open = slow_open(&loading, "fake", std::time::Duration::from_millis(300));
+        until_loading(&loading);
+        let (tx, rx) = mpsc::channel();
+        let did = RefCell::new(Vec::new());
+
+        trigger(&tx, Command::Start, &loading, false, &did).unwrap();
+        assert_eq!(did.take(), vec![Did::Told(open_of("fake")), Did::Shown]);
+        assert_eq!(rx.try_recv(), Ok(Command::Start), "sent after the show");
+
+        // A release says nothing; nor does anything once quitting.
+        trigger(&tx, Command::Stop, &loading, false, &did).unwrap();
+        trigger(&tx, Command::Toggle, &loading, true, &did).unwrap();
+        assert!(did.take().is_empty());
+        assert_eq!(rx.try_recv(), Ok(Command::Stop));
+        assert_eq!(rx.try_recv(), Ok(Command::Toggle));
+
+        open.join().unwrap();
+        // No load: a press is only sent.
+        trigger(&tx, Command::Start, &loading, false, &did).unwrap();
+        assert!(did.take().is_empty());
+    }
+
+    #[test]
+    fn a_trigger_whose_send_fails_takes_the_overlay_down_again() {
+        let loading = EngineLoading::default();
+        let open = slow_open(&loading, "fake", std::time::Duration::from_millis(300));
+        until_loading(&loading);
+        let (tx, rx) = mpsc::channel();
+        drop(rx); // the dictation thread has gone
+        let did = RefCell::new(Vec::new());
+
+        assert!(trigger(&tx, Command::Start, &loading, false, &did).is_err());
+        assert_eq!(
+            did.take(),
+            vec![Did::Told(open_of("fake")), Did::Shown, Did::Hidden]
+        );
+        assert!(!loading.take_shown(), "the hide cleared it");
+        open.join().unwrap();
+    }
+
+    #[test]
+    fn a_turn_that_ends_before_listening_hides_whatever_said_loading() {
+        let loading = EngineLoading::default();
+        let open = slow_open(&loading, "fake", std::time::Duration::from_millis(300));
+        until_loading(&loading);
+        let hides = Cell::new(0);
+        let end = || end_without_dictation(&loading, || hides.set(hides.get() + 1));
+
+        // Two presses told during one open: the first turn to end without a
+        // dictation takes it down, whichever press that turn is for, and
+        // the next finds nothing left to hide.
+        assert!(loading.tell_if_loading(Command::Start, false, |_| {}));
+        assert!(loading.tell_if_loading(Command::Start, false, |_| {}));
+        end();
+        assert_eq!(hides.get(), 1);
+        end();
+        assert_eq!(hides.get(), 1);
+
+        // "listening" replaced it: nothing to take down.
+        assert!(loading.tell_if_loading(Command::Start, false, |_| {}));
+        loading.listening();
+        end();
+        assert_eq!(hides.get(), 1);
+        open.join().unwrap();
+
+        // The turn's own reload showed it.
+        loading.mark_shown();
+        end();
+        assert_eq!(hides.get(), 2);
+    }
+
+    #[test]
+    fn every_turn_that_ends_before_listening_takes_the_loading_line_down() {
+        // `run` has no seam without an `AppHandle`, so this reads its source:
+        // the no-engine arm and the failed-reload arm both go through
+        // `end_without_dictation`, "listening" clears what said loading,
+        // and `quitting` is read again before the reload's overlay is shown.
+        let body = body_of("\nfn run(");
+        let no_engine = body
+            .find("No speech engine is ready yet")
+            .expect("no engine");
+        let reload = body
+            .find("reload_for_dictation(session")
+            .expect("the reload");
+        let failed = body
+            .find("could not reload the local engine")
+            .expect("a failed reload");
+        let quit_check = body[reload..]
+            .find("quitting.load(Ordering::Relaxed)")
+            .map(|at| reload + at)
+            .expect("quitting read in the reload's callback");
+        let shown = body.find("show_loading(").expect("the reload's show");
+        let listening = body
+            .find("app.emit(\"dictation-state\", \"listening\")")
+            .expect("listening");
+        let ends: Vec<usize> = body
+            .match_indices("end_without_dictation(&loading")
+            .map(|(at, _)| at)
+            .collect();
+        assert_eq!(ends.len(), 2, "both early arms take the overlay down");
+        // One flag serves every press, so no turn takes it as it starts:
+        // only a hide or "listening" clears it.
+        assert!(
+            !body.contains("take_shown"),
+            "a turn takes the loading flag"
+        );
+        assert!(no_engine < ends[0] && ends[0] < reload, "the no-engine arm");
+        assert!(
+            failed < ends[1] && ends[1] < listening,
+            "the failed-reload arm"
+        );
+        assert!(
+            body[..reload].contains(
+                "if quitting.load(Ordering::Relaxed) {\n                    return Turn::Leave;"
+            ),
+            "quitting read before the reload starts"
+        );
+        assert!(quit_check < shown, "quitting read before the reload's show");
+        let after = &body[listening..];
+        let cleared = after
+            .find("loading.listening()")
+            .expect("listening clears it");
+        let up = after
+            .find("show_overlay(&app)")
+            .expect("the dictation's show");
+        assert!(cleared < up, "cleared as listening is said");
+    }
+
+    #[test]
+    fn every_open_reports_its_load_to_the_triggers() {
+        let body = body_of("\nfn open_session(");
+        assert!(
+            body.contains("loading.during(|on_load| try_open_reporting(config, keys, on_load))"),
+            "{body}"
+        );
+        let send = body_of("\nimpl Dictator {");
+        let send = &send[send.find("pub fn send(").expect("send")..];
+        let send = &send[..send.find("\n    }\n").expect("the end of send")];
+        assert!(
+            send.contains("send_from_trigger("),
+            "the tray and the overlay"
+        );
+        let start = body_of("\npub fn start(");
+        assert!(start.contains("send_from_trigger("), "the shortcut");
+    }
+
     #[test]
     fn cleanup_is_whole_only_when_off_or_serving_everything_ticked() {
         use macalla_session::choice::{EnhancerChoice, KeySource};
@@ -5983,6 +6837,68 @@ mod tests {
             },
             None
         ));
+    }
+
+    #[test]
+    fn lent_tools_say_whether_the_engine_was_loaded_when_lent() {
+        let mut session = fake_session();
+        let lent = LentTools::default();
+        assert!(!lent.unloaded(), "nothing lent is not an unloaded engine");
+        lent.set(Some(&session));
+        assert!(!lent.unloaded());
+        session.unload_engine();
+        lent.set(Some(&session));
+        assert!(lent.unloaded());
+        lent.set(None);
+        assert!(!lent.unloaded());
+    }
+
+    #[test]
+    fn a_file_waits_for_the_engine_to_be_lent_loaded_again() {
+        let mut session = fake_session();
+        let loaded = session.meeting_tools().ok();
+        session.unload_engine();
+        let lent = LentTools::default();
+        lent.set(Some(&session));
+
+        // The dictation thread's part: it reloads and lends again a little
+        // later (`Command::LoadEngine` in `run`).
+        let thread_lent = lent.clone();
+        let reloads = std::thread::spawn(move || {
+            std::thread::sleep(std::time::Duration::from_millis(50));
+            thread_lent.put(loaded, true);
+        });
+        let asked = std::time::Instant::now();
+        let tools = lent.get_loaded(std::time::Duration::from_secs(10));
+        reloads.join().unwrap();
+        assert!(tools.is_some());
+        assert!(!lent.unloaded());
+        assert!(asked.elapsed() < std::time::Duration::from_secs(5));
+    }
+
+    #[test]
+    fn a_file_stops_waiting_when_the_tools_are_taken_back_or_the_wait_runs_out() {
+        let mut session = fake_session();
+        session.unload_engine();
+        let lent = LentTools::default();
+        lent.set(Some(&session));
+
+        // Nothing comes back: what is lent is returned at the deadline.
+        let tools = lent.get_loaded(std::time::Duration::from_millis(20));
+        assert!(tools.is_some(), "the unloaded tools, which fail as before");
+
+        // Taken back (an engine switch, or quitting): no wait for a load.
+        let thread_lent = lent.clone();
+        let takes_back = std::thread::spawn(move || {
+            std::thread::sleep(std::time::Duration::from_millis(50));
+            thread_lent.set(None);
+        });
+        let asked = std::time::Instant::now();
+        assert!(lent
+            .get_loaded(std::time::Duration::from_secs(10))
+            .is_none());
+        takes_back.join().unwrap();
+        assert!(asked.elapsed() < std::time::Duration::from_secs(5));
     }
 
     #[test]
@@ -9890,6 +10806,7 @@ mod shutdown {
             Command::SwitchEngine,
             Command::SwitchCleanup,
             Command::ReopenEngine,
+            Command::LoadEngine,
             Command::Start,
             Command::Toggle,
             Command::SendAgain { row },

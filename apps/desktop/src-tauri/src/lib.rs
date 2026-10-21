@@ -27,8 +27,13 @@ mod microphone_words;
 mod models;
 #[cfg(target_os = "macos")]
 mod overlay_panel;
+#[cfg(target_os = "windows")]
+mod overlay_windows;
 mod paste_words;
 mod say;
+mod shortcut;
+mod shortcut_words;
+mod single;
 mod translate_words;
 mod tray;
 mod tray_words;
@@ -40,6 +45,8 @@ pub fn run() {
     logging::init();
 
     tauri::Builder::default()
+        // First, so a second copy exits before it sets anything up.
+        .plugin(single::plugin())
         .plugin(tauri_plugin_dialog::init())
         .plugin(login::plugin())
         // Read as text by `command_scopes::registered` below and kept in step
@@ -48,10 +55,17 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             commands::transcription_choose,
             commands::setup_steps,
-            commands::shortcut,
+            shortcut::shortcut,
+            shortcut::shortcut_view,
+            shortcut::shortcut_choose,
+            shortcut::shortcut_record,
+            shortcut::shortcut_key,
+            shortcut::shortcut_focus_lost,
             commands::input_device,
             commands::microphones,
             commands::microphone_choose,
+            commands::unload_choice,
+            commands::unload_choose,
             commands::about,
             commands::licenses,
             commands::dictionary_info,
@@ -150,6 +164,9 @@ pub fn run() {
             if let Some(overlay) = app.get_webview_window("overlay") {
                 overlay_panel::install(&overlay);
             }
+            // Read before the history moves into the dictation thread: the
+            // checklist below asks about the engine dictation will open.
+            let chosen_engine = history.engine_choice();
             app.manage(dictation::start(app.handle().clone(), history));
             tray::build(app.handle())?;
             // The menu bar while a window is in front: Tauri's default with
@@ -163,7 +180,7 @@ pub fn run() {
             // First launch, or a rebuild that lost its grants: the checklist
             // comes to the front until everything on it is done. A tray app
             // with nothing to say stays hidden.
-            if commands::setup_is_complete() {
+            if commands::setup_is_complete(chosen_engine.as_deref()) {
                 tracing::info!("setup complete; staying in the tray");
             } else if let Some(window) = app.get_webview_window("main") {
                 tracing::info!("setup incomplete; showing the checklist");
@@ -393,6 +410,10 @@ mod command_scopes {
     /// The app commands the overlay may call, and the only ones: its cancel
     /// and finish buttons'. No other window may call them.
     const OVERLAY_COMMANDS: &[&str] = &["dictation_cancel", "dictation_finish"];
+    /// Commands both windows may call: the two that pass the shortcut a
+    /// window's own keys on Windows, where a focused Macalla window hides
+    /// them from the keyboard hook (`src/forwardKeys.ts`).
+    const SHARED_COMMANDS: &[&str] = &["shortcut_key", "shortcut_focus_lost"];
 
     #[test]
     fn the_main_window_may_call_every_app_command_but_the_overlays() {
@@ -442,8 +463,12 @@ mod command_scopes {
 
     #[test]
     fn the_overlay_may_call_only_its_own_commands_so_no_meeting_or_history_command() {
-        let allowed: Vec<String> = OVERLAY_COMMANDS.iter().map(|c| allow(c)).collect();
-        for command in OVERLAY_COMMANDS {
+        let allowed: Vec<String> = OVERLAY_COMMANDS
+            .iter()
+            .chain(SHARED_COMMANDS)
+            .map(|c| allow(c))
+            .collect();
+        for command in OVERLAY_COMMANDS.iter().chain(SHARED_COMMANDS) {
             assert!(
                 APP_COMMANDS.contains(command),
                 "{command} is not a registered app command"

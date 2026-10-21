@@ -117,6 +117,32 @@ pub struct Progress {
     pub of: usize,
 }
 
+/// The language to translate from, given the one the text was heard in:
+/// `source` itself when its pair with `target` is ready, or else another
+/// variant of the same language whose pair is installed, such as `en-GB` for
+/// `en-US`. Which English, or which Portuguese, does not change the
+/// translation enough to send the person to System Settings for a second
+/// copy. `source` when no variant is installed either, so the caller reports
+/// the language it was asked about.
+pub fn installed_source(translator: &dyn Translator, source: &str, target: &str) -> String {
+    if translator.availability(source, target).is_ok() {
+        return source.to_string();
+    }
+    let base = |code: &str| {
+        code.split(['-', '_'])
+            .next()
+            .unwrap_or("")
+            .to_ascii_lowercase()
+    };
+    let wanted = base(source);
+    translator
+        .languages()
+        .into_iter()
+        .filter(|code| code != source && base(code) == wanted)
+        .find(|code| translator.availability(code, target).is_ok())
+        .unwrap_or_else(|| source.to_string())
+}
+
 /// Translate `texts` from `source` into `target` with `translator`: one
 /// translation per text, returned in the order of `texts`, or an error and
 /// nothing.
@@ -486,5 +512,69 @@ mod tests {
         )
         .unwrap();
         assert_eq!(seen, vec![(1, 3), (2, 3), (3, 3)]);
+    }
+
+    /// Answers by pair: `installed` lists the pairs ready now.
+    struct Pairs {
+        languages: Vec<&'static str>,
+        installed: Vec<(&'static str, &'static str)>,
+    }
+
+    impl Translator for Pairs {
+        fn id(&self) -> &'static str {
+            "pairs"
+        }
+        fn languages(&self) -> Vec<String> {
+            self.languages.iter().map(|code| code.to_string()).collect()
+        }
+        fn availability(&self, source: &str, target: &str) -> Result<(), Unavailable> {
+            if self.installed.contains(&(source, target)) {
+                Ok(())
+            } else {
+                Err(Unavailable::NotInstalled {
+                    source: source.into(),
+                    target: target.into(),
+                })
+            }
+        }
+        fn translate(
+            &self,
+            _source: &str,
+            _target: &str,
+            _texts: &[String],
+            _each: &mut dyn FnMut(usize, String) -> Flow,
+        ) -> Result<(), TranslateError> {
+            unreachable!("only availability is asked")
+        }
+    }
+
+    #[test]
+    fn the_heard_language_is_used_when_its_pair_is_installed() {
+        let pairs = Pairs {
+            languages: vec!["en", "en-GB", "de"],
+            installed: vec![("en-US", "de"), ("en-GB", "de")],
+        };
+        assert_eq!(installed_source(&pairs, "en-US", "de"), "en-US");
+    }
+
+    #[test]
+    fn another_variant_of_the_same_language_is_used_when_it_is_installed() {
+        // Seen on a British-English Mac: en-GB into German installed, the
+        // US pair only available to download.
+        let pairs = Pairs {
+            languages: vec!["de", "en", "en-GB", "fr"],
+            installed: vec![("en-GB", "de"), ("fr", "de")],
+        };
+        assert_eq!(installed_source(&pairs, "en-US", "de"), "en-GB");
+    }
+
+    #[test]
+    fn the_heard_language_is_kept_when_no_variant_is_installed() {
+        let pairs = Pairs {
+            languages: vec!["de", "en", "en-GB", "fr"],
+            installed: vec![("fr", "de")],
+        };
+        // Another language is never used in its place.
+        assert_eq!(installed_source(&pairs, "en-US", "de"), "en-US");
     }
 }

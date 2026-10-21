@@ -68,9 +68,26 @@
         "kubectrol",
         "CubeControl",
         "CubeCTL",
-        "cube c t l"
+        "cube c t l",
+        "cube C T L",
+        "cube ctl",
+        "cubectal",
+        "QBactal"
       ],
       "case_sensitive": true,
+      "threshold": 0.85
+    },
+    {
+      "written": "Kubernetes",
+      "spoken": [
+        "cubernetis",
+        "cubernetes",
+        "Cubanets",
+        "Kubernates",
+        "Cubernetti's",
+        "Coopinetti's"
+      ],
+      "case_sensitive": false,
       "threshold": 0.85
     },
     {

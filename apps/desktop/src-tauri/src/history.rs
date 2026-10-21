@@ -49,6 +49,35 @@ const ENGINE_SETTING: &str = "engine";
 /// system default, because the store has no way to remove a key.
 const DEVICE_SETTING: &str = "device";
 
+/// The settings key for how long an idle local engine stays loaded before it
+/// is dropped to free its memory (a resident Parakeet is ~900 MB; SPEC §7's
+/// idle budget is 400 MB): a number of minutes, or `"indefinite"` to keep it
+/// loaded. Empty (before anyone has chosen) reads as the default. Only the
+/// desktop app's long-running dictation loop acts on it; the CLI is one-shot.
+const UNLOAD_SETTING: &str = "unload_after";
+
+/// The default idle minutes before a local engine is unloaded, when nobody has
+/// chosen. The feature exists for the idle-memory budget, so the default frees
+/// the model rather than keeping it resident forever.
+const UNLOAD_DEFAULT_MINUTES: u64 = 5;
+
+/// The choices the Engine card offers: the stored value and the label a person
+/// reads, in the order the card lists them. The one place this wording lives,
+/// like the rest of the card's copy; [`HistoryHandle::set_unload_choice`]
+/// accepts only these values.
+pub(crate) const UNLOAD_OPTIONS: &[(&str, &str)] = &[
+    ("2", "2 minutes"),
+    ("5", "5 minutes"),
+    ("15", "15 minutes"),
+    ("30", "30 minutes"),
+    ("60", "1 hour"),
+    ("indefinite", "Keep loaded"),
+];
+
+/// The settings key for the chosen push-to-talk shortcut, as the
+/// `Shortcut`'s own `Display` text, which `Shortcut::parse` reads back.
+const SHORTCUT_SETTING: &str = "shortcut";
+
 /// The settings key for a chosen cloud transcription provider id. Beside
 /// [`ENGINE_SETTING`], not instead of it: choosing a provider does not
 /// forget the local engine, which keeps showing the live preview while the
@@ -417,6 +446,64 @@ impl HistoryHandle {
             return Err(HISTORY_OFF_CHOICE.into());
         };
         Ok(store.set_setting(DEVICE_SETTING, name.unwrap_or(""))?)
+    }
+
+    /// How long an idle local engine stays loaded before the dictation loop
+    /// drops it, or `None` to keep it loaded. Unset reads as the default
+    /// (5 minutes). Means nothing to the CLI, which is one-shot.
+    pub fn unload_after(&self) -> Option<std::time::Duration> {
+        match self.unload_choice().as_str() {
+            "indefinite" => None,
+            minutes => Some(std::time::Duration::from_secs(
+                minutes.parse::<u64>().unwrap_or(UNLOAD_DEFAULT_MINUTES) * 60,
+            )),
+        }
+    }
+
+    /// The stored unload choice as the Engine card shows it: a number of
+    /// minutes, or `"indefinite"`. The default (5) when unset, so the card has
+    /// a value selected on a fresh install.
+    pub fn unload_choice(&self) -> String {
+        let guard = self.0.lock().unwrap_or_else(|p| p.into_inner());
+        guard
+            .as_ref()
+            .and_then(|store| store.setting(UNLOAD_SETTING).ok().flatten())
+            .filter(|v| !v.is_empty())
+            .unwrap_or_else(|| UNLOAD_DEFAULT_MINUTES.to_string())
+    }
+
+    /// Set how long an idle local engine stays loaded: one of
+    /// [`UNLOAD_CHOICES`]. An unknown value is refused rather than stored, so
+    /// a bad call cannot leave the loop reading a garbage timeout.
+    pub fn set_unload_choice(&self, value: &str) -> Result<(), CommandError> {
+        if !UNLOAD_OPTIONS.iter().any(|(v, _)| *v == value) {
+            return Err(format!("not an unload choice: {value:?}").into());
+        }
+        let mut guard = self.0.lock().unwrap_or_else(|p| p.into_inner());
+        let Some(store) = guard.as_mut() else {
+            return Err(HISTORY_OFF_CHOICE.into());
+        };
+        Ok(store.set_setting(UNLOAD_SETTING, value)?)
+    }
+
+    /// The push-to-talk shortcut the person chose, as text, or `None` until
+    /// they choose one. Beside the microphone choice, for the same reason.
+    pub fn shortcut_choice(&self) -> Option<String> {
+        let guard = self.0.lock().unwrap_or_else(|p| p.into_inner());
+        let store = guard.as_ref()?;
+        store
+            .setting(SHORTCUT_SETTING)
+            .ok()
+            .flatten()
+            .filter(|text| !text.is_empty())
+    }
+
+    pub fn set_shortcut_choice(&self, text: &str) -> Result<(), CommandError> {
+        let mut guard = self.0.lock().unwrap_or_else(|p| p.into_inner());
+        let Some(store) = guard.as_mut() else {
+            return Err(HISTORY_OFF_CHOICE.into());
+        };
+        Ok(store.set_setting(SHORTCUT_SETTING, text)?)
     }
 
     /// The cloud transcription provider chosen, and its model where one
@@ -814,6 +901,18 @@ mod tests {
         assert_eq!(h.device_choice().as_deref(), Some("USB Microphone"));
         h.set_device_choice(None).unwrap();
         assert_eq!(h.device_choice(), None);
+    }
+
+    #[test]
+    fn a_chosen_shortcut_is_kept() {
+        let h = handle();
+        assert_eq!(
+            h.shortcut_choice(),
+            None,
+            "the default until someone chooses"
+        );
+        h.set_shortcut_choice("Ctrl+Option+Space").unwrap();
+        assert_eq!(h.shortcut_choice().as_deref(), Some("Ctrl+Option+Space"));
     }
 
     #[test]

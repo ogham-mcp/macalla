@@ -940,6 +940,15 @@ fn config(cli: &Cli, language: &str, device: Option<&str>, timeout: Option<u64>)
     }
 }
 
+/// Open the session `listen` dictates through, saying on stderr as a model
+/// starts loading, so a wait of seconds is not a silent terminal.
+fn open_to_listen(config: Config) -> macalla_session::Result<Session> {
+    Session::open_reporting(config, &mut |load| {
+        let name = macalla_engines::registry::find(load.engine).map_or(load.engine, |e| e.name);
+        eprintln!("{}", words::loading_engine(name, load.reason));
+    })
+}
+
 fn listen_config(cli: &Cli, language: &str, opts: ListenOptions<'_>) -> Config {
     Config {
         vad_gate: opts.vad,
@@ -2265,7 +2274,7 @@ fn hear_one(
 }
 
 fn listen(cli: &Cli, language: &str, opts: ListenOptions<'_>) -> Result<()> {
-    let mut session = Session::open(listen_config(cli, language, opts))?;
+    let mut session = open_to_listen(listen_config(cli, language, opts))?;
     let mut history = open_history(opts)?;
     eprintln!(
         "listening -- press Enter to stop, or wait {}s  [{}, {}]",
@@ -2403,7 +2412,7 @@ fn listen_on_hotkey(
             TriggerMode::Toggle => Mode::Toggle,
         };
 
-        let mut session = Session::open(listen_config(cli, language, opts))?;
+        let mut session = open_to_listen(listen_config(cli, language, opts))?;
         // Opened once for the session, like the microphone: not per
         // dictation. A bad path fails here, before anyone has spoken.
         let mut history = open_history(opts)?;

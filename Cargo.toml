@@ -12,7 +12,7 @@ members = [
 ]
 
 [workspace.package]
-version = "0.1.0"
+version = "0.2.2"
 edition = "2021"
 # The floor CI actually builds on: see the `msrv` job in .github/workflows/ci.yml,
 # which must be raised alongside this line. 1.88 because the lockfile already
@@ -41,7 +41,7 @@ serde_json = "1"
 clap = { version = "4", features = ["derive"] }
 rusqlite = { version = "0.40.2", features = ["bundled"] }
 # The non-Apple engines. Optional in the engines crate, on in both apps.
-transcribe-cpp = "0.2.3"
+transcribe-cpp = "0.4.0"
 # Model downloads: blocking, on its own thread, no tokio needed for one file.
 ureq = "3"
 sha2 = "0.11"

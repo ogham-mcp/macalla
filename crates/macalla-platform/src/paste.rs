@@ -27,6 +27,10 @@ pub trait Clipboard {
     /// an image, a file, nothing at all.
     fn read_text(&mut self) -> Option<String>;
     fn write_text(&mut self, text: &str) -> crate::Result<()>;
+    /// Like [`write_text`](Self::write_text), marked so clipboard managers
+    /// and the system's clipboard history leave it out. For text that is
+    /// about to be replaced by what the user had before.
+    fn write_transient(&mut self, text: &str) -> crate::Result<()>;
 }
 
 /// Synthetic key events.
@@ -185,7 +189,17 @@ impl<C: Clipboard, K: Keystrokes, T: Clock, G: DeliveryGates> Inserter<C, K, T, 
         // what the user had.
         let previous = self.clipboard.read_text();
 
-        if self.clipboard.write_text(text).is_err() {
+        // Marked transient only when it is about to be restored over: the
+        // user never chose to copy it, so a clipboard manager that keeps it
+        // has stored a transcript behind their back. With nothing to restore
+        // the text stays on the clipboard, and it is theirs to keep like any
+        // other copy.
+        let written = if previous.is_some() {
+            self.clipboard.write_transient(text)
+        } else {
+            self.clipboard.write_text(text)
+        };
+        if written.is_err() {
             // No clipboard, no paste. Typing is slower but it is not nothing,
             // and nothing was disturbed, so there is nothing to restore.
             self.keys.type_text(text)?;
@@ -246,6 +260,33 @@ impl Clipboard for SystemClipboard {
     fn write_text(&mut self, text: &str) -> crate::Result<()> {
         self.inner
             .set_text(text)
+            .map_err(|e| crate::Error::Clipboard(format!("writing: {e}")))
+    }
+
+    /// The conventions each platform's clipboard managers honour, as `arboard`
+    /// writes them: `org.nspasteboard.ConcealedType` on macOS (see
+    /// nspasteboard.org), the clipboard history, cloud and monitor formats on
+    /// Windows, and `x-kde-passwordManagerHint` on Linux.
+    fn write_transient(&mut self, text: &str) -> crate::Result<()> {
+        let set = self.inner.set();
+        #[cfg(target_os = "macos")]
+        let set = {
+            use arboard::SetExtApple;
+            set.exclude_from_history()
+        };
+        #[cfg(target_os = "windows")]
+        let set = {
+            use arboard::SetExtWindows;
+            set.exclude_from_history()
+                .exclude_from_cloud()
+                .exclude_from_monitoring()
+        };
+        #[cfg(all(unix, not(target_os = "macos")))]
+        let set = {
+            use arboard::SetExtLinux;
+            set.exclude_from_history()
+        };
+        set.text(text)
             .map_err(|e| crate::Error::Clipboard(format!("writing: {e}")))
     }
 }
@@ -317,9 +358,73 @@ impl Keystrokes for SystemKeys {
     }
 }
 
+/// Keys Macalla itself is sending, so the shortcut does not take them for the
+/// person's own. Pasting presses Ctrl, and with Left Ctrl as the shortcut that
+/// press started a second, empty dictation. The keyboard hook tells them apart
+/// by enigo's mark on each event (`hook.rs`); a Macalla window passing its own
+/// keys on cannot see that mark, so it is told by time instead: anything it
+/// passes on from just before the keys go out until a little after is
+/// Macalla's own (`Controls::deliver`).
+#[cfg(target_os = "windows")]
+pub(crate) mod own_keys {
+    use std::sync::Mutex;
+    use std::time::{Duration, Instant};
+
+    /// How long after the last key goes out a window may still be passing it
+    /// on: its event reaches the page and comes back over IPC.
+    const GRACE: Duration = Duration::from_millis(500);
+
+    static UNTIL: Mutex<Option<Instant>> = Mutex::new(None);
+
+    /// Keys are about to go out, or have just gone.
+    pub(crate) fn mark() {
+        *UNTIL.lock().unwrap_or_else(|p| p.into_inner()) = Some(Instant::now() + GRACE);
+    }
+
+    /// Whether a key a window passes on now may be one of Macalla's own.
+    /// Read only by the shortcut, which is behind the `hotkey` feature.
+    #[cfg_attr(not(feature = "hotkey"), allow(dead_code))]
+    pub(crate) fn in_flight() -> bool {
+        within(
+            *UNTIL.lock().unwrap_or_else(|p| p.into_inner()),
+            Instant::now(),
+        )
+    }
+
+    #[cfg_attr(not(feature = "hotkey"), allow(dead_code))]
+    pub(super) fn within(until: Option<Instant>, now: Instant) -> bool {
+        until.is_some_and(|until| now < until)
+    }
+}
+
 #[cfg(not(target_os = "macos"))]
 impl Keystrokes for SystemKeys {
     fn paste_chord(&mut self) -> crate::Result<()> {
+        #[cfg(target_os = "windows")]
+        own_keys::mark();
+        let pasted = self.press_paste_chord();
+        #[cfg(target_os = "windows")]
+        own_keys::mark();
+        pasted
+    }
+
+    fn type_text(&mut self, text: &str) -> crate::Result<()> {
+        use enigo::Keyboard as _;
+        #[cfg(target_os = "windows")]
+        own_keys::mark();
+        let typed = self
+            .inner
+            .text(text)
+            .map_err(|e| crate::Error::Input(format!("typing the text: {e}")));
+        #[cfg(target_os = "windows")]
+        own_keys::mark();
+        typed
+    }
+}
+
+#[cfg(not(target_os = "macos"))]
+impl SystemKeys {
+    fn press_paste_chord(&mut self) -> crate::Result<()> {
         use enigo::{Direction, Key, Keyboard as _};
         let modifier = Key::Control;
         self.inner
@@ -337,13 +442,6 @@ impl Keystrokes for SystemKeys {
             .map_err(|e| crate::Error::Input(format!("releasing the paste modifier: {e}")));
         tapped.and(released)
     }
-
-    fn type_text(&mut self, text: &str) -> crate::Result<()> {
-        use enigo::Keyboard as _;
-        self.inner
-            .text(text)
-            .map_err(|e| crate::Error::Input(format!("typing the text: {e}")))
-    }
 }
 
 /// The inserter the app uses: real clipboard, real keys, real waiting.
@@ -358,6 +456,16 @@ pub fn system_inserter() -> crate::Result<Inserter<SystemClipboard, SystemKeys, 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[cfg(target_os = "windows")]
+    #[test]
+    fn own_keys_are_in_flight_only_until_the_grace_runs_out() {
+        use std::time::Instant;
+        let now = Instant::now();
+        assert!(!own_keys::within(None, now));
+        assert!(own_keys::within(Some(now + Duration::from_millis(1)), now));
+        assert!(!own_keys::within(Some(now), now));
+    }
     use std::cell::RefCell;
     use std::rc::Rc;
 
@@ -367,6 +475,7 @@ mod tests {
     enum Step {
         Read,
         Write(String),
+        WriteTransient(String),
         Paste,
         Type(String),
         Slept(Duration),
@@ -387,6 +496,16 @@ mod tests {
         }
         fn write_text(&mut self, text: &str) -> crate::Result<()> {
             self.log.borrow_mut().push(Step::Write(text.to_string()));
+            if self.write_fails {
+                return Err(crate::Error::Clipboard("busy".into()));
+            }
+            self.holds = Some(text.to_string());
+            Ok(())
+        }
+        fn write_transient(&mut self, text: &str) -> crate::Result<()> {
+            self.log
+                .borrow_mut()
+                .push(Step::WriteTransient(text.to_string()));
             if self.write_fails {
                 return Err(crate::Error::Clipboard("busy".into()));
             }
@@ -497,7 +616,7 @@ mod tests {
             *log.borrow(),
             vec![
                 Step::Read,
-                Step::Write("dictated text".into()),
+                Step::WriteTransient("dictated text".into()),
                 Step::Paste,
                 Step::Slept(DEFAULT_RESTORE_WAIT),
                 Step::Write("what the user had".into()),
@@ -533,7 +652,24 @@ mod tests {
         assert_eq!(
             *log.borrow(),
             vec![Step::Read, Step::Write("dictated text".into()), Step::Paste,],
-            "no wait and no restore when there is nothing to restore"
+            "no wait and no restore when there is nothing to restore, and a \
+             plain write: the text stays, so it is the user's to keep"
+        );
+    }
+
+    #[test]
+    fn only_the_text_that_is_restored_over_is_marked_transient() {
+        // Clipboard managers skip a transient write. The transcript is one;
+        // the user's own contents going back are not, or a manager that
+        // listens for changes would lose track of what they really copied.
+        let (log, mut ins) = rig(Some("what the user had"));
+        ins.insert("dictated text").expect("insert");
+        let steps = log.borrow().clone();
+        assert!(steps.contains(&Step::WriteTransient("dictated text".into())));
+        assert_eq!(
+            steps.last(),
+            Some(&Step::Write("what the user had".into())),
+            "the restore is an ordinary write, got {steps:?}"
         );
     }
 
@@ -657,7 +793,7 @@ mod tests {
             *log.borrow(),
             vec![
                 Step::Read,
-                Step::Write("dictated text".into()),
+                Step::WriteTransient("dictated text".into()),
                 Step::Paste,
                 Step::Slept(DEFAULT_RESTORE_WAIT),
                 Step::Write("what the user had".into()),

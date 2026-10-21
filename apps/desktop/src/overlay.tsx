@@ -20,8 +20,16 @@ import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom/client";
 import { listen } from "@tauri-apps/api/event";
 import { dictationCancel, dictationFinish } from "./commands";
-import type { CloudWaiting, DictationLevel, EnhancementMissed, Enhancing, LoudnessView } from "./commands";
-import { missedSentence, overlayWords } from "./overlayWords";
+import { forwardKeysOnWindows } from "./forwardKeys";
+import type {
+  CloudWaiting,
+  DictationLevel,
+  EngineLoading,
+  EnhancementMissed,
+  Enhancing,
+  LoudnessView,
+} from "./commands";
+import { loadingSentence, missedSentence, overlayWords } from "./overlayWords";
 import "./overlay.css";
 
 const BARS = 48;
@@ -268,6 +276,12 @@ export interface Shown {
    * Worded in Rust (`meeting_words.rs`), like `notPasted`.
    */
   refused: string | null;
+  /**
+   * A dictation was asked for and waits on an on-device model loading: at
+   * launch, after a switch, or after an idle unload. Null when none is.
+   * Before the dictation, so "started" ("listening") is what replaces it.
+   */
+  loading: EngineLoading | null;
 }
 
 /**
@@ -288,6 +302,7 @@ export function nothing(): Shown {
     notPasted: null,
     missed: null,
     refused: null,
+    loading: null,
   };
 }
 
@@ -323,6 +338,12 @@ export type Moment = "started" | "ended" | "hidden";
  *   here would blank the sentence the person is meant to read, milliseconds
  *   after it appeared.
  *
+ * `loading` survives "ended" too. It comes before its dictation, not after
+ * one: an open that a press is waiting on ends in `dictation-state: idle`,
+ * and only then does the press become "listening". Clearing it at "ended"
+ * would blank the overlay between the two. Every way the wait ends without
+ * a dictation hides the overlay, which is "hidden".
+ *
  * "ended" is belt and braces on every path traced today -- a hide always
  * comes first and has cleared the live state already. It is kept because it
  * is the one moment that does not depend on hearing a hide: a dictation that
@@ -351,6 +372,7 @@ export function keeps(shown: Shown, moment: Moment): Shown {
     movedOn: shown.movedOn,
     missed: shown.missed,
     refused: shown.refused,
+    loading: shown.loading,
   };
 }
 
@@ -397,6 +419,11 @@ function Overlay() {
       // sentence, until Rust hides it.
       listen<string>("dictation-refused", (e) => {
         setShown(() => ({ ...nothing(), refused: e.payload }));
+      }),
+      // No dictation yet: it starts once the model has loaded, and
+      // "listening" replaces this. Only the sentence until then.
+      listen<EngineLoading>("dictation-loading", (e) => {
+        setShown(() => ({ ...nothing(), loading: e.payload }));
       }),
       listen<string>("dictation-not-pasted", (e) => {
         setShown((s) => ({ ...s, notPasted: e.payload }));
@@ -453,10 +480,12 @@ function Overlay() {
   }, []);
 
   const { levels, text, empty, capped, cloudWaiting, enhancing } = shown;
-  const { destination, movedOn, notPasted, missed, refused } = shown;
+  const { destination, movedOn, notPasted, missed, refused, loading } = shown;
   const partial =
     refused !== null
       ? refused
+      : loading !== null
+      ? loadingSentence(loading)
       : notPasted !== null
       ? notPasted
       : movedOn !== null
@@ -483,6 +512,7 @@ function Overlay() {
   // below changes.
   const notice =
     refused !== null ||
+    loading !== null ||
     notPasted !== null ||
     movedOn !== null ||
     cloudWaiting !== null ||
@@ -525,6 +555,19 @@ function Overlay() {
     </div>
   );
 }
+
+// Dev-only browser preview (see src/preview/README.md): with `?preview` on
+// the URL in a dev server, play the overlay's events with no Tauri app.
+// `import.meta.env.DEV` is false in a release build, so this branch and
+// everything it imports are gone from `dist` -- proven by
+// scripts/check-no-preview.mjs, run in CI right after the build.
+if (import.meta.env.DEV && new URLSearchParams(window.location.search).has("preview")) {
+  await import("./preview/overlayPreview");
+}
+
+// The overlay should never have focus, but if it ever does, the shortcut
+// still hears its keys (see forwardKeys).
+forwardKeysOnWindows();
 
 const root = document.getElementById("root");
 if (!root) {

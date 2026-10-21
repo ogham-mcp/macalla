@@ -41,11 +41,17 @@ import {
   historyRetention,
   historySendAgain,
   historySetRetention,
+  unloadChoice,
+  unloadChoose,
   openSettingsPane,
   requestPermission,
   revealPath,
   setupSteps,
   shortcut,
+  shortcutChoose,
+  shortcutRecord,
+  shortcutView,
+  type ShortcutView,
   type About,
   type LicenseFamily,
   type CleanupChoiceView,
@@ -69,6 +75,7 @@ import {
   type HistoryItem,
   type SentAgain,
   type RetentionView,
+  type UnloadView,
   type StepSummary,
   type TermView,
   meetingCancel,
@@ -394,10 +401,13 @@ function byGroup<T extends { group: string }>(items: T[]): [string, T[]][] {
  * the Models page makes, so the two can never disagree. */
 function EngineCard({ onOpenModels }: { onOpenModels: () => void }) {
   const [overview, setOverview] = useState<ModelsOverview | null>(null);
+  const [unload, setUnload] = useState<UnloadView | null>(null);
+  const [unloadError, setUnloadError] = useState<string | null>(null);
 
   useEffect(() => {
     const refresh = () => modelsOverview().then(setOverview).catch(() => undefined);
     refresh();
+    unloadChoice().then(setUnload).catch(() => undefined);
     const subscription = listen<string>("dictation-state", (e) => {
       if (e.payload === "idle") {
         refresh();
@@ -407,6 +417,16 @@ function EngineCard({ onOpenModels }: { onOpenModels: () => void }) {
       subscription.then((unlisten) => unlisten());
     };
   }, []);
+
+  const chooseUnload = (value: string) => {
+    unloadChoose(value)
+      .then(() => unloadChoice())
+      .then((view) => {
+        setUnload(view);
+        setUnloadError(null);
+      })
+      .catch((e: unknown) => setUnloadError(String(e)));
+  };
 
   const chosen = overview?.transcription.find((t) => t.chosen) ?? null;
   const summary = !chosen
@@ -422,6 +442,31 @@ function EngineCard({ onOpenModels }: { onOpenModels: () => void }) {
       <button type="button" className="button" onClick={onOpenModels}>
         Open Transcription on Models
       </button>
+      <p>
+        Free the model's memory when you haven't dictated for a while. It loads
+        again on your next dictation.
+      </p>
+      {unload && (
+        <label className="setting-row">
+          <span>Unload model</span>
+          <select
+            className="select"
+            value={unload.current}
+            onChange={(e) => chooseUnload(e.target.value)}
+          >
+            {unload.choices.map((c) => (
+              <option key={c.value} value={c.value}>
+                {c.label}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
+      <p className="card-meta">
+        Only downloaded engines are unloaded. Apple Speech is built into macOS,
+        with nothing to free.
+      </p>
+      {unloadError && <p className="card-error">{unloadError}</p>}
     </section>
   );
 }
@@ -1281,7 +1326,10 @@ function poolModelName(
     allProviders.find((p) => p.id === model.provider)?.name ??
     "a provider";
   const offer = lists[model.provider]?.offers.find((o) => o.id === model.model);
-  return offer ? `${provider} ${offer.name}` : provider;
+  // A saved model the fetched list no longer offers (a dated snapshot the
+  // list hides) is still named by its id: settings pages show the model,
+  // not only the provider.
+  return `${provider} ${offer?.name ?? model.model}`;
 }
 
 /** What dictation uses now: unset while the ticks differ from what is saved
@@ -2671,11 +2719,179 @@ function MicrophoneCard() {
   );
 }
 
-function ShortcutCard({ name }: { name: string | null }) {
+const RECORD_VALUE = "\u0000record";
+
+/**
+ * The Parse syntax for one non-modifier keydown, or null when the key pressed
+ * is itself a modifier (those are captured on release, see the recorder).
+ * Letters and digits by their physical key, so Option+D is "d" and not the
+ * "∂" it types. Such a key is held with a modifier only to show the person it
+ * is refused: the keyboard tap does not swallow it, so it would type.
+ */
+function chordFrom(e: KeyboardEvent): string | null {
+  if (["Meta", "Control", "Alt", "Shift", "Fn", "CapsLock"].includes(e.key)) return null;
+  let key = e.code.toLowerCase();
+  if (e.code.startsWith("Key")) key = e.code.slice(3).toLowerCase();
+  else if (e.code.startsWith("Digit")) key = e.code.slice(5);
+  const parts: string[] = [];
+  if (e.metaKey) parts.push("cmd");
+  if (e.ctrlKey) parts.push("ctrl");
+  if (e.altKey) parts.push("option");
+  if (e.shiftKey) parts.push("shift");
+  parts.push(key);
+  return parts.join("+");
+}
+
+/**
+ * The Parse syntax for a modifier key by its physical code, with its side, or
+ * null for any other key. A single modifier held on its own is the only custom
+ * shortcut the recorder can set: a printing key would type, a two-modifier
+ * chord is ambiguous for a hold, and the webview never sees the Fn key (it is
+ * offered as a preset on macOS instead).
+ */
+function sidedModifier(code: string): string | null {
+  const m = /^(Shift|Control|Alt|Meta)(Left|Right)$/.exec(code);
+  if (!m) return null;
+  const word = { Shift: "shift", Control: "control", Alt: "alt", Meta: "meta" }[m[1]];
+  return `${m[2].toLowerCase()} ${word}`;
+}
+
+function ShortcutCard({ onChanged }: { onChanged: () => void }) {
+  const [view, setView] = useState<ShortcutView | null>(null);
+  const [recording, setRecording] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const refresh = () => {
+    shortcutView()
+      .then(setView)
+      .catch((e: unknown) => setError(String(e)));
+  };
+
+  useEffect(refresh, []);
+
+  // The recorder pauses the listener for exactly as long as it is open, so
+  // every way out -- a key, Cancel, Esc, leaving the page -- unpauses it. A
+  // single modifier held on its own is captured on release; a printing key is
+  // sent at once so the Rust side can say it would type.
+  useEffect(() => {
+    if (!recording) return;
+    shortcutRecord(true).catch((e: unknown) => setError(String(e)));
+
+    const held = new Set<string>();
+    const seen: string[] = [];
+    let sawPrintingKey = false;
+    let done = false;
+
+    const commit = (text: string) => {
+      // One choice per recording: a second keydown before the first reply
+      // lands must not fire shortcutChoose again.
+      if (done) return;
+      done = true;
+      shortcutChoose(text)
+        .then(() => {
+          setError(null);
+          refresh();
+          onChanged();
+        })
+        .catch((err: unknown) => setError(String(err)))
+        .finally(() => setRecording(false));
+    };
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      e.preventDefault();
+      if (e.repeat) return;
+      if (e.key === "Escape") {
+        setRecording(false);
+        return;
+      }
+      const mod = sidedModifier(e.code);
+      if (mod) {
+        held.add(e.code);
+        seen.push(mod);
+        return;
+      }
+      // A non-modifier key: send it so a refusal (it would type) is shown.
+      const chord = chordFrom(e);
+      if (chord === null) return;
+      sawPrintingKey = true;
+      commit(chord);
+    };
+
+    const onKeyUp = (e: KeyboardEvent) => {
+      if (!sidedModifier(e.code)) return;
+      e.preventDefault();
+      held.delete(e.code);
+      if (held.size > 0 || sawPrintingKey) return;
+      // Everything is released and no printing key was pressed. One modifier
+      // held on its own is the shortcut; two or more is sent so the Rust side
+      // refuses it rather than guessing which one is the trigger.
+      const unique = Array.from(new Set(seen));
+      commit(unique.length === 1 ? unique[0] : unique.join("+"));
+    };
+
+    // If focus leaves mid-press (Cmd+Tab, say) the key-ups never arrive, so
+    // forget what was held rather than wait on a release that cannot come.
+    const onBlur = () => {
+      held.clear();
+      seen.length = 0;
+    };
+
+    window.addEventListener("keydown", onKeyDown, true);
+    window.addEventListener("keyup", onKeyUp, true);
+    window.addEventListener("blur", onBlur);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown, true);
+      window.removeEventListener("keyup", onKeyUp, true);
+      window.removeEventListener("blur", onBlur);
+      shortcutRecord(false).catch(() => undefined);
+    };
+  }, [recording]);
+
+  const choose = (value: string) => {
+    setError(null);
+    if (value === RECORD_VALUE) {
+      setRecording(true);
+      return;
+    }
+    shortcutChoose(value)
+      .then(() => {
+        refresh();
+        onChanged();
+      })
+      .catch((e: unknown) => setError(String(e)));
+  };
+
+  if (!view) return null;
+  const note = view.rows.find((row) => row.value === view.chosen)?.note ?? null;
   return (
     <section className="card">
-      <h2>Shortcut</h2>
-      <p>{name ? `Hold ${name} to dictate.` : "The key you hold to dictate."}</p>
+      <h2>{view.heading}</h2>
+      <p>{view.about}</p>
+      <label className="setting-row">
+        <select
+          className="select"
+          value={view.chosen}
+          disabled={recording}
+          onChange={(e) => choose(e.target.value)}
+        >
+          {view.rows.map((row) => (
+            <option key={row.value} value={row.value}>
+              {row.label}
+            </option>
+          ))}
+          <option value={RECORD_VALUE}>{view.record_option}</option>
+        </select>
+      </label>
+      {recording && (
+        <div className="setting-row">
+          <span>{view.press_the_keys}</span>
+          <button type="button" className="button" onClick={() => setRecording(false)}>
+            {view.cancel}
+          </button>
+        </div>
+      )}
+      {note && <p className="card-meta">{note}</p>}
+      {error && <p className="card-error">{error}</p>}
     </section>
   );
 }
@@ -2777,6 +2993,10 @@ function AboutView({
       <section className="card">
         <h2>Open-source software</h2>
         <p>The open-source libraries Macalla is built on, and their licences.</p>
+        <p>
+          Parakeet and the other downloadable speech models run on
+          transcribe.cpp (MIT).
+        </p>
         <button type="button" className="button" onClick={onOpenLicences}>
           View licences
         </button>
@@ -3315,6 +3535,20 @@ function fill(template: string, values: Record<string, string | number>): string
  */
 function newer(shown: MeetingView | null, view: MeetingView): MeetingView | null {
   return shown && shown.job === view.job && view.revision >= shown.revision ? view : shown;
+}
+
+/**
+ * The meeting to show once the page's first `meetingCurrent()` reply comes
+ * back, given what an event may already have put on the page. The reply was
+ * built when it was asked for, so it can be older than an event that
+ * overtook it: it wins only when it is of a later meeting, or of the same
+ * meeting and at least as recent.
+ */
+function firstLoad(shown: MeetingView | null, reply: MeetingView | null): MeetingView | null {
+  if (shown === null) return reply;
+  if (reply === null) return shown;
+  if (reply.job !== shown.job) return reply.job > shown.job ? reply : shown;
+  return reply.revision >= shown.revision ? reply : shown;
 }
 
 /** One match of a find in the transcript: its turn, and where in that turn's words. */
@@ -3895,6 +4129,24 @@ function TranslationCard({
   }, [options]);
   const chosen = target ?? languages[0]?.code ?? null;
 
+  // Asked again when the window comes back, as well as on a new choice: the
+  // person may have just added the language in System Settings, which is
+  // what the card tells them to do.
+  const [returned, setReturned] = useState(0);
+  useEffect(() => {
+    const back = () => {
+      if (document.visibilityState === "visible") {
+        setReturned((n) => n + 1);
+      }
+    };
+    window.addEventListener("focus", back);
+    document.addEventListener("visibilitychange", back);
+    return () => {
+      window.removeEventListener("focus", back);
+      document.removeEventListener("visibilitychange", back);
+    };
+  }, []);
+
   useEffect(() => {
     if (chosen === null) {
       return;
@@ -3906,7 +4158,7 @@ function TranslationCard({
     return () => {
       open = false;
     };
-  }, [chosen]);
+  }, [chosen, returned]);
 
   // The copy kept for this meeting, again whenever the meeting changes: a
   // new meeting drops it, and a correction marks it out of date.
@@ -4143,10 +4395,21 @@ function FilesView({ onBack }: { onBack: () => void }) {
   // not shown as running after it has ended.
   const endings = useRef(0);
 
+  // Whether the first `meetingCurrent()` reply has come back. Until it has,
+  // the page has nothing to compare a summary's event with, and `newer`
+  // would drop it.
+  const loaded = useRef(false);
+
   useEffect(() => {
     meetingCurrent()
-      .then(setMeeting)
-      .catch((e: unknown) => setError(String(e)));
+      .then((view) => {
+        loaded.current = true;
+        setMeeting((m) => firstLoad(m, view));
+      })
+      .catch((e: unknown) => {
+        loaded.current = true;
+        setError(String(e));
+      });
     meetingDestinations()
       .then(setDestinations)
       .catch(() => setDestinations(null));
@@ -4194,8 +4457,13 @@ function FilesView({ onBack }: { onBack: () => void }) {
         setSummarising(false);
         // Only for the meeting still on the page: never one cleared, or
         // replaced, while its summary was being written. Nor over a
-        // correction made after the summary was kept: `newer`.
-        setMeeting((m) => newer(m, e.payload));
+        // correction made after the summary was kept: `newer`. Before the
+        // first load there is nothing on the page yet to be cleared, so the
+        // event is kept, and `firstLoad` weighs the reply against it. Read
+        // now, not in the updater: the reply can set it before this
+        // updater runs.
+        const early = !loaded.current;
+        setMeeting((m) => (early && m === null ? e.payload : newer(m, e.payload)));
         setError(null);
       }),
       listen<BatchChanged>("batch-changed", (e) => {
@@ -4885,11 +5153,13 @@ export default function App() {
     };
   }, []);
 
-  useEffect(() => {
+  const refreshShortcutName = () => {
     shortcut()
       .then(setShortcutName)
       .catch(() => setShortcutName(null));
-  }, []);
+  };
+
+  useEffect(refreshShortcutName, []);
 
   useEffect(() => {
     const subscription = listen<string>("navigate", (e) => {
@@ -4941,7 +5211,7 @@ export default function App() {
       <HistoryCard onOpen={() => setView("history")} />
       <FilesCard onOpen={() => setView("files")} />
       <DictionaryCard onOpen={() => setView("dictionary")} />
-      <ShortcutCard name={shortcutName} />
+      <ShortcutCard onChanged={refreshShortcutName} />
       <MicrophoneCard />
       <EngineCard
         onOpenModels={() => {

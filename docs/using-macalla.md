@@ -34,8 +34,14 @@ not heard."
 
 You can also start a dictation from the menu bar icon, with **Start
 Dictation**. While a dictation runs, that item reads **Stop Dictation**, and
-**Cancel Dictation** appears below it. The shortcut cannot be changed yet. The
-menu's **Microphone** submenu lists "System default" and then every microphone
+**Cancel Dictation** appears below it. To change the shortcut, open the
+**Shortcut** card in Settings and pick another key from the list, or choose
+**Record a key…** and press the key you want. The shortcut is a modifier key
+held on its own — such as Shift or Control, or on macOS Option, Command or Fn.
+Macalla uses a single held key, rather than a typed combination, so the
+shortcut keeps working everywhere — even while you type a password, where the
+system hides ordinary keys from apps. Combinations such as Option with Shift
+are planned for macOS. The menu's **Microphone** submenu lists "System default" and then every microphone
 connected, and ticks the one in use; choosing another there does the same
 thing as the Microphone card in Settings.
 
@@ -107,6 +113,12 @@ Transcription turns your speech into text. Choose it on the **Models** page.
   Cohere) send your recording to that company. They are off until you add your
   own key for the provider under **Providers**. Keys stay in your Mac's
   Keychain and are never shown again.
+
+A downloaded model is unloaded after 5 minutes without a dictation, to free
+its memory, and loaded again at the next one. To change the time or keep the
+model loaded, use **Unload model** on the Engine card. If you press the
+shortcut while a downloaded model loads, the overlay says so. Start speaking
+when it says Listening. The first load on a Mac can take ten seconds or more.
 
 ## Enhancement: what tidies your words
 

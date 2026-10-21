@@ -3,7 +3,11 @@
 
 pub mod audio;
 pub mod decode;
+#[cfg(all(feature = "hotkey", target_os = "windows"))]
+mod hook;
 pub mod hotkey;
+#[cfg(all(feature = "hotkey", target_os = "windows"))]
+mod hotkey_windows;
 #[cfg(target_os = "macos")]
 mod keys;
 #[cfg(target_os = "macos")]
@@ -14,6 +18,7 @@ pub mod secrets;
 pub mod system_audio;
 #[cfg(all(feature = "hotkey", target_os = "macos"))]
 mod tap;
+pub mod vkey;
 
 /// The operating system, as data: what differs between the three is
 /// knowledge this crate owns, and a caller that has to word something per

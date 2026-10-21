@@ -207,3 +207,16 @@ still read and saved.
 
 **What to do.** Choose or drop the recordings that were not heard again, and
 they are heard on the new engine.
+
+## Apple Speech can hear a technical name differently each time
+
+**What you notice.** Apple's speech engine writes an unfamiliar name, such as
+Kubernetes, a little differently from one dictation to the next, and it does
+not take hints from your dictionary.
+
+**Why it happens.** The dictionary fixes a name only when it has seen that
+spelling before, so some get through.
+
+**What to do.** Parakeet, chosen on the Engine card, hears technical names more
+consistently. You can also add a mishearing to the name on the Dictionary page
+whenever you see one.

@@ -61,10 +61,19 @@ macalla-translators.workspace = true
 # Open at login (`src/login.rs`). Pinned: 2.7 moves macOS from a LaunchAgent
 # to SMAppService, a behaviour change to test on its own.
 tauri-plugin-autostart = "=2.5.1"
+# One copy at a time (`src/single.rs`): a second launch exits and the first
+# carries on.
+tauri-plugin-single-instance = "2.5"
 
 # Which engines are compiled in per platform is macalla-session's decision,
 # and this app inherits it. The hotkey is turned on here, as in apps/cli: it
-# needs a desktop, and is macOS-only until a non-macOS backend lands.
+# needs a desktop, and has a backend on macOS and Windows; Linux has none yet.
+[target.'cfg(target_os = "windows")'.dependencies]
+macalla-platform = { workspace = true, features = ["hotkey"] }
+# Showing the overlay without taking focus (`src/overlay_windows.rs`). The
+# version the platform crate and Tauri already pull in, so no new package.
+windows-sys = { version = "0.61", features = ["Win32_Foundation", "Win32_UI_WindowsAndMessaging"] }
+
 [target.'cfg(target_os = "macos")'.dependencies]
 macalla-platform = { workspace = true, features = ["hotkey"] }
 # The overlay's non-activating panel (`src/overlay_panel.rs`). The same

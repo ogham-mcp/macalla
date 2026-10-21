@@ -20,4 +20,4 @@ rtrb = "0.4.0"
 # node it was put in as. `default-features = false` keeps the GFM extensions
 # off and keeps `onig`, a C library the default features pull in, out of the
 # tree, so the core still builds headless with no C toolchain.
-comrak = { version = "0.55", default-features = false }
+comrak = { version = "0.56", default-features = false }

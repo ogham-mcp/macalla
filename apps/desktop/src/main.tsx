@@ -2,6 +2,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
+import { forwardKeysOnWindows } from "./forwardKeys";
 import "./styles.css";
 
 // Dev-only browser preview (see src/preview/README.md): with `?preview` on
@@ -13,6 +14,8 @@ import "./styles.css";
 if (import.meta.env.DEV && new URLSearchParams(window.location.search).has("preview")) {
   await import("./preview/mockTauri");
 }
+
+forwardKeysOnWindows();
 
 const root = document.getElementById("root");
 if (!root) {

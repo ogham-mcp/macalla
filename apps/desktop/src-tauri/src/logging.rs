@@ -55,11 +55,14 @@ pub fn init() {
 /// platform's equivalent elsewhere. Resolved without Tauri so it works
 /// before the app is built.
 pub(crate) fn log_path() -> Option<PathBuf> {
-    let home = std::env::var_os("HOME")?;
-    let base = if cfg!(target_os = "macos") {
-        PathBuf::from(home).join("Library/Application Support")
+    // Windows sets no HOME; its app data lives under %APPDATA%, beside
+    // History's database.
+    let base = if cfg!(target_os = "windows") {
+        PathBuf::from(std::env::var_os("APPDATA")?)
+    } else if cfg!(target_os = "macos") {
+        PathBuf::from(std::env::var_os("HOME")?).join("Library/Application Support")
     } else {
-        PathBuf::from(home).join(".local/share")
+        PathBuf::from(std::env::var_os("HOME")?).join(".local/share")
     };
     Some(base.join("dev.macalla.desktop").join(FILE_NAME))
 }

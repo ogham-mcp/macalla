@@ -13,8 +13,14 @@ cd apps/desktop && npx vite
 Then open <http://localhost:1420/?preview> (the port is fixed by
 `vite.config.ts`'s `server.port`, not Vite's usual 5173). The main settings
 page, the Models page, the History page, the Dictionary page and the Files
-page render with realistic fake data. The overlay (`overlay.html`) has no
-preview and is not affected.
+page render with realistic fake data.
+
+The overlay has one too, at <http://localhost:1420/overlay.html?preview>:
+`overlayPreview.ts` plays the events of a dictation waiting on a model
+loading, `&loading=open` (the default) or `&loading=reload`, then, after
+`&for=` milliseconds (3000 by default; `0` stays put), the events that
+start it listening. Size the browser to the overlay's 360 by 96 to see it
+as it is drawn.
 
 Without `?preview`, or outside a dev server (`import.meta.env.DEV` false),
 the app behaves exactly as it does today: the first Tauri call throws
@@ -47,6 +53,10 @@ The onboarding checklist's platform and state come from the URL too:
 `&engine=loading` the speech engine is still opening when the Files page first
 asks and opens two seconds later, followed by `dictation-state: idle`, so the Files
 page's engine line can be watched catching up.
+With `&meeting=early-summary` the Files page opens while a summary runs: the
+summary's `meeting-summary` event arrives at 300 ms, before the page's first
+`meeting_current` reply at 1.2 s, which is the meeting without its summary.
+The summary should stay on the page.
 
 Not covered: anything reachable only from a click on one of those pages --
 adding, editing, deleting or importing/exporting a dictionary term; copying,
@@ -75,9 +85,9 @@ breaks the build here rather than silently drifting.
 
 Nothing above may reach a release build. Two things enforce that:
 
-1. The `if (import.meta.env.DEV && ...)` guard in `main.tsx` -- Vite strips
-   a `false` `import.meta.env.DEV` branch (and therefore this module) out of
-   a production build entirely.
+1. The `if (import.meta.env.DEV && ...)` guard in `main.tsx`, and the same
+   one in `overlay.tsx` -- Vite strips a `false` `import.meta.env.DEV`
+   branch (and therefore these modules) out of a production build entirely.
 2. `scripts/check-no-preview.mjs`, run in CI (`ci.yml`'s `desktop ui` job)
    right after `npm run build`: it fails if the built `dist` contains
    `mockTauri.ts`'s marker string, or if any built file's name contains

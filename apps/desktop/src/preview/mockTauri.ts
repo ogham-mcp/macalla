@@ -14,6 +14,7 @@ import {
   FIXTURE_EDIT_REFUSALS,
   FIXTURE_HISTORY,
   FIXTURE_HISTORY_RETENTION,
+  FIXTURE_UNLOAD,
   FIXTURE_INPUT_DEVICE,
   FIXTURE_MEETING_BATCH,
   FIXTURE_MEETING_CURRENT,
@@ -31,6 +32,7 @@ import {
   FIXTURE_SETUP_STEPS_ELSEWHERE_PENDING,
   FIXTURE_SETUP_STEPS_MACOS_PENDING,
   FIXTURE_SHORTCUT,
+  FIXTURE_SHORTCUT_VIEW,
   FIXTURE_TRANSLATION_COPY,
   FIXTURE_TRANSLATION_NOT_INSTALLED,
   FIXTURE_TRANSLATION_OPTIONS,
@@ -179,11 +181,24 @@ function destinations() {
   return engineOpen ? FIXTURE_MEETING_DESTINATIONS : { ...FIXTURE_MEETING_DESTINATIONS, engine: null };
 }
 
+// `?preview&meeting=early-summary`: the Files page opens while a summary
+// runs, and the summary's event overtakes the page's first
+// `meeting_current` reply, which was built before the summary was kept. The
+// page should show the summary, not the older reply without it.
+const earlySummary = previewParams.get("meeting") === "early-summary";
+
 mockIPC((cmd, payload) => {
   switch (cmd) {
     // App.tsx itself, on mount.
     case "shortcut":
       return FIXTURE_SHORTCUT;
+
+    // ShortcutCard. A choice is not kept: the preview has no listener.
+    case "shortcut_view":
+      return FIXTURE_SHORTCUT_VIEW;
+    case "shortcut_choose":
+    case "shortcut_record":
+      return null;
 
     // SetupCard, polled every two seconds.
     case "setup_steps":
@@ -196,6 +211,13 @@ mockIPC((cmd, payload) => {
     // HistoryCard (and TryItStep's own read of the same setting).
     case "history_retention":
       return FIXTURE_HISTORY_RETENTION;
+
+    // EngineCard's idle-unload setting.
+    case "unload_choice":
+      return FIXTURE_UNLOAD;
+    case "unload_choose":
+      FIXTURE_UNLOAD.current = (payload as { value: string }).value;
+      return undefined;
 
     // MicrophoneCard.
     case "input_device":
@@ -259,6 +281,12 @@ mockIPC((cmd, payload) => {
     // tidying and summarising would send the words, and whether a summary is
     // still running from before the page was left.
     case "meeting_current":
+      if (earlySummary) {
+        const before: MeetingView = { ...previewMeeting, summary: null, summary_by: null };
+        const after: MeetingView = { ...previewMeeting, revision: previewMeeting.revision + 1 };
+        window.setTimeout(() => void emit("meeting-summary", after), 300);
+        return new Promise((resolve) => window.setTimeout(() => resolve(before), 1200));
+      }
       return previewMeeting;
     // A correction to a turn: the same rules as `Meetings::edit_turn`, in
     // short, with the catalogue's refusal for an empty turn.

@@ -58,7 +58,7 @@ ticked, quit Macalla from its menu bar icon and open it again.
 ### Your first dictation
 
 1. Put the cursor where you want the text.
-2. Hold **Right Option** and speak.
+2. Hold **Right Option** (the default; change it on the Shortcut card) and speak.
 3. Let go. The text is pasted where the cursor is.
 
 To throw a dictation away before it is pasted, click the **×** on the overlay

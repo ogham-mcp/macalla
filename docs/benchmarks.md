@@ -1501,11 +1501,15 @@ insertions over reference length. Deletions are reported separately because a
 model that silently drops a clause fails differently from one that mishears a
 word, and WER alone hides that.
 
-| Fixture | Apple | Parakeet | **Canary 180M** |
+| Fixture | Apple | Parakeet (MLX, earlier) | **Canary 180M** (sherpa-onnx, earlier) |
 |---|---|---|---|
 | Harvard control | 0.025 | **0.000** | 0.013 |
 | Technical | 0.200 | **0.133** | 0.200 |
 | **Clinical** | 0.281 | 0.188 | **0.125** |
+
+These are the earlier builds. Macalla runs Parakeet through transcribe.cpp,
+which scores 0.234 on the clinical file: see "Accuracy, against the
+references already in `bench/wer-input.json`" below.
 
 **The impression holds on clinical vocabulary** — Canary has the lowest WER
 of the three, with zero deletions, beating Parakeet by a third. On general

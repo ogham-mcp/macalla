@@ -78,7 +78,7 @@
       "crates": [
         {
           "name": "comrak",
-          "version": "0.55.0",
+          "version": "0.56.0",
           "repository": "https://github.com/kivikakk/comrak",
           "copyright": [
             "Copyright (c) 2017–2025, Comrak contributors"
@@ -251,6 +251,68 @@
           ]
         },
         {
+          "name": "async-broadcast",
+          "version": "0.7.2",
+          "repository": "https://github.com/smol-rs/async-broadcast",
+          "copyright": [
+            "Copyright (c) 2020 Yoshua Wuyts"
+          ]
+        },
+        {
+          "name": "async-channel",
+          "version": "2.5.0",
+          "repository": "https://github.com/smol-rs/async-channel",
+          "copyright": []
+        },
+        {
+          "name": "async-executor",
+          "version": "1.14.0",
+          "repository": "https://github.com/smol-rs/async-executor",
+          "copyright": []
+        },
+        {
+          "name": "async-io",
+          "version": "2.6.0",
+          "repository": "https://github.com/smol-rs/async-io",
+          "copyright": []
+        },
+        {
+          "name": "async-lock",
+          "version": "3.4.2",
+          "repository": "https://github.com/smol-rs/async-lock",
+          "copyright": []
+        },
+        {
+          "name": "async-process",
+          "version": "2.5.0",
+          "repository": "https://github.com/smol-rs/async-process",
+          "copyright": []
+        },
+        {
+          "name": "async-recursion",
+          "version": "1.2.0",
+          "repository": "https://github.com/dcchut/async-recursion",
+          "copyright": []
+        },
+        {
+          "name": "async-signal",
+          "version": "0.2.14",
+          "repository": "https://github.com/smol-rs/async-signal",
+          "copyright": []
+        },
+        {
+          "name": "async-task",
+          "version": "4.7.1",
+          "repository": "https://github.com/smol-rs/async-task",
+          "copyright": []
+        },
+        {
+          "name": "async-trait",
+          "version": "0.1.92",
+          "repository": "https://github.com/dtolnay/async-trait",
+          "copyright": []
+        },
+        {
           "name": "atk",
           "version": "0.18.2",
           "repository": "https://github.com/gtk-rs/gtk3-rs",
@@ -261,6 +323,15 @@
           "version": "0.18.2",
           "repository": "https://github.com/gtk-rs/gtk3-rs",
           "copyright": []
+        },
+        {
+          "name": "atomic-waker",
+          "version": "1.1.2",
+          "repository": "https://github.com/smol-rs/atomic-waker",
+          "copyright": [
+            "Copyright (c) 2016 Alex Crichton",
+            "Copyright (c) 2017 The Tokio Authors"
+          ]
         },
         {
           "name": "audioadapter",
@@ -312,14 +383,6 @@
         },
         {
           "name": "base64",
-          "version": "0.22.1",
-          "repository": "https://github.com/marshallpierce/rust-base64",
-          "copyright": [
-            "Copyright (c) 2015 Alice Maz"
-          ]
-        },
-        {
-          "name": "base64",
           "version": "0.23.1",
           "repository": "https://github.com/marshallpierce/rust-base64",
           "copyright": [
@@ -352,7 +415,7 @@
         },
         {
           "name": "bitflags",
-          "version": "2.13.1",
+          "version": "2.13.2",
           "repository": "https://github.com/bitflags/bitflags",
           "copyright": [
             "Copyright (c) 2014 The Rust Project Developers"
@@ -378,6 +441,12 @@
           "name": "block2",
           "version": "0.6.2",
           "repository": "https://github.com/madsmtm/objc2",
+          "copyright": []
+        },
+        {
+          "name": "blocking",
+          "version": "1.7.0",
+          "repository": "https://github.com/smol-rs/blocking",
           "copyright": []
         },
         {
@@ -424,7 +493,7 @@
         },
         {
           "name": "camino",
-          "version": "1.2.5",
+          "version": "1.2.6",
           "repository": "https://github.com/camino-rs/camino",
           "copyright": []
         },
@@ -456,7 +525,7 @@
         },
         {
           "name": "cc",
-          "version": "1.4.5",
+          "version": "1.8.0",
           "repository": "https://github.com/rust-lang/cc-rs",
           "copyright": [
             "Copyright (c) 2014 Alex Crichton"
@@ -480,7 +549,7 @@
         },
         {
           "name": "cfg-if",
-          "version": "1.0.4",
+          "version": "1.0.5",
           "repository": "https://github.com/rust-lang/cfg-if",
           "copyright": [
             "Copyright (c) 2014 Alex Crichton"
@@ -493,6 +562,12 @@
           "copyright": [
             "Copyright (c) 2014 Alex Crichton"
           ]
+        },
+        {
+          "name": "concurrent-queue",
+          "version": "2.5.0",
+          "repository": "https://github.com/smol-rs/concurrent-queue",
+          "copyright": []
         },
         {
           "name": "const-oid",
@@ -569,7 +644,7 @@
         },
         {
           "name": "crc32fast",
-          "version": "1.5.1",
+          "version": "1.5.2",
           "repository": "https://github.com/srijs/rust-crc32fast",
           "copyright": [
             "Copyright (c) 2018 Sam Rijs, Alex Crichton and contributors"
@@ -653,7 +728,7 @@
         },
         {
           "name": "deranged",
-          "version": "0.5.8",
+          "version": "0.5.9",
           "repository": "https://github.com/jhpratt/deranged",
           "copyright": [
             "Copyright (c) 2024 Jacob Pratt et al."
@@ -782,7 +857,7 @@
         },
         {
           "name": "embed-resource",
-          "version": "3.0.11",
+          "version": "3.0.12",
           "repository": "https://github.com/nabijaczleweli/rust-embed-resource",
           "copyright": [
             "Copyright (c) 2017 nabijaczleweli"
@@ -795,6 +870,12 @@
           "copyright": [
             "Copyright (c) 2020 Nikolai Vazquez"
           ]
+        },
+        {
+          "name": "endi",
+          "version": "1.1.1",
+          "repository": "https://github.com/zeenix/endi",
+          "copyright": []
         },
         {
           "name": "enigo",
@@ -813,8 +894,24 @@
           ]
         },
         {
+          "name": "enumflags2",
+          "version": "0.7.12",
+          "repository": "https://github.com/meithecatte/enumflags2",
+          "copyright": [
+            "Copyright (c) 2017-2023 Maik Klein, Maja Kądziołka"
+          ]
+        },
+        {
+          "name": "enumflags2_derive",
+          "version": "0.7.12",
+          "repository": "https://github.com/meithecatte/enumflags2",
+          "copyright": [
+            "Copyright (c) 2017 Maik Klein"
+          ]
+        },
+        {
           "name": "equivalent",
-          "version": "1.0.2",
+          "version": "1.0.3",
           "repository": "https://github.com/indexmap-rs/equivalent",
           "copyright": [
             "Copyright (c) 2016--2023"
@@ -833,6 +930,18 @@
           "copyright": [
             "Copyright (c) 2014 Chris Wong"
           ]
+        },
+        {
+          "name": "event-listener",
+          "version": "5.4.2",
+          "repository": "https://github.com/smol-rs/event-listener",
+          "copyright": []
+        },
+        {
+          "name": "event-listener-strategy",
+          "version": "0.5.4",
+          "repository": "https://github.com/smol-rs/event-listener-strategy",
+          "copyright": []
         },
         {
           "name": "fallible-iterator",
@@ -863,6 +972,22 @@
           "copyright": []
         },
         {
+          "name": "fearless_simd",
+          "version": "1.1.0",
+          "repository": "https://github.com/linebender/fearless_simd",
+          "copyright": [
+            "Copyright (c) 2018 Raph Levien"
+          ]
+        },
+        {
+          "name": "fearless_simd_macros",
+          "version": "0.1.0",
+          "repository": "https://github.com/linebender/fearless_simd",
+          "copyright": [
+            "Copyright (c) 2026 The Fearless SIMD authors"
+          ]
+        },
+        {
           "name": "field-offset",
           "version": "0.3.6",
           "repository": "https://github.com/Diggsey/rust-field-offset",
@@ -872,7 +997,7 @@
         },
         {
           "name": "find-msvc-tools",
-          "version": "0.1.12",
+          "version": "0.1.14",
           "repository": "https://github.com/rust-lang/cc-rs",
           "copyright": [
             "Copyright (c) 2014 Alex Crichton"
@@ -963,6 +1088,15 @@
           "name": "futures-io",
           "version": "0.3.34",
           "repository": "https://github.com/rust-lang/futures-rs",
+          "copyright": [
+            "Copyright (c) 2016 Alex Crichton",
+            "Copyright (c) 2017 The Tokio Authors"
+          ]
+        },
+        {
+          "name": "futures-lite",
+          "version": "2.6.1",
+          "repository": "https://github.com/smol-rs/futures-lite",
           "copyright": [
             "Copyright (c) 2016 Alex Crichton",
             "Copyright (c) 2017 The Tokio Authors"
@@ -1073,6 +1207,15 @@
           ]
         },
         {
+          "name": "ggml",
+          "version": "",
+          "repository": "https://github.com/ggml-org/ggml",
+          "copyright": [
+            "Copyright (c) 2023-2026 The ggml authors",
+            "Vendored C/C++ sources, compiled from source by transcribe-cpp-sys."
+          ]
+        },
+        {
           "name": "gio",
           "version": "0.18.4",
           "repository": "https://github.com/gtk-rs/gtk-rs-core",
@@ -1170,6 +1313,15 @@
           "repository": "https://github.com/withoutboats/heck",
           "copyright": [
             "Copyright (c) 2015 The Rust Project Developers"
+          ]
+        },
+        {
+          "name": "hex",
+          "version": "0.4.3",
+          "repository": "https://github.com/KokaKiwi/rust-hex",
+          "copyright": [
+            "Copyright (c) 2013-2014 The Rust Project Developers.",
+            "Copyright (c) 2015-2020 The rust-hex Developers"
           ]
         },
         {
@@ -1282,14 +1434,6 @@
           ]
         },
         {
-          "name": "jetscii",
-          "version": "0.5.3",
-          "repository": "https://github.com/shepmaster/jetscii",
-          "copyright": [
-            "Copyright (c) 2015-2018 Jake Goulding"
-          ]
-        },
-        {
           "name": "json-patch",
           "version": "4.2.0",
           "repository": "https://github.com/idubrov/json-patch",
@@ -1315,7 +1459,7 @@
         },
         {
           "name": "keyring-core",
-          "version": "1.0.0",
+          "version": "1.0.1",
           "repository": "https://github.com/open-source-cooperative/keyring-core.git",
           "copyright": [
             "Copyright (c) 2016 keyring Developers"
@@ -1323,11 +1467,9 @@
         },
         {
           "name": "lazy_static",
-          "version": "1.5.0",
+          "version": "1.5.1",
           "repository": "https://github.com/rust-lang-nursery/lazy-static.rs",
-          "copyright": [
-            "Copyright (c) 2010 The Rust Project Developers"
-          ]
+          "copyright": []
         },
         {
           "name": "libappindicator",
@@ -1346,7 +1488,7 @@
         },
         {
           "name": "libc",
-          "version": "0.2.189",
+          "version": "0.2.190",
           "repository": "https://github.com/rust-lang/libc",
           "copyright": [
             "Copyright (c) The Rust Project Developers"
@@ -1423,6 +1565,14 @@
           ]
         },
         {
+          "name": "memchr-n",
+          "version": "0.1.9",
+          "repository": "https://github.com/Dr-Emann/memchr_n",
+          "copyright": [
+            "Copyright (c) 2026 Zachary Dremann"
+          ]
+        },
+        {
           "name": "memmap2",
           "version": "0.9.11",
           "repository": "https://github.com/RazrFalcon/memmap2-rs",
@@ -1448,6 +1598,16 @@
           ]
         },
         {
+          "name": "miniz",
+          "version": "3.1.1",
+          "repository": "https://github.com/richgel999/miniz",
+          "copyright": [
+            "Copyright 2013-2014 RAD Game Tools and Valve Software",
+            "Copyright 2010-2014 Rich Geldreich and Tenacious Software LLC",
+            "Vendored C source, compiled from source by transcribe-cpp-sys."
+          ]
+        },
+        {
           "name": "miniz_oxide",
           "version": "0.8.9",
           "repository": "https://github.com/Frommi/miniz_oxide/tree/master/miniz_oxide",
@@ -1467,6 +1627,14 @@
             "Copyright 2010-2014 Rich Geldreich and Tenacious Software LLC",
             "Copyright (c) 2017 Frommi",
             "Copyright (c) 2017-2024 oyvindln"
+          ]
+        },
+        {
+          "name": "mio",
+          "version": "1.2.4",
+          "repository": "https://github.com/tokio-rs/mio",
+          "copyright": [
+            "Copyright (c) 2014 Carl Lerche and other MIO contributors"
           ]
         },
         {
@@ -1536,7 +1704,7 @@
         },
         {
           "name": "objc2",
-          "version": "0.6.4",
+          "version": "0.6.5",
           "repository": "https://github.com/madsmtm/objc2",
           "copyright": []
         },
@@ -1613,6 +1781,12 @@
           "copyright": []
         },
         {
+          "name": "ordered-stream",
+          "version": "0.2.0",
+          "repository": "https://github.com/danieldg/ordered-stream",
+          "copyright": []
+        },
+        {
           "name": "pango",
           "version": "0.18.3",
           "repository": "https://github.com/gtk-rs/gtk-rs-core",
@@ -1622,6 +1796,12 @@
           "name": "pango-sys",
           "version": "0.18.0",
           "repository": "https://github.com/gtk-rs/gtk-rs-core",
+          "copyright": []
+        },
+        {
+          "name": "parking",
+          "version": "2.2.1",
+          "repository": "https://github.com/smol-rs/parking",
           "copyright": []
         },
         {
@@ -1657,6 +1837,14 @@
           ]
         },
         {
+          "name": "phf",
+          "version": "0.14.0",
+          "repository": "https://github.com/rust-phf/rust-phf",
+          "copyright": [
+            "Copyright (c) 2014-2022 Steven Fackler, Yuki Okushi"
+          ]
+        },
+        {
           "name": "phf_codegen",
           "version": "0.13.1",
           "repository": "https://github.com/rust-phf/rust-phf",
@@ -1665,8 +1853,24 @@
           ]
         },
         {
+          "name": "phf_codegen",
+          "version": "0.14.0",
+          "repository": "https://github.com/rust-phf/rust-phf",
+          "copyright": [
+            "Copyright (c) 2014-2022 Steven Fackler, Yuki Okushi"
+          ]
+        },
+        {
           "name": "phf_generator",
           "version": "0.13.1",
+          "repository": "https://github.com/rust-phf/rust-phf",
+          "copyright": [
+            "Copyright (c) 2014-2022 Steven Fackler, Yuki Okushi"
+          ]
+        },
+        {
+          "name": "phf_generator",
+          "version": "0.14.0",
           "repository": "https://github.com/rust-phf/rust-phf",
           "copyright": [
             "Copyright (c) 2014-2022 Steven Fackler, Yuki Okushi"
@@ -1689,9 +1893,23 @@
           ]
         },
         {
+          "name": "phf_shared",
+          "version": "0.14.0",
+          "repository": "https://github.com/rust-phf/rust-phf",
+          "copyright": [
+            "Copyright (c) 2014-2022 Steven Fackler, Yuki Okushi"
+          ]
+        },
+        {
           "name": "pin-project-lite",
           "version": "0.2.17",
           "repository": "https://github.com/taiki-e/pin-project-lite",
+          "copyright": []
+        },
+        {
+          "name": "piper",
+          "version": "0.2.5",
+          "repository": "https://github.com/smol-rs/piper",
           "copyright": []
         },
         {
@@ -1727,8 +1945,14 @@
           ]
         },
         {
+          "name": "polling",
+          "version": "3.11.0",
+          "repository": "https://github.com/smol-rs/polling",
+          "copyright": []
+        },
+        {
           "name": "powerfmt",
-          "version": "0.2.0",
+          "version": "0.2.1",
           "repository": "https://github.com/jhpratt/powerfmt",
           "copyright": [
             "Copyright (c) 2023 Jacob Pratt et al."
@@ -1759,6 +1983,12 @@
         {
           "name": "proc-macro-crate",
           "version": "2.0.2",
+          "repository": "https://github.com/bkchr/proc-macro-crate",
+          "copyright": []
+        },
+        {
+          "name": "proc-macro-crate",
+          "version": "3.5.0",
           "repository": "https://github.com/bkchr/proc-macro-crate",
           "copyright": []
         },
@@ -1852,7 +2082,7 @@
         },
         {
           "name": "rubato",
-          "version": "5.0.0",
+          "version": "5.0.1",
           "repository": "https://github.com/HEnquist/rubato",
           "copyright": [
             "Copyright (c) 2020 Henrik Enquist"
@@ -1890,13 +2120,13 @@
         },
         {
           "name": "rustix",
-          "version": "1.1.4",
+          "version": "1.1.5",
           "repository": "https://github.com/bytecodealliance/rustix",
           "copyright": []
         },
         {
           "name": "rustls",
-          "version": "0.23.45",
+          "version": "0.23.46",
           "repository": "https://github.com/rustls/rustls",
           "copyright": [
             "Copyright (c) 2016 Joseph Birr-Pixton <jpixton@gmail.com>"
@@ -1996,7 +2226,7 @@
         },
         {
           "name": "serde_json",
-          "version": "1.0.151",
+          "version": "1.0.154",
           "repository": "https://github.com/serde-rs/json",
           "copyright": []
         },
@@ -2016,7 +2246,7 @@
         },
         {
           "name": "serde_spanned",
-          "version": "1.1.1",
+          "version": "1.1.2",
           "repository": "https://github.com/toml-rs/toml",
           "copyright": [
             "Copyright (c) Individual contributors"
@@ -2024,7 +2254,7 @@
         },
         {
           "name": "serde_with",
-          "version": "3.23.0",
+          "version": "3.24.0",
           "repository": "https://github.com/jonasbb/serde_with/",
           "copyright": [
             "Copyright (c) 2015"
@@ -2032,7 +2262,7 @@
         },
         {
           "name": "serde_with_macros",
-          "version": "3.23.0",
+          "version": "3.24.0",
           "repository": "https://github.com/jonasbb/serde_with/",
           "copyright": [
             "Copyright (c) 2015"
@@ -2072,7 +2302,7 @@
         },
         {
           "name": "sha2",
-          "version": "0.11.0",
+          "version": "0.11.1",
           "repository": "https://github.com/RustCrypto/hashes",
           "copyright": [
             "Copyright (c) 2016-2026 The RustCrypto Project Developers",
@@ -2098,6 +2328,14 @@
           ]
         },
         {
+          "name": "signal-hook-registry",
+          "version": "1.4.8",
+          "repository": "https://github.com/vorner/signal-hook",
+          "copyright": [
+            "Copyright (c) 2017 tokio-jsonrpc developers"
+          ]
+        },
+        {
           "name": "simd-adler32",
           "version": "0.3.10",
           "repository": "https://github.com/mcountryman/simd-adler32",
@@ -2107,7 +2345,7 @@
         },
         {
           "name": "siphasher",
-          "version": "1.0.3",
+          "version": "1.0.4",
           "repository": "https://github.com/jedisct1/rust-siphash",
           "copyright": []
         },
@@ -2121,10 +2359,18 @@
         },
         {
           "name": "smallvec",
-          "version": "1.16.0",
+          "version": "1.16.3",
           "repository": "https://github.com/servo/rust-smallvec",
           "copyright": [
             "Copyright (c) 2018 The Servo Project Developers"
+          ]
+        },
+        {
+          "name": "socket2",
+          "version": "0.6.5",
+          "repository": "https://github.com/rust-lang/socket2",
+          "copyright": [
+            "Copyright (c) 2014 Alex Crichton"
           ]
         },
         {
@@ -2195,7 +2441,7 @@
         },
         {
           "name": "swift-rs",
-          "version": "1.0.8",
+          "version": "1.0.9",
           "repository": "https://github.com/Brendonovich/swift-rs",
           "copyright": [
             "Copyright (c) 2023 The swift-rs Developers"
@@ -2215,13 +2461,13 @@
         },
         {
           "name": "syn",
-          "version": "3.0.5",
+          "version": "3.0.9",
           "repository": "https://github.com/dtolnay/syn",
           "copyright": []
         },
         {
           "name": "synstructure",
-          "version": "0.13.2",
+          "version": "0.14.0",
           "repository": "https://github.com/mystor/synstructure",
           "copyright": [
             "Copyright 2016 Nika Layzell"
@@ -2235,7 +2481,7 @@
         },
         {
           "name": "tauri",
-          "version": "2.12.1",
+          "version": "2.12.3",
           "repository": "https://github.com/tauri-apps/tauri",
           "copyright": [
             "Copyright (c) 2017 - Present Tauri Apps Contributors"
@@ -2243,7 +2489,7 @@
         },
         {
           "name": "tauri-build",
-          "version": "2.7.1",
+          "version": "2.7.2",
           "repository": "https://github.com/tauri-apps/tauri",
           "copyright": [
             "Copyright (c) 2017 - Present Tauri Apps Contributors"
@@ -2251,7 +2497,7 @@
         },
         {
           "name": "tauri-codegen",
-          "version": "2.7.1",
+          "version": "2.7.2",
           "repository": "https://github.com/tauri-apps/tauri",
           "copyright": [
             "Copyright (c) 2017 - Present Tauri Apps Contributors"
@@ -2259,7 +2505,7 @@
         },
         {
           "name": "tauri-macros",
-          "version": "2.7.1",
+          "version": "2.7.2",
           "repository": "https://github.com/tauri-apps/tauri",
           "copyright": [
             "Copyright (c) 2017 - Present Tauri Apps Contributors"
@@ -2279,13 +2525,19 @@
         },
         {
           "name": "tauri-plugin-dialog",
-          "version": "2.8.1",
+          "version": "2.8.2",
           "repository": "https://github.com/tauri-apps/plugins-workspace",
           "copyright": []
         },
         {
           "name": "tauri-plugin-fs",
-          "version": "2.6.0",
+          "version": "2.7.0",
+          "repository": "https://github.com/tauri-apps/plugins-workspace",
+          "copyright": []
+        },
+        {
+          "name": "tauri-plugin-single-instance",
+          "version": "2.5.3",
           "repository": "https://github.com/tauri-apps/plugins-workspace",
           "copyright": []
         },
@@ -2320,6 +2572,14 @@
           "copyright": [
             "Copyright (c) 2023 - Present Tauri Apps Contributors",
             "Copyright (c) 2016 Max Resch"
+          ]
+        },
+        {
+          "name": "tempfile",
+          "version": "3.27.0",
+          "repository": "https://github.com/Stebalien/tempfile",
+          "copyright": [
+            "Copyright (c) 2015 Steven Allen"
           ]
         },
         {
@@ -2388,21 +2648,13 @@
         },
         {
           "name": "tinyvec",
-          "version": "1.13.2",
+          "version": "1.13.3",
           "repository": "https://github.com/Lokathor/tinyvec",
           "copyright": []
         },
         {
-          "name": "tinyvec_macros",
-          "version": "0.1.1",
-          "repository": "https://github.com/Soveu/tinyvec_macros",
-          "copyright": [
-            "Copyright (c) 2020 Soveu"
-          ]
-        },
-        {
           "name": "tokio",
-          "version": "1.53.1",
+          "version": "1.53.3",
           "repository": "https://github.com/tokio-rs/tokio",
           "copyright": [
             "Copyright (c) Tokio Contributors"
@@ -2418,7 +2670,7 @@
         },
         {
           "name": "toml",
-          "version": "1.1.5+spec-1.1.0",
+          "version": "1.1.8+spec-1.1.0",
           "repository": "https://github.com/toml-rs/toml",
           "copyright": [
             "Copyright (c) Individual contributors"
@@ -2434,7 +2686,7 @@
         },
         {
           "name": "toml_datetime",
-          "version": "1.1.1+spec-1.1.0",
+          "version": "1.1.2+spec-1.1.0",
           "repository": "https://github.com/toml-rs/toml",
           "copyright": [
             "Copyright (c) Individual contributors"
@@ -2457,8 +2709,16 @@
           ]
         },
         {
+          "name": "toml_edit",
+          "version": "0.25.17+spec-1.1.0",
+          "repository": "https://github.com/toml-rs/toml",
+          "copyright": [
+            "Copyright (c) Individual contributors"
+          ]
+        },
+        {
           "name": "toml_parser",
-          "version": "1.1.3+spec-1.1.0",
+          "version": "1.1.5+spec-1.1.0",
           "repository": "https://github.com/toml-rs/toml",
           "copyright": [
             "Copyright (c) Individual contributors"
@@ -2466,7 +2726,7 @@
         },
         {
           "name": "toml_writer",
-          "version": "1.1.2+spec-1.1.0",
+          "version": "1.1.3+spec-1.1.0",
           "repository": "https://github.com/toml-rs/toml",
           "copyright": [
             "Copyright (c) Individual contributors"
@@ -2514,7 +2774,7 @@
         },
         {
           "name": "transcribe-cpp",
-          "version": "0.2.4",
+          "version": "0.4.0",
           "repository": "https://github.com/handy-computer/transcribe.cpp",
           "copyright": [
             "Copyright (c) 2026 The transcribe.cpp authors"
@@ -2522,7 +2782,7 @@
         },
         {
           "name": "transcribe-cpp-sys",
-          "version": "0.2.4",
+          "version": "0.4.0",
           "repository": "https://github.com/handy-computer/transcribe.cpp",
           "copyright": [
             "Copyright (c) 2026 The transcribe.cpp authors"
@@ -2567,8 +2827,16 @@
           ]
         },
         {
+          "name": "uds_windows",
+          "version": "1.2.1",
+          "repository": "https://github.com/haraldh/rust_uds_windows",
+          "copyright": [
+            "Copyright (c) Microsoft Corporation. All rights reserved."
+          ]
+        },
+        {
           "name": "unicode-ident",
-          "version": "1.0.24",
+          "version": "1.0.27",
           "repository": "https://github.com/dtolnay/unicode-ident",
           "copyright": []
         },
@@ -2636,7 +2904,7 @@
         },
         {
           "name": "uuid",
-          "version": "1.26.0",
+          "version": "1.28.0",
           "repository": "https://github.com/uuid-rs/uuid",
           "copyright": [
             "Copyright (c) 2014 The Rust Project Developers",
@@ -2937,14 +3205,6 @@
         },
         {
           "name": "windows-sys",
-          "version": "0.59.0",
-          "repository": "https://github.com/microsoft/windows-rs",
-          "copyright": [
-            "Copyright (c) Microsoft Corporation."
-          ]
-        },
-        {
-          "name": "windows-sys",
           "version": "0.60.2",
           "repository": "https://github.com/microsoft/windows-rs",
           "copyright": [
@@ -2954,14 +3214,6 @@
         {
           "name": "windows-sys",
           "version": "0.61.2",
-          "repository": "https://github.com/microsoft/windows-rs",
-          "copyright": [
-            "Copyright (c) Microsoft Corporation."
-          ]
-        },
-        {
-          "name": "windows-targets",
-          "version": "0.52.6",
           "repository": "https://github.com/microsoft/windows-rs",
           "copyright": [
             "Copyright (c) Microsoft Corporation."
@@ -3001,23 +3253,7 @@
         },
         {
           "name": "windows_x86_64_gnu",
-          "version": "0.52.6",
-          "repository": "https://github.com/microsoft/windows-rs",
-          "copyright": [
-            "Copyright (c) Microsoft Corporation."
-          ]
-        },
-        {
-          "name": "windows_x86_64_gnu",
           "version": "0.53.1",
-          "repository": "https://github.com/microsoft/windows-rs",
-          "copyright": [
-            "Copyright (c) Microsoft Corporation."
-          ]
-        },
-        {
-          "name": "windows_x86_64_msvc",
-          "version": "0.52.6",
           "repository": "https://github.com/microsoft/windows-rs",
           "copyright": [
             "Copyright (c) Microsoft Corporation."
@@ -3053,7 +3289,7 @@
         },
         {
           "name": "winreg",
-          "version": "0.55.0",
+          "version": "0.56.0",
           "repository": "https://github.com/gentoo90/winreg-rs",
           "copyright": [
             "Copyright (c) 2015 Igor Shaula"
@@ -3112,8 +3348,40 @@
           ]
         },
         {
+          "name": "zbus",
+          "version": "5.19.0",
+          "repository": "https://github.com/z-galaxy/zbus/",
+          "copyright": [
+            "Copyright (c) 2024 Zeeshan Ali Khan & zbus contributors"
+          ]
+        },
+        {
+          "name": "zbus_macros",
+          "version": "5.19.0",
+          "repository": "https://github.com/z-galaxy/zbus/",
+          "copyright": [
+            "Copyright (c) 2024 Zeeshan Ali Khan & zbus contributors"
+          ]
+        },
+        {
+          "name": "zbus_names",
+          "version": "4.3.4",
+          "repository": "https://github.com/z-galaxy/zbus/",
+          "copyright": [
+            "Copyright (c) 2024 Zeeshan Ali Khan & zbus contributors"
+          ]
+        },
+        {
+          "name": "zcheapstr",
+          "version": "1.1.0",
+          "repository": "https://github.com/z-galaxy/zcheapstr/",
+          "copyright": [
+            "Copyright (c) 2026 Zeeshan Ali Khan & zcheapstr contributors"
+          ]
+        },
+        {
           "name": "zeroize",
-          "version": "1.9.0",
+          "version": "1.9.1",
           "repository": "https://github.com/RustCrypto/utils",
           "copyright": [
             "Copyright (c) 2018-2026 The RustCrypto Project Developers"
@@ -3123,6 +3391,28 @@
           "name": "zmij",
           "version": "1.0.23",
           "repository": "https://github.com/dtolnay/zmij",
+          "copyright": []
+        },
+        {
+          "name": "zvariant",
+          "version": "5.15.0",
+          "repository": "https://github.com/z-galaxy/zbus/",
+          "copyright": [
+            "Copyright (c) 2024 Zeeshan Ali Khan & zbus contributors"
+          ]
+        },
+        {
+          "name": "zvariant_derive",
+          "version": "5.15.0",
+          "repository": "https://github.com/z-galaxy/zbus/",
+          "copyright": [
+            "Copyright (c) 2024 Zeeshan Ali Khan & zbus contributors"
+          ]
+        },
+        {
+          "name": "zvariant_utils",
+          "version": "4.2.0",
+          "repository": "https://github.com/z-galaxy/zbus/",
           "copyright": []
         }
       ]
@@ -3251,7 +3541,7 @@
         },
         {
           "name": "unicode-ident",
-          "version": "1.0.24",
+          "version": "1.0.27",
           "repository": "https://github.com/dtolnay/unicode-ident",
           "copyright": [
             "COPYRIGHT AND PERMISSION NOTICE"
@@ -3275,7 +3565,7 @@
         },
         {
           "name": "yoke-derive",
-          "version": "0.8.2",
+          "version": "0.8.4",
           "repository": "https://github.com/unicode-org/icu4x",
           "copyright": [
             "COPYRIGHT AND PERMISSION NOTICE"
@@ -3291,7 +3581,7 @@
         },
         {
           "name": "zerofrom-derive",
-          "version": "0.1.7",
+          "version": "0.1.8",
           "repository": "https://github.com/unicode-org/icu4x",
           "copyright": [
             "COPYRIGHT AND PERMISSION NOTICE"

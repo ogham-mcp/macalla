@@ -246,9 +246,13 @@ pub fn transcription_choose(
 /// The engine step. On a Mac the default is Apple Speech, part of macOS, so
 /// there is nothing to choose or download and the step is a tick. Elsewhere
 /// the registry says what is missing.
-fn engine_step() -> macalla_core::onboarding::Step {
+/// `chosen` is the engine the person picked, by id, or `None` for the
+/// platform's default: the same rule dictation opens its engine by, so the
+/// checklist names the engine dictation will use and asks whether that one is
+/// ready, not the default.
+fn engine_step(chosen: Option<&str>) -> macalla_core::onboarding::Step {
     use macalla_core::onboarding::Step;
-    let id = registry::default_engine_id();
+    let id = chosen.unwrap_or_else(|| registry::default_engine_id());
     match registry::find(id) {
         Some(info) if info.availability.is_ready() => {
             // "Built in" is only true of the macOS default (Apple Speech, part
@@ -279,15 +283,15 @@ fn engine_step() -> macalla_core::onboarding::Step {
 
 /// The first-launch checklist: the permissions, then the
 /// engine. The same steps as `macalla setup`, plus the engine line.
-pub fn all_steps() -> Vec<macalla_core::onboarding::Step> {
+pub fn all_steps(chosen: Option<&str>) -> Vec<macalla_core::onboarding::Step> {
     let mut steps = macalla_platform::onboarding::permission_steps();
-    steps.push(engine_step());
+    steps.push(engine_step(chosen));
     steps
 }
 
 /// Whether nothing required is left, so the window can stay out of the way.
-pub fn setup_is_complete() -> bool {
-    ready(all_steps())
+pub fn setup_is_complete(chosen: Option<&str>) -> bool {
+    ready(all_steps(chosen))
 }
 
 /// Whether `steps` leave nothing required. An optional step is never "done",
@@ -299,7 +303,7 @@ fn ready(steps: Vec<macalla_core::onboarding::Step>) -> bool {
 }
 
 /// The onboarding checklist: what still stands between the user and dictating.
-fn step_summaries() -> Vec<StepSummary> {
+fn step_summaries(chosen: Option<&str>) -> Vec<StepSummary> {
     // In the log, so a checklist that disagrees with what the person did in
     // System Settings can be read back afterwards.
     let grants: Vec<(macalla_platform::Permission, macalla_platform::Grant)> =
@@ -313,7 +317,7 @@ fn step_summaries() -> Vec<StepSummary> {
     {
         tracing::info!(?grants, "checklist read");
     }
-    all_steps()
+    all_steps(chosen)
         .into_iter()
         .map(|s| summary_of(s, macalla_platform::Os::HERE))
         .collect()
@@ -338,8 +342,8 @@ fn summary_of(step: macalla_core::onboarding::Step, os: macalla_platform::Os) ->
 }
 
 #[tauri::command]
-pub fn setup_steps() -> Vec<StepSummary> {
-    step_summaries()
+pub fn setup_steps(history: tauri::State<'_, crate::history::HistoryHandle>) -> Vec<StepSummary> {
+    step_summaries(history.engine_choice().as_deref())
 }
 
 /// Open the System Settings pane for a step, where the grant is made.
@@ -786,10 +790,44 @@ pub fn microphone_choose(
     Ok(())
 }
 
-/// The shortcut to hold, the way the key caps read.
+/// One unload choice as the Engine card lists it.
+#[derive(Debug, Clone, Serialize, PartialEq, Eq)]
+pub struct UnloadChoice {
+    pub value: String,
+    pub label: String,
+}
+
+/// How long an idle local engine stays loaded, and the choices.
+#[derive(Debug, Clone, Serialize, PartialEq, Eq)]
+pub struct UnloadView {
+    pub current: String,
+    pub choices: Vec<UnloadChoice>,
+}
+
+/// How long an idle local engine stays loaded before it is dropped to free its
+/// memory, and the choices, for the Engine card.
 #[tauri::command]
-pub fn shortcut() -> String {
-    macalla_platform::hotkey::Shortcut::default_for_platform().to_string()
+pub fn unload_choice(history: tauri::State<'_, crate::history::HistoryHandle>) -> UnloadView {
+    UnloadView {
+        current: history.unload_choice(),
+        choices: crate::history::UNLOAD_OPTIONS
+            .iter()
+            .map(|(value, label)| UnloadChoice {
+                value: (*value).to_string(),
+                label: (*label).to_string(),
+            })
+            .collect(),
+    }
+}
+
+/// Set how long an idle local engine stays loaded. The dictation loop reads the
+/// new value on its next idle tick, so nothing needs reloading or restarting.
+#[tauri::command]
+pub fn unload_choose(
+    history: tauri::State<'_, crate::history::HistoryHandle>,
+    value: String,
+) -> Result<(), CommandError> {
+    history.set_unload_choice(&value)
 }
 
 /// One provider, for the Models page's key list. Never carries the key
@@ -1982,7 +2020,7 @@ mod tests {
     #[test]
     #[cfg(target_os = "macos")]
     fn this_macs_checklist_keeps_its_three_permissions_first() {
-        let rows = step_summaries();
+        let rows = step_summaries(None);
         let ids: Vec<&str> = rows
             .iter()
             .filter(|r| r.permission)
@@ -2796,6 +2834,27 @@ mod tests {
         let has_unicode_dfs = families.iter().any(|f| f.spdx == "Unicode-DFS-2016");
         assert!(has_unicode_dfs, "Unicode-DFS-2016 (finl_unicode) missing");
 
+        // The C/C++ libraries vendored inside transcribe-cpp-sys are invisible to
+        // cargo-about (not Cargo crates); gen-licenses.py folds them into MIT by
+        // hand (VENDORED_MIT). MIT obliges us to carry their copyright, so guard
+        // that each is present with its real holder, not dropped on a regenerate.
+        let mit = families
+            .iter()
+            .find(|f| f.spdx == "MIT")
+            .expect("an MIT family");
+        for (lib, holder) in [("ggml", "ggml authors"), ("miniz", "Rich Geldreich")] {
+            let c = mit
+                .crates
+                .iter()
+                .find(|c| c.name == lib)
+                .unwrap_or_else(|| panic!("{lib} missing from the MIT family"));
+            assert!(
+                c.copyright.iter().any(|l| l.contains(holder)),
+                "{lib} lacks its real copyright: {:?}",
+                c.copyright
+            );
+        }
+
         // No family's text is the unfilled SPDX template.
         for f in &families {
             assert!(
@@ -2944,10 +3003,36 @@ mod tests {
     }
 
     #[test]
+    fn the_engine_step_names_the_engine_chosen_not_the_default() {
+        // Dictation opens the chosen engine, or the default when none is
+        // chosen, so the checklist asks about that same one: Whisper chosen
+        // on Windows is the engine the line names, ready or not.
+        let engines = registry::engines();
+        assert!(!engines.is_empty(), "this build has engines");
+        for info in engines {
+            let step = engine_step(Some(info.id));
+            assert!(
+                step.detail.contains(info.name),
+                "{} chosen, but the step says {:?}",
+                info.id,
+                step.detail
+            );
+            assert_eq!(
+                step.state == StepState::Done,
+                info.availability.is_ready(),
+                "{}: done exactly when that engine is ready",
+                info.id
+            );
+        }
+        let default = registry::find(registry::default_engine_id()).expect("a default");
+        assert!(engine_step(None).detail.contains(default.name));
+    }
+
+    #[test]
     fn the_engine_is_a_step_and_on_a_mac_it_is_already_done() {
         // "Apple is there by default on an Apple device?" -- yes, and the
         // checklist says so rather than asking the person to choose.
-        let steps = all_steps();
+        let steps = all_steps(None);
         let engine = steps
             .iter()
             .find(|s| s.id == "engine")
@@ -2990,7 +3075,7 @@ mod tests {
 
     #[test]
     fn every_step_state_maps_to_a_lowercase_word() {
-        for s in step_summaries() {
+        for s in step_summaries(None) {
             assert!(
                 matches!(s.state.as_str(), "done" | "required" | "optional"),
                 "{s:?} has an unmapped state"

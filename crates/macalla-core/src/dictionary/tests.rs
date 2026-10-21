@@ -47,6 +47,53 @@ fn the_terms_no_engine_could_produce_are_corrected() {
 }
 
 #[test]
+fn kubectl_and_kubernetes_as_parakeet_and_apple_speech_wrote_them() {
+    // Raw engine output for synthesised speech, 2026-10-14: Parakeet wrote
+    // "cubectal", "QBactal" and "Cubanets", Apple Speech "Kubernates"; and
+    // Apple Speech for a real voice, "Cubernetti's" and "Coopinetti's". The
+    // letters "C T L" come back spaced or not, in either case, and the term
+    // is case-sensitive, so each casing has to be listed.
+    let d = seed();
+    for (heard, want) in [
+        ("Run cube C T L get pods.", "Run kubectl get pods."),
+        ("run cube ctl apply", "run kubectl apply"),
+        ("Run cubectal get pods.", "Run kubectl get pods."),
+        ("Run QBactal get pods.", "Run kubectl get pods."),
+        (
+            "We deploy everything on cubernetis.",
+            "We deploy everything on Kubernetes.",
+        ),
+        (
+            "The Cubanets cluster is healthy.",
+            "The Kubernetes cluster is healthy.",
+        ),
+        (
+            "The Kubernates cluster is healthy.",
+            "The Kubernetes cluster is healthy.",
+        ),
+        (
+            "Run kubectl on the Cubernetti's cluster.",
+            "Run kubectl on the Kubernetes cluster.",
+        ),
+        (
+            "Run the kubectl command on the Coopinetti's cluster.",
+            "Run the kubectl command on the Kubernetes cluster.",
+        ),
+        (
+            "We deploy everything on Kubernetes.",
+            "We deploy everything on Kubernetes.",
+        ),
+    ] {
+        assert_eq!(d.correct(heard), want, "{heard:?}");
+    }
+    // Also heard, and deliberately not seeded: ordinary words, so a rule
+    // would rewrite a real sentence.
+    for s in ["Cuban needs", "the Cuba needs list", "Quebec to get there"] {
+        assert_eq!(d.correct(s), s);
+    }
+}
+
+#[test]
 fn the_ambiguous_mishearings_are_deliberately_not_corrected() {
     // Observed, but not seeded. "parcel" and "passer" are ordinary words, so a
     // rule would break "send me the parcel". PostgreSQL is a legitimate name
@@ -726,6 +773,52 @@ fn a_matched_term_keeps_the_punctuation_that_wrapped_it() {
         "say \"Terragrunt\" now"
     );
     assert_eq!(d.correct("[V net] config"), "[VNet] config");
+}
+
+/// The seed plus terms whose written form starts or ends with punctuation
+/// of its own.
+fn with_outer_punctuation() -> Dictionary {
+    let mut file: TermFile =
+        serde_json::from_str(include_str!("../../../../fixtures/dictionary/seed.json")).unwrap();
+    for (written, spoken) in [(".NET", "dot net"), ("C#", "C sharp")] {
+        file.terms.push(Term {
+            written: written.into(),
+            spoken: vec![spoken.into()],
+            case_sensitive: false,
+            threshold: DEFAULT_THRESHOLD,
+        });
+    }
+    Dictionary::new(&file)
+}
+
+#[test]
+fn a_written_form_s_own_outer_punctuation_is_not_carried_twice() {
+    // The punctuation carried across from the input is the sentence's, not
+    // the term's: when the written form already has it at that end, carrying
+    // it again pasted ".NET" as "..NET" and "C#" as "C##".
+    let d = with_outer_punctuation();
+    assert_eq!(d.correct("we use .NET here"), "we use .NET here");
+    assert_eq!(d.correct("I write C#."), "I write C#.");
+    assert_eq!(d.correct("I write C#"), "I write C#");
+    assert_eq!(d.correct("(.NET)"), "(.NET)");
+    assert_eq!(d.correct("`C#`"), "`C#`");
+    // Said rather than typed, the form brings its own punctuation, and the
+    // sentence's still goes around it.
+    assert_eq!(d.correct("we use dot net here"), "we use .NET here");
+    assert_eq!(d.correct("I write C sharp."), "I write C#.");
+    // A form with no outer punctuation is unchanged.
+    assert_eq!(d.correct("(postgress)."), "(Postgres).");
+}
+
+#[test]
+fn settle_leaves_a_written_form_with_outer_punctuation_as_it_is() {
+    // settle runs correct over text that already holds the written form, so
+    // the doubling compounded on every pass.
+    let d = with_outer_punctuation();
+    assert_eq!(
+        d.settle(&para("Port it to .NET and C#.")),
+        para("Port it to .NET and C#.")
+    );
 }
 
 #[test]
