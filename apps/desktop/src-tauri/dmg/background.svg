@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 400" width="660" height="400">
+  <!-- SPDX-License-Identifier: MIT -->
+  <!-- Background of the macOS disk image window. Finder does not swap a DMG
+       background for dark mode, and it draws icon labels black in light mode
+       and white in dark mode, so the ground is a mid teal-grey that both read
+       against (about 4:1 for white, 5:1 for black). The icons sit at
+       (180, 190) and (480, 190), set in tauri.conf.json; move them together. -->
+  <defs>
+    <radialGradient id="ground" cx="50%" cy="45%" r="75%">
+      <stop offset="0" stop-color="#6a847f"/>
+      <stop offset="1" stop-color="#55706b"/>
+    </radialGradient>
+  </defs>
+  <rect width="660" height="400" fill="url(#ground)"/>
+
+  <!-- The icon's echo, faint, in the corners. -->
+  <g fill="none" stroke="#c9b8a8" stroke-opacity="0.13" stroke-width="2">
+    <circle cx="40" cy="372" r="46"/>
+    <circle cx="40" cy="372" r="82"/>
+    <circle cx="40" cy="372" r="118"/>
+    <circle cx="628" cy="26" r="34"/>
+    <circle cx="628" cy="26" r="62"/>
+  </g>
+
+  <!-- The trail: echo dots that loop once and land in Applications. -->
+  <path d="M 252 166 C 268 122, 298 94, 330 94 C 372 94, 378 36, 338 36 C 298 36, 300 96, 344 98 C 382 100, 404 108, 413 120"
+        fill="none" stroke="#efe5d8" stroke-width="7" stroke-linecap="round"
+        stroke-dasharray="0 15"/>
+  <!-- Its head, pointing down into the folder. -->
+  <path d="M 397 118 L 419 129 L 417 104" fill="none" stroke="#efe5d8"
+        stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- The teal dot the trail starts from, as the icon's first circle. -->
+  <circle cx="252" cy="166" r="7" fill="#2bb5a0"/>
+</svg>

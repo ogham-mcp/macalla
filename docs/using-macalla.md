@@ -120,6 +120,27 @@ model loaded, use **Unload model** on the Engine card. If you press the
 shortcut while a downloaded model loads, the overlay says so. Start speaking
 when it says Listening. The first load on a Mac can take ten seconds or more.
 
+### Speaking another language
+
+Macalla has no language setting yet: it asks the engines on your Mac for
+English. Only Parakeet hears the language you speak whatever it is asked
+for, so choose **Parakeet** to dictate, or to record a meeting, in another
+language.
+
+- **Parakeet** writes any of its 25 European languages as spoken: Bulgarian,
+  Croatian, Czech, Danish, Dutch, English, Estonian, Finnish, French, German,
+  Greek, Hungarian, Italian, Latvian, Lithuanian, Maltese, Polish, Portuguese,
+  Romanian, Russian, Slovak, Slovenian, Spanish, Swedish and Ukrainian.
+- **Apple Speech** and **Nemotron** listen for English. Speech in another
+  language comes out garbled or with words missing.
+- **Whisper Medium** knows 99 languages, but asked for English it writes an
+  English translation of what was said, not the words themselves.
+- **Whisper Small (English)** and **Whisper Medium (English)** hear English
+  only.
+
+To turn a meeting in another language into English, record it with Parakeet,
+then translate it on the **Files** page.
+
 ## Enhancement: what tidies your words
 
 After the dictionary has fixed your words, Macalla's own tidying runs: rules
@@ -184,6 +205,11 @@ audio recording to have it transcribed, or open a transcript you already have
 (`.txt` or `.vtt`). Then you can tidy it with your Enhancement choice,
 and summarise it into key points, decisions and action items. Copy the result,
 or save it as text to your Downloads folder.
+
+To translate a transcript, choose a language under **Translate into** on the
+**Translation** card and press **Translate**. The copy is made on this Mac,
+turn by turn, and the original stays as it is. Apple's translation needs the
+pair of languages installed on your Mac.
 
 A file is kept in memory only, until you clear it or quit Macalla. Nothing
 from the Files page is written to History. One file is worked on at a time.

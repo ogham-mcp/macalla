@@ -12,7 +12,7 @@ members = [
 ]
 
 [workspace.package]
-version = "0.2.2"
+version = "0.2.3"
 edition = "2021"
 # The floor CI actually builds on: see the `msrv` job in .github/workflows/ci.yml,
 # which must be raised alongside this line. 1.88 because the lockfile already
