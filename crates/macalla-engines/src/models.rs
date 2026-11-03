@@ -233,8 +233,8 @@ pub const WHISPER_MEDIUM_EN: ModelSpec = ModelSpec {
     engine_name: "Whisper Medium (English)",
     group: "OpenAI",
     blurb: "English only, more accurate than Whisper Small on technical speech, and it \
-            listens for the words in your dictionary. Slower, needs about 1.1 GB of memory, \
-            and can write a stray phrase over loud background noise. An 831 MB download.",
+            listens for the words in your dictionary. Slower, and can write a stray phrase \
+            over loud background noise. An 831 MB download.",
 };
 
 /// Whisper medium, Q8_0: 99 languages by its own list. Only German, French,
@@ -258,8 +258,8 @@ pub const WHISPER_MEDIUM: ModelSpec = ModelSpec {
     group: "OpenAI",
     blurb: "99 languages, including many Parakeet does not speak; only German, French, \
             Spanish and Italian have been tested here. It listens for the words in your \
-            dictionary. Slower, needs about 1.1 GB of memory, and can write a stray phrase \
-            over loud background noise. An 831 MB download.",
+            dictionary. Slower, and can write a stray phrase over loud background noise. An \
+            831 MB download.",
 };
 
 /// Every model this build knows how to fetch, in the order the Engine card

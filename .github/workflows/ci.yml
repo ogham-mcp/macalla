@@ -115,7 +115,7 @@ jobs:
         with:
           toolchain: stable
           components: rustfmt, clippy
-      - uses: Swatinem/rust-cache@v2.9.2
+      - uses: Swatinem/rust-cache@v2.9.3
       - name: cargo fmt
         run: cargo fmt --all -- --check
       - name: cargo clippy
@@ -140,7 +140,7 @@ jobs:
         with:
           toolchain: stable
           components: rustfmt, clippy
-      - uses: Swatinem/rust-cache@v2.9.2
+      - uses: Swatinem/rust-cache@v2.9.3
       - name: cargo clippy
         run: cargo clippy --workspace --all-targets -- -D warnings
       - name: cargo test
@@ -177,7 +177,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # master
         with:
           toolchain: stable
-      - uses: Swatinem/rust-cache@v2.9.2
+      - uses: Swatinem/rust-cache@v2.9.3
       - uses: actions/setup-node@v7.1.0
         with:
           node-version: 22
@@ -292,7 +292,7 @@ jobs:
         with:
           toolchain: stable
           targets: x86_64-unknown-linux-gnu
-      - uses: Swatinem/rust-cache@v2.9.2
+      - uses: Swatinem/rust-cache@v2.9.3
       - name: cargo check -p macalla-core (linux target, no sysroot)
         run: cargo check -p macalla-core --target x86_64-unknown-linux-gnu
       # transcribe.cpp is built by cmake, and macalla-engines pulls
@@ -390,7 +390,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # master
         with:
           toolchain: "1.90"
-      - uses: Swatinem/rust-cache@v2.9.2
+      - uses: Swatinem/rust-cache@v2.9.3
       - name: cargo check --workspace on the declared minimum
         env:
           RUSTUP_TOOLCHAIN: "1.90"
@@ -410,7 +410,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # master
         with:
           toolchain: stable
-      - uses: Swatinem/rust-cache@v2.9.2
+      - uses: Swatinem/rust-cache@v2.9.3
       # Plain cargo-audit rather than rustsec/audit-check. The action's v2.0.0
       # tag still runs on Node 20 -- it reintroduced the exact deprecation this
       # workflow was cleaning up -- and it wants a token and `issues: write` to

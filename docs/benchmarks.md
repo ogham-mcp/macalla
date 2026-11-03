@@ -4600,3 +4600,46 @@ exists to do.
 - The reference is itself automatic and is wrong in places; where the two
   disagree this does not say which is right.
 - No speaker turns or timestamps were compared, only words.
+
+## Memory after transcribe.cpp 0.4.1 maps the weights (2026-11-01)
+
+transcribe.cpp 0.4.1 maps a model's weights from its file instead of copying
+them into the process, and uses a new default attention window on Parakeet
+pieces over 20.5 s. Both builds were run on the same files with
+`macalla transcribe --raw` on the M1 Pro laptop; memory is the peak footprint
+from `/usr/bin/time -l`.
+
+| Engine and file | 0.4.0 | 0.4.1 |
+|---|---|---|
+| Parakeet, 25 s | 899 MB | 196 MB |
+| Parakeet, 788 s | 995 MB | 277 MB |
+| Parakeet, one hour | 1,126 MB | 410 MB |
+| Nemotron, 25 s | 961 MB | 242 MB |
+| Whisper small.en, 25 s | 439 MB | 133 MB |
+| Whisper medium.en, 25 s | not run | 254 MB |
+| Whisper medium.en, 788 s | not run | 350 MB |
+| Whisper medium, 788 s | not run | 353 MB |
+
+**These figures are not the RAM a running model touches.** Footprint and
+resident size leave out the mapped file (739 MB for Parakeet, 831 MB for either
+Whisper medium). Those pages are in memory while the model runs, as file cache
+that macOS can drop and read back. The gain is less memory pressure, not the
+whole difference freed. Behaviour when the Mac is short of memory was not
+measured.
+
+Word error rate for Parakeet moved from 8.42% to 8.67% on the 788 s file and
+from 9.05% to 9.31% on the hour; the short file stayed at 4.12%. Six of 17
+Parakeet files changed text. Nemotron's text was identical on all 16 files run,
+and Whisper small.en's on 15 of 16.
+
+Parakeet load time, median of 7, on `short-burst.aiff`:
+
+| | 0.4.0 | 0.4.1 |
+|---|---|---|
+| Model in the disk cache | 343 ms | 113 ms |
+| Model removed from the cache with `msync` first | 361 ms | 248 ms |
+
+The first transcription after a load stayed at about 50 ms in both, so the
+mapping does not move the cost onto the first dictation. `msync` is not a full
+`purge`, so a truly cold disk may be slower. Timings were taken with light load
+on the machine.
