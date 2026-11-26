@@ -30,3 +30,17 @@ rustflags = ["-C", "link-arg=-Wl,-rpath,/usr/lib/swift"]
 # with the CLT's C++ headers and failed with "FP_NAN undefined" / "unknown type
 # name uint32_t". If a machine still has the stale directory, remove it rather
 # than reintroducing the flag.
+
+# Dependency cooldown: `cargo update` skips any crate version published less
+# than three days ago. Malicious releases are usually caught and yanked within
+# hours or days. Stable from Rust 1.100. Before that the key does nothing:
+# Cargo 1.90 ignores it silently, and Cargo 1.98 prints "ignoring
+# `registry.global-min-publish-age` without `-Zmin-publish-age`" on every
+# command, which is harmless.
+# When a newer version is needed at once, override it for that one update:
+#
+#     CARGO_RESOLVER_INCOMPATIBLE_PUBLISH_AGE=allow cargo update <crate> --precise <version>
+#
+# Dependabot applies its own three-day cooldown to version updates by default.
+[registry]
+global-min-publish-age = "3 days"

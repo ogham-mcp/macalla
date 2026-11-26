@@ -15,6 +15,7 @@ mod commands;
 mod dictation;
 mod dictionary;
 mod dictionary_words;
+mod engine_words;
 mod enhancement_words;
 mod files;
 mod history;
@@ -295,6 +296,10 @@ pub fn run() {
                 if !files_finished {
                     tracing::warn!("a Files job did not finish before the quit deadline");
                 }
+
+                // After the dictation, whose paste may have just paused
+                // Espanso: its resume timer would die with the process.
+                macalla_platform::paste::resume_paused_now();
 
                 // How long quit spent on each part,
                 // at `info` rather than only the `warn` lines above, which

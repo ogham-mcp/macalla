@@ -86,7 +86,9 @@ fn status_for(availability: &Availability) -> String {
     match availability {
         Availability::Ready => "ready".to_string(),
         Availability::NotCompiledIn => "not included in this build".to_string(),
-        Availability::NeedsDownload(what) => format!("needs a download: {what}"),
+        Availability::NeedsDownload { name, megabytes } => {
+            format!("needs a download: {name}, {megabytes} MB")
+        }
         Availability::Unavailable(reason) => reason.clone(),
     }
 }
@@ -254,24 +256,7 @@ fn engine_step(chosen: Option<&str>) -> macalla_core::onboarding::Step {
     use macalla_core::onboarding::Step;
     let id = chosen.unwrap_or_else(|| registry::default_engine_id());
     match registry::find(id) {
-        Some(info) if info.availability.is_ready() => {
-            // "Built in" is only true of the macOS default (Apple Speech, part
-            // of the OS). Off macOS a ready engine was downloaded, so it is
-            // "ready", not "built in".
-            let detail = match macalla_platform::Os::HERE {
-                macalla_platform::Os::MacOs => {
-                    format!("{} is built in and ready.", info.name)
-                }
-                _ => format!("{} is ready.", info.name),
-            };
-            Step::done("engine", "Engine", detail)
-        }
-        Some(info) => Step::required(
-            "engine",
-            "Engine",
-            format!("{} turns your voice into text.", info.name),
-            status_for(&info.availability),
-        ),
+        Some(info) => step_for_engine(&info),
         None => Step::required(
             "engine",
             "Engine",
@@ -279,6 +264,34 @@ fn engine_step(chosen: Option<&str>) -> macalla_core::onboarding::Step {
             "This build has no engine for this platform.",
         ),
     }
+}
+
+/// The engine step for one engine, as [`engine_step`] words it.
+fn step_for_engine(info: &registry::EngineInfo) -> macalla_core::onboarding::Step {
+    use macalla_core::onboarding::Step;
+    if info.availability.is_ready() {
+        // "Built in" is only true of the macOS default (Apple Speech, part
+        // of the OS). Off macOS a ready engine was downloaded, so it is
+        // "ready", not "built in".
+        let detail = match macalla_platform::Os::HERE {
+            macalla_platform::Os::MacOs => {
+                format!("{} is built in and ready.", info.name)
+            }
+            _ => format!("{} is ready.", info.name),
+        };
+        return Step::done("engine", "Engine", detail);
+    }
+    Step::required(
+        "engine",
+        "Engine",
+        format!("{} turns your voice into text.", info.name),
+        match &info.availability {
+            Availability::NeedsDownload { name, megabytes } => {
+                crate::engine_words::download_to_start(name, *megabytes)
+            }
+            other => status_for(other),
+        },
+    )
 }
 
 /// The first-launch checklist: the permissions, then the
@@ -1141,9 +1154,10 @@ fn transcription_status_and_detail(
     match availability {
         Availability::Ready => (TranscriptionStatus::Ready, None),
         Availability::NotCompiledIn => (TranscriptionStatus::NotCompiledIn, None),
-        Availability::NeedsDownload(what) => {
-            (TranscriptionStatus::NeedsDownload, Some(what.clone()))
-        }
+        Availability::NeedsDownload { name, megabytes } => (
+            TranscriptionStatus::NeedsDownload,
+            Some(format!("{name}, {megabytes} MB")),
+        ),
         Availability::Unavailable(reason) => {
             (TranscriptionStatus::Unavailable, Some(reason.clone()))
         }
@@ -3026,6 +3040,21 @@ mod tests {
         }
         let default = registry::find(registry::default_engine_id()).expect("a default");
         assert!(engine_step(None).detail.contains(default.name));
+    }
+
+    #[test]
+    fn an_engine_that_needs_a_download_says_what_to_download() {
+        let mut info = registry::find(registry::default_engine_id()).expect("a default");
+        info.availability = Availability::NeedsDownload {
+            name: "Parakeet".to_string(),
+            megabytes: 640,
+        };
+        let step = step_for_engine(&info);
+        assert_eq!(step.state, StepState::Required);
+        assert_eq!(
+            step.action.as_deref(),
+            Some("Download Parakeet (640 MB) to start dictating.")
+        );
     }
 
     #[test]

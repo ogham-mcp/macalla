@@ -3449,6 +3449,33 @@ fn refuse_dictation(app: &AppHandle<Wry>, shown: &OverlayShown, refused: &str) {
     hide_notice_later(app, shown);
 }
 
+/// A dictation was asked for and no speech engine is open (none downloaded,
+/// or a cloud engine that cannot open): say so where the person is looking.
+/// The overlay gets a short line for a few seconds, the main window gets its
+/// notice and comes forward on the Models page with Transcription in view --
+/// on every such press, since a repeat only refocuses the window.
+///
+/// The overlay line goes to the overlay alone: `dictation-refused` also sets
+/// the main window's notice, and that one has its own sentence.
+fn say_no_model(app: &AppHandle<Wry>, shown: &OverlayShown, history: &HistoryHandle) {
+    let _ = app.emit_to(
+        "overlay",
+        "dictation-refused",
+        crate::engine_words::NO_MODEL_OVERLAY,
+    );
+    show_overlay(app);
+    hide_notice_later(app, shown);
+    // The same test as the listener's `cfg` in [`start`]: only macOS and
+    // Windows have a global shortcut to name.
+    let shortcut = cfg!(any(target_os = "macos", target_os = "windows"))
+        .then(|| crate::shortcut::chosen(history).to_string());
+    let _ = app.emit(
+        "dictation-error",
+        crate::engine_words::no_model_notice(shortcut.as_deref()),
+    );
+    crate::tray::open_main_window(app, "models-transcription");
+}
+
 /// How a dictation turn of `run`'s loop ends: on to the next command, or
 /// out of the loop.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -3897,14 +3924,11 @@ fn run(
             },
             || {
                 let Some(session) = session.as_mut() else {
-                    let _ = app.emit(
-                        "dictation-error",
-                        "No speech engine is ready yet. Choose one under Transcription on the Models \
-                         page, and download its model there if it needs one.",
-                    );
                     // A press told of an open's load ([`send_trigger`]) finds
-                    // no engine after it: the loading line comes down.
+                    // no engine after it: the loading line comes down. First,
+                    // so it cannot hide the notice below.
                     end_without_dictation(&loading, || hide_overlay(&app));
+                    say_no_model(&app, &overlay_shown, &history);
                     return Turn::Next;
                 };
                 // The idle timer may have dropped the local engine to free
@@ -6711,7 +6735,7 @@ mod tests {
         // and `quitting` is read again before the reload's overlay is shown.
         let body = body_of("\nfn run(");
         let no_engine = body
-            .find("No speech engine is ready yet")
+            .find("let Some(session) = session.as_mut() else")
             .expect("no engine");
         let reload = body
             .find("reload_for_dictation(session")

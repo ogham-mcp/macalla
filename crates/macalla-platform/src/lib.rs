@@ -18,6 +18,8 @@ pub mod secrets;
 pub mod system_audio;
 #[cfg(all(feature = "hotkey", target_os = "macos"))]
 mod tap;
+#[cfg(target_os = "macos")]
+mod text_expander;
 pub mod vkey;
 
 /// The operating system, as data: what differs between the three is

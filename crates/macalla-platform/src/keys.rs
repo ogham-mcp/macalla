@@ -22,11 +22,29 @@
 
 use core_graphics::event::{CGEvent, CGEventFlags, CGEventTapLocation};
 use core_graphics::event_source::{CGEventSource, CGEventSourceStateID};
+use std::sync::Mutex;
+use std::time::{Duration, Instant};
 
 use crate::hotkey::keycode;
 
 /// Virtual keycode of the V key on an ANSI layout.
-const KEY_V: u16 = 9;
+pub(crate) const KEY_V: u16 = 9;
+
+/// When Macalla last pressed its paste chord. Read by the keyboard tap, which
+/// logs any Cmd+V it sees shortly after one: an app has been seen pasting a
+/// dictation twice, or pasting it and then the clipboard Macalla restored,
+/// though Macalla sends a single chord. Whether one or two Cmd+V key-downs
+/// pass the tap says which side the second paste comes from.
+static LAST_CHORD: Mutex<Option<Instant>> = Mutex::new(None);
+
+/// How long ago Macalla pressed its paste chord, if it ever has.
+#[cfg_attr(not(feature = "hotkey"), allow(dead_code))]
+pub(crate) fn since_own_chord() -> Option<Duration> {
+    LAST_CHORD
+        .lock()
+        .unwrap_or_else(|p| p.into_inner())
+        .map(|at| at.elapsed())
+}
 
 pub struct CgKeys {
     source: CGEventSource,
@@ -62,6 +80,23 @@ impl CgKeys {
 
 impl crate::paste::Keystrokes for CgKeys {
     fn paste_chord(&mut self) -> crate::Result<()> {
+        crate::text_expander::hold();
+        let pasted = self.press_paste_chord();
+        crate::text_expander::release();
+        pasted
+    }
+
+    fn type_text(&mut self, text: &str) -> crate::Result<()> {
+        crate::text_expander::hold();
+        let typed = self.type_each(text);
+        crate::text_expander::release();
+        typed
+    }
+}
+
+impl CgKeys {
+    fn press_paste_chord(&mut self) -> crate::Result<()> {
+        *LAST_CHORD.lock().unwrap_or_else(|p| p.into_inner()) = Some(Instant::now());
         let cmd = CGEventFlags::CGEventFlagCommand;
         self.key(keycode::COMMAND_LEFT, true, cmd, None)?;
         let tapped = self
@@ -78,7 +113,7 @@ impl crate::paste::Keystrokes for CgKeys {
         tapped.and(released)
     }
 
-    fn type_text(&mut self, text: &str) -> crate::Result<()> {
+    fn type_each(&mut self, text: &str) -> crate::Result<()> {
         let mut buf = [0u8; 4];
         for c in text.chars() {
             let s: &str = c.encode_utf8(&mut buf);

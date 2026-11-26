@@ -26,9 +26,10 @@ pub enum Availability {
     Ready,
     /// Not compiled into this build. Nothing the user can do.
     NotCompiledIn,
-    /// Compiled in and would run here once its model is fetched. The string
-    /// names what to fetch and how big it is, for the button.
-    NeedsDownload(String),
+    /// Compiled in and would run here once its model is fetched: the model's
+    /// name and its size in whole megabytes, as data, so each surface words
+    /// its own sentence.
+    NeedsDownload { name: String, megabytes: u64 },
     /// Compiled in but unusable here, with a reason fit to show a person.
     Unavailable(String),
 }
@@ -155,7 +156,10 @@ fn downloaded_state(spec: &ModelSpec) -> (Availability, Vec<String>) {
         );
     }
     (
-        Availability::NeedsDownload(format!("{}, {} MB", spec.name, spec.megabytes())),
+        Availability::NeedsDownload {
+            name: spec.name.to_string(),
+            megabytes: spec.megabytes(),
+        },
         Vec::new(),
     )
 }
@@ -219,10 +223,10 @@ pub fn open(id: &str, language: &str) -> Result<Box<dyn SttEngine>> {
                 message: format!("{id} is not compiled into this build"),
             })
         }
-        Availability::NeedsDownload(what) => {
+        Availability::NeedsDownload { name, megabytes } => {
             return Err(Error::Stt {
                 engine: "registry",
-                message: format!("{id} needs its model first: {what}. Download it on the Engine card in Macalla, or with `macalla models download`."),
+                message: format!("{id} needs its model first: {name}, {megabytes} MB. Download it on the Engine card in Macalla, or with `macalla models download`."),
             })
         }
         Availability::Unavailable(reason) => {
@@ -291,10 +295,10 @@ pub fn engine_step(language: &str) -> Option<macalla_core::onboarding::Step> {
         )),
         // The platform's engine with nothing to run on. Required, not
         // optional: without it there is no dictation at all.
-        Availability::NeedsDownload(what) => Some(Step::required(
+        Availability::NeedsDownload { name, megabytes } => Some(Step::required(
             "engine-model",
             "Speech model",
-            format!("To turn your voice into text, on this machine. {what}."),
+            format!("To turn your voice into text, on this machine. {name}, {megabytes} MB."),
             "Download it on the Engine card.",
         )),
         Availability::Unavailable(reason) => Some(Step::optional(

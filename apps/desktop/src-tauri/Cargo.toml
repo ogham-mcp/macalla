@@ -58,9 +58,8 @@ macalla-session.workspace = true
 # The translator the Files page uses is built at this app's composition root
 # (`lib.rs`); the session's use case takes any `Translator`.
 macalla-translators.workspace = true
-# Open at login (`src/login.rs`). Pinned: 2.7 moves macOS from a LaunchAgent
-# to SMAppService, a behaviour change to test on its own.
-tauri-plugin-autostart = "=2.5.1"
+# Open at login (`src/login.rs`).
+tauri-plugin-autostart = "2.7"
 # One copy at a time (`src/single.rs`): a second launch exits and the first
 # carries on.
 tauri-plugin-single-instance = "2.5"

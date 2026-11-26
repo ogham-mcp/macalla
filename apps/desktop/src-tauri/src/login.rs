@@ -3,11 +3,14 @@
 //! General card; the system's own record is the only state, so there is no
 //! setting of ours to drift from it.
 //!
-//! Through `tauri-plugin-autostart`, pinned at 2.5.1: 2.7 moves macOS from a
-//! LaunchAgent to SMAppService, a behaviour change to test on its own. On macOS it writes a LaunchAgent to
-//! `~/Library/LaunchAgents` that runs the executable inside the bundle; on
-//! Windows it writes a value under the current user's `Run` key. Neither
-//! needs a permission. The window starts hidden (`tauri.conf.json`), so a
+//! Through `tauri-plugin-autostart`. On macOS it writes a LaunchAgent to
+//! `~/Library/LaunchAgents` that runs the executable inside the bundle: the
+//! launcher is chosen below, and from 2.7 the plugin keeps a LaunchAgent as
+//! its macOS default too (it does not move to SMAppService). On Windows it
+//! writes a value under a `Run` key: since 2.7 it tries the machine's first
+//! and falls back to the current user's when that is refused, so an ordinary
+//! unelevated launch lands in the current user's, as before. Neither needs a
+//! permission. The window starts hidden (`tauri.conf.json`), so a
 //! login launch comes up in the tray like any other, or shows the checklist
 //! if setup is not finished.
 //!

@@ -3567,7 +3567,10 @@ mod tests {
         assert_eq!(
             load_on_open(Some(&info(
                 Some("m"),
-                registry::Availability::NeedsDownload("m".into())
+                registry::Availability::NeedsDownload {
+                    name: "m".into(),
+                    megabytes: 1
+                }
             ))),
             None
         );

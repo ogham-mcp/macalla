@@ -80,7 +80,7 @@ pub struct Anthropic {
     model: String,
     key: String,
     prompt: String,
-    /// Set by [`Anthropic::with_reasoning`]; otherwise it follows the prompt.
+    /// Set by [`Anthropic::with_reasoning`]; otherwise [`Reasoning::Least`].
     reasoning: Option<Reasoning>,
     /// The highest ladder stage reached for this Anthropic value so far.
     /// [`Reasoning::Least`] tries stage 0 first: `thinking: {"type":
@@ -163,7 +163,11 @@ impl Anthropic {
 
     fn reasoning(&self) -> Reasoning {
         self.reasoning
-            .unwrap_or_else(|| Reasoning::for_prompt(&self.prompt))
+            // The least for every prompt, the person's own included: the
+            // paste waits at most 5 s for cleanup, and a model left to think
+            // at its own default can take a minute or more, which also ties
+            // up the person's server long after the paste gave up on it.
+            .unwrap_or(Reasoning::Least)
     }
 
     /// [`Anthropic::complete`], with the reasoning setting passed in rather
@@ -248,7 +252,7 @@ impl Anthropic {
 
     /// [`Self::complete_with`], with the reasoning setting [`Self::reasoning`]
     /// picks: [`Self::reasoning`] if [`Anthropic::with_reasoning`] set one,
-    /// [`Reasoning::for_prompt`] on the Enhancer prompt otherwise. Used by
+    /// [`Reasoning::Least`] otherwise. Used by
     /// [`Enhancer::enhance`].
     pub(crate) fn complete(&self, instructions: &str, text: &str) -> Result<String> {
         self.complete_with(instructions, text, self.reasoning())
@@ -663,15 +667,14 @@ mod tests {
     }
 
     #[test]
-    fn a_prompt_the_person_wrote_sends_no_thinking_field_at_all() {
+    fn a_prompt_the_person_wrote_asks_for_no_thinking_too() {
         let (address, server) = serve_once("200 OK", reply("Review the spec."));
         let anthropic = Anthropic::new("claude-haiku-4-5", "test-key".into())
             .with_url(format!("{address}/v1/messages"))
             .with_prompt("Fix product names.");
         anthropic.enhance(&item("review the spec"), &[]).unwrap();
         let (_, sent) = server.join().unwrap();
-        assert!(sent.get("thinking").is_none(), "{sent}");
-        assert!(sent.get("temperature").is_none(), "{sent}");
+        assert_eq!(sent["thinking"], json!({"type": "disabled"}), "{sent}");
     }
 
     #[test]
@@ -1026,19 +1029,13 @@ mod tests {
 
     #[test]
     fn text_model_complete_asks_for_the_least_reasoning_whatever_the_enhancer_prompt_says() {
-        // A prompt the person wrote: Guard::for_prompt gives Guard::Ratio, so
-        // Reasoning::for_prompt gives ServerDefault -- more than the least --
-        // for enhance(). TextModel::complete must ignore that and still ask
-        // for the least reasoning.
+        // enhance() is set to the server's default here. TextModel::complete
+        // must ignore that and still ask for the least reasoning.
         let (address, server) = serve_once("200 OK", reply("Three words: parser shipped Friday."));
         let anthropic = Anthropic::new("claude-haiku-4-5", "test-key".into())
             .with_url(format!("{address}/v1/messages"))
-            .with_prompt("Fix product names.");
-        assert_eq!(
-            Reasoning::for_prompt("Fix product names."),
-            Reasoning::ServerDefault,
-            "the prompt used by this test must not itself ask for the least reasoning"
-        );
+            .with_prompt("Fix product names.")
+            .with_reasoning(Reasoning::ServerDefault);
 
         TextModel::complete(&anthropic, "Summarise in three words.", "we shipped it").unwrap();
 

@@ -140,8 +140,8 @@ enum Command {
         #[arg(long, requires = "endpoint")]
         key_provider: Option<String>,
         /// Endpoint or Anthropic: how much a reasoning model thinks. `least`
-        /// asks for none, `server` leaves it to the server. Without it, the
-        /// default prompt gets `least`.
+        /// asks for none, `server` leaves it to the server. Without it,
+        /// `least`, whatever the prompt.
         #[arg(long, value_enum)]
         reasoning: Option<ReasoningChoice>,
         /// Apple Intelligence only: ask for a one-field schema first instead
@@ -423,6 +423,14 @@ fn main() -> Result<()> {
 
     let language = cli.language.clone().unwrap_or_else(|| "en-US".into());
 
+    let outcome = run(cli, language);
+    // A paste may have paused Espanso, and its resume timer dies with the
+    // process.
+    macalla_platform::paste::resume_paused_now();
+    outcome
+}
+
+fn run(cli: Cli, language: String) -> Result<()> {
     match &cli.command {
         Command::Setup { fix } => setup(&language, *fix),
         Command::Models { action } => models(action),
@@ -2697,7 +2705,8 @@ fn doctor(cli: &Cli, language: &str) -> Result<()> {
             Availability::NotCompiledIn => {
                 println!("    {} -- {}{mark}: not in this build", e.id, e.name);
             }
-            Availability::NeedsDownload(what) => {
+            Availability::NeedsDownload { name, megabytes } => {
+                let what = format!("{name}, {megabytes} MB");
                 println!(
                     "    {} -- {}{mark}: needs a download ({what}); run `macalla models download {}`",
                     e.id, e.name, e.id

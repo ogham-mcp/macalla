@@ -126,6 +126,14 @@ pub enum Inserted {
     NotDelivered(NotDelivered),
 }
 
+/// Give back anything paused around Macalla's own paste, now rather than on
+/// its timer. Call it when the app quits: a resume still waiting dies with
+/// the process. Does nothing where nothing was paused.
+pub fn resume_paused_now() {
+    #[cfg(target_os = "macos")]
+    crate::text_expander::resume_now();
+}
+
 /// Inserts text by clipboard paste, restoring what was there before.
 pub struct Inserter<C, K, T, G = SystemGates> {
     clipboard: C,

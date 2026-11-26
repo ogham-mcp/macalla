@@ -222,6 +222,7 @@ jobs:
       # docker daemon being up. Pinned by version AND checksum: this job runs
       # on every push, so an unpinned download would be a supply-chain hole in
       # the same class the checkout pinning above exists to close.
+      # Review by 2026-12-13 (1.7.12 is the latest release as of 2026-11-15).
       - name: actionlint
         env:
           ACTIONLINT_VERSION: 1.7.12

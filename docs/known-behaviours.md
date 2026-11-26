@@ -220,3 +220,28 @@ spelling before, so some get through.
 **What to do.** Parakeet, chosen on the Engine card, hears technical names more
 consistently. You can also add a mishearing to the name on the Dictionary page
 whenever you see one.
+
+## Macalla pauses Espanso while it pastes
+
+**What you notice.** If Espanso is running on a Mac, it is switched off for
+about a second each time Macalla pastes a dictation, then switched back on.
+Your snippets do not expand during that second. If you had switched Espanso
+off yourself, it is on again after you dictate, because Espanso has no way to
+say whether it was off.
+
+**Why it happens.** Without the pause, a dictation could land twice where you
+were typing: first a copy missing its last two characters, then the whole
+sentence. On a MacBook Pro (M1 Pro, macOS 26) with Espanso 2.4.1 running, that
+happened to three of six dictations made a few seconds apart. Macalla pastes
+each dictation once, with a single Cmd+V; logging every Cmd+V that reached the
+keyboard showed one per dictation, all Macalla's own. The second copy came
+from Espanso, a text expander that watches and types keystrokes. With Espanso
+quit, or paused around the paste, the same dictations arrived once each:
+twenty-five of twenty-five with the pause.
+
+Macalla only asks a running Espanso to pause and resume, with Espanso's own
+`espanso cmd disable` and `espanso cmd enable`. It never starts Espanso,
+installs it, or sets it to open at login.
+
+**What to do.** Nothing. If Espanso stays off after a dictation, run
+`espanso cmd enable` and tell us.

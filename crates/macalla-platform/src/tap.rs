@@ -25,6 +25,7 @@ use core_graphics::event::{
 };
 use std::collections::HashSet;
 use std::sync::{Arc, Mutex, OnceLock};
+use std::time::Duration;
 
 // core-graphics 0.25 wraps `CGEventTapEnable` only as a method on the tap it
 // returns, and the callback that must call it cannot hold that tap; it does
@@ -147,6 +148,25 @@ pub fn listen(on_event: impl Fn(TapEvent) + Send + 'static) -> Result<(), String
                 let code = event.get_integer_value_field(EventField::KEYBOARD_EVENT_KEYCODE) as u16;
                 let autorepeat =
                     event.get_integer_value_field(EventField::KEYBOARD_EVENT_AUTOREPEAT);
+                if matches!(kind, CGEventType::KeyDown) {
+                    if let Some(ms) =
+                        paste_after_ours(code, event.get_flags(), crate::keys::since_own_chord())
+                    {
+                        // Timing only, never what was pasted. A private
+                        // source, which our chord comes from, carries an id
+                        // of its own (seen: large numbers, a new one per
+                        // paste); the physical keyboard's is the HID
+                        // system's, 1. Debug level: logged only when
+                        // RUST_LOG asks for it (macalla_platform=debug).
+                        tracing::debug!(
+                            ms_after_chord = ms,
+                            source_state =
+                                event.get_integer_value_field(EventField::EVENT_SOURCE_STATE_ID),
+                            autorepeat,
+                            "Cmd+V seen at the keyboard tap"
+                        );
+                    }
+                }
                 if let Some(raw) = key_event(kind, code, autorepeat) {
                     on_event(TapEvent::Key(raw));
                 }
@@ -320,8 +340,58 @@ fn flag_for(code: u16) -> Option<CGEventFlags> {
     })
 }
 
+/// How long after Macalla's own paste chord a Cmd+V is still logged.
+const PASTE_WATCH: Duration = Duration::from_secs(2);
+
+/// Milliseconds since Macalla's own chord, when this key-down is a Cmd+V
+/// within [`PASTE_WATCH`] of it; `None` for any other key, or a Cmd+V of the
+/// person's own long after one, which is none of this log's business.
+fn paste_after_ours(code: u16, flags: CGEventFlags, since: Option<Duration>) -> Option<u128> {
+    if code != crate::keys::KEY_V || !flags.contains(CGEventFlags::CGEventFlagCommand) {
+        return None;
+    }
+    since
+        .filter(|elapsed| *elapsed <= PASTE_WATCH)
+        .map(|elapsed| elapsed.as_millis())
+}
+
 #[cfg(test)]
 mod tests {
+    use super::paste_after_ours;
+    use core_graphics::event::CGEventFlags;
+    use std::time::Duration;
+
+    const V: u16 = crate::keys::KEY_V;
+    const CMD: CGEventFlags = CGEventFlags::CGEventFlagCommand;
+
+    #[test]
+    fn a_cmd_v_soon_after_our_chord_is_reported_with_its_delay() {
+        assert_eq!(
+            paste_after_ours(V, CMD, Some(Duration::from_millis(180))),
+            Some(180)
+        );
+    }
+
+    #[test]
+    fn a_cmd_v_long_after_our_chord_is_not_reported() {
+        assert_eq!(paste_after_ours(V, CMD, Some(Duration::from_secs(3))), None);
+    }
+
+    #[test]
+    fn a_cmd_v_before_any_chord_of_ours_is_not_reported() {
+        assert_eq!(paste_after_ours(V, CMD, None), None);
+    }
+
+    #[test]
+    fn v_without_command_and_command_with_another_key_are_not_reported() {
+        let soon = Some(Duration::from_millis(10));
+        assert_eq!(
+            paste_after_ours(V, CGEventFlags::CGEventFlagNull, soon),
+            None
+        );
+        assert_eq!(paste_after_ours(8, CMD, soon), None);
+    }
+
     use super::*;
     use crate::hotkey::keycode as k;
 

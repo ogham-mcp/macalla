@@ -163,7 +163,7 @@ export const FIXTURE_SETUP_STEPS_ELSEWHERE_PENDING = [
     title: "Engine",
     detail: "Parakeet turns your voice into text.",
     state: "required",
-    action: "needs a download: Parakeet TDT 0.6B v3, 739 MB",
+    action: "Download Parakeet TDT 0.6B v3 (739 MB) to start dictating.",
     permission: false,
     ask: false,
     settings: false,

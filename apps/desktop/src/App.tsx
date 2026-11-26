@@ -1797,10 +1797,15 @@ function ModelsView({
   onBack,
   target,
   onTargetReached,
+  notice,
 }: {
   onBack: () => void;
   target: ModelsTarget;
   onTargetReached: () => void;
+  /** The main window's notice, shown here too: a press with no speech model
+   * opens this page, and the notice saying why was sent before the page was
+   * mounted to hear it. */
+  notice: string | null;
 }) {
   const [overview, setOverview] = useState<ModelsOverview | null>(null);
   const [models, setModels] = useState<ModelView[]>([]);
@@ -1962,6 +1967,7 @@ function ModelsView({
 
   return (
     <main className="cards">
+      {notice && <p className="notice-bar">{notice}</p>}
       <RouteSymbol />
       <button type="button" className="button" onClick={onBack}>
         Back
@@ -2229,7 +2235,13 @@ function TryItStep({
 // setup already complete on the first read, at launch, was finished in an
 // earlier run, so "You're all set" is not shown again every launch. A step
 // that stops being done -- a permission revoked -- brings the card back.
-function SetupCard({ shortcutName }: { shortcutName: string | null }) {
+function SetupCard({
+  shortcutName,
+  onOpenModels,
+}: {
+  shortcutName: string | null;
+  onOpenModels: () => void;
+}) {
   const [steps, setSteps] = useState<StepSummary[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [dismissed, setDismissed] = useState(false);
@@ -2346,6 +2358,13 @@ function SetupCard({ shortcutName }: { shortcutName: string | null }) {
                 <span className="step-detail">{s.detail}</span>
                 {s.action && s.state !== "done" && (
                   <p className="step-action">{s.action}</p>
+                )}
+                {s.id === "engine" && s.state !== "done" && (
+                  <div className="button-row">
+                    <button type="button" className="button" onClick={onOpenModels}>
+                      Open Models
+                    </button>
+                  </div>
                 )}
               </div>
             </li>
@@ -5163,7 +5182,12 @@ export default function App() {
 
   useEffect(() => {
     const subscription = listen<string>("navigate", (e) => {
-      if (isView(e.payload)) {
+      // A press with no speech model lands on the Models page with
+      // Transcription in view, as the Engine card's button does.
+      if (e.payload === "models-transcription") {
+        setModelsTarget("transcription");
+        setView("models");
+      } else if (isView(e.payload)) {
         setView(e.payload);
       }
     });
@@ -5171,6 +5195,11 @@ export default function App() {
       subscription.then((unlisten) => unlisten());
     };
   }, []);
+
+  const openTranscription = () => {
+    setModelsTarget("transcription");
+    setView("models");
+  };
 
   if (view === "about") {
     return (
@@ -5198,6 +5227,7 @@ export default function App() {
         onBack={() => setView("settings")}
         target={modelsTarget}
         onTargetReached={() => setModelsTarget(null)}
+        notice={notice}
       />
     );
   }
@@ -5207,18 +5237,13 @@ export default function App() {
   return (
     <main className="cards">
       {notice && <p className="notice-bar">{notice}</p>}
-      <SetupCard shortcutName={shortcutName} />
+      <SetupCard shortcutName={shortcutName} onOpenModels={openTranscription} />
       <HistoryCard onOpen={() => setView("history")} />
       <FilesCard onOpen={() => setView("files")} />
       <DictionaryCard onOpen={() => setView("dictionary")} />
       <ShortcutCard onChanged={refreshShortcutName} />
       <MicrophoneCard />
-      <EngineCard
-        onOpenModels={() => {
-          setModelsTarget("transcription");
-          setView("models");
-        }}
-      />
+      <EngineCard onOpenModels={openTranscription} />
       <PlaceholderSection
         title="Enhancement"
         detail="What Enhancement does with what you say."

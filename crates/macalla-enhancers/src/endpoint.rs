@@ -110,28 +110,13 @@ pub enum Reasoning {
     ServerDefault,
 }
 
-impl Reasoning {
-    /// Least for the default prompt, which only punctuates; the server's own
-    /// setting for a prompt the person wrote, which may ask for more.
-    pub fn for_prompt(prompt: &str) -> Self {
-        if matches!(
-            enhance::Guard::for_prompt(prompt),
-            enhance::Guard::SameWords
-        ) {
-            Self::Least
-        } else {
-            Self::ServerDefault
-        }
-    }
-}
-
 /// No `Debug`: it holds the key.
 pub struct Endpoint {
     url: String,
     model: String,
     key: Option<String>,
     prompt: String,
-    /// Set by [`Endpoint::with_reasoning`]; otherwise it follows the prompt.
+    /// Set by [`Endpoint::with_reasoning`]; otherwise [`Reasoning::Least`].
     reasoning: Option<Reasoning>,
     /// What this server and model have refused so far, shared with every
     /// other `Endpoint` for the same address and model in this process, so a
@@ -198,12 +183,16 @@ impl Endpoint {
 
     fn reasoning(&self) -> Reasoning {
         self.reasoning
-            .unwrap_or_else(|| Reasoning::for_prompt(&self.prompt))
+            // The least for every prompt, the person's own included: the
+            // paste waits at most 5 s for cleanup, and a model left to think
+            // at its own default can take a minute or more, which also ties
+            // up the person's server long after the paste gave up on it.
+            .unwrap_or(Reasoning::Least)
     }
 
     /// [`Self::complete`], with the reasoning setting [`Self::reasoning`]
     /// picks: [`Self::reasoning`] if [`Endpoint::with_reasoning`] set one,
-    /// [`Reasoning::for_prompt`] on the Enhancer prompt otherwise. Used by
+    /// [`Reasoning::Least`] otherwise. Used by
     /// [`Enhancer::enhance`].
     pub(crate) fn complete(&self, instructions: &str, text: &str) -> Result<String> {
         self.complete_with(instructions, text, self.reasoning())
@@ -1115,7 +1104,7 @@ mod tests {
     }
 
     #[test]
-    fn a_prompt_the_person_wrote_is_held_to_the_ratio_and_leaves_reasoning_to_the_server() {
+    fn a_prompt_the_person_wrote_is_held_to_the_ratio_and_asks_for_the_least_reasoning() {
         let (address, server) =
             serve_once("200 OK", reply("The PostgreSQL database uses pgvector."));
         let endpoint = Endpoint::new_in(&LearnedStore::default(), &address, "model", None)
@@ -1125,8 +1114,7 @@ mod tests {
             .unwrap();
         assert_eq!(out, item("The PostgreSQL database uses pgvector."));
         let (_, sent) = server.join().unwrap();
-        assert!(sent.get("reasoning_effort").is_none(), "{sent}");
-        assert!(sent.get("reasoning").is_none(), "{sent}");
+        assert_eq!(sent["reasoning_effort"], "none", "{sent}");
     }
 
     #[test]
@@ -1900,18 +1888,12 @@ mod tests {
 
     #[test]
     fn text_model_complete_asks_for_the_least_reasoning_whatever_the_enhancer_prompt_says() {
-        // A prompt the person wrote: Guard::for_prompt gives Guard::Ratio, so
-        // Reasoning::for_prompt gives ServerDefault -- more than the least --
-        // for enhance(). TextModel::complete must ignore that and still ask
-        // for the least reasoning.
+        // enhance() is set to the server's default here. TextModel::complete
+        // must ignore that and still ask for the least reasoning.
         let (address, server) = serve_once("200 OK", reply("Three words: parser shipped Friday."));
         let endpoint = Endpoint::new_in(&LearnedStore::default(), &address, "model", None)
-            .with_prompt("Fix product names.");
-        assert_eq!(
-            Reasoning::for_prompt("Fix product names."),
-            Reasoning::ServerDefault,
-            "the prompt used by this test must not itself ask for the least reasoning"
-        );
+            .with_prompt("Fix product names.")
+            .with_reasoning(Reasoning::ServerDefault);
 
         TextModel::complete(&endpoint, "Summarise in three words.", "we shipped it").unwrap();
 
